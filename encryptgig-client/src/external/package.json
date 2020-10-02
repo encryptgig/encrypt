@@ -1,0 +1,11 @@
+{
+  "name": "encryptgig-wasm-library",
+  "collaborators": [
+    "encryptgig <encryptgig@gmail.com>"
+  ],
+  "version": "0.1.0",
+  "files": [
+    "main.wasm"
+  ],
+  "sideEffects": "false"
+}
