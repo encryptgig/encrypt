@@ -213,6 +213,24 @@ function dataURItoBlob(dataURI, callback) {
     return bb;
 }
 
+function base64ToBlob(data) {
+    // convert base64 to raw binary data held in a string
+    // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
+    var byteString = atob(data);
+
+
+    // write the bytes of the string to an ArrayBuffer
+    var ab = new ArrayBuffer(byteString.length);
+    var ia = new Uint8Array(ab);
+    for (var i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i);
+    }
+
+    // write the ArrayBuffer to a blob, and you're done
+    var bb = new Blob([ab]);
+    return bb;
+}
+
 function fileCrypto( encrypt ) {
     var file = document.getElementById("enc_file_name").files[0];
     if (file) {
@@ -335,5 +353,62 @@ function csvCrypto( encrypt, columns, delimiter ) {
         }
     } else {
         alert("select file to tokenize");
+    }
+}
+
+
+
+function xlsFileCrypto( encrypt , row ) {
+
+    var file = document.getElementById("xls_file_name").files[0];
+    if (file) {
+        var reader = new FileReader();
+
+        reader.readAsDataURL(file)
+
+
+        reader.onload = function (evt) {
+
+            var out = "";
+
+            var idata = evt.target.result.split(",")[1];
+
+            if (encrypt) {
+                out = WASMGo.encryptXLS(idata, row );
+            } else {
+                out = WASMGo.decryptXLS(idata, row );
+            }
+            if (out == null) {
+                alert("problem faced during xls crypto. The input data is not correct.")
+                return
+            }
+
+
+            const data = window.URL.createObjectURL(base64ToBlob(out));
+
+            const link = document.createElement('a');
+            link.href = data;
+            link.download = file.name;
+
+            // this is necessary as link.click() does not work on the latest firefox
+            link.dispatchEvent(
+                new MouseEvent('click', {
+                    bubbles: true,
+                    cancelable: true,
+                    view: window
+                })
+            );
+
+            setTimeout(() => {
+                // For Firefox it is necessary to delay revoking the ObjectURL
+                window.URL.revokeObjectURL(data);
+                link.remove();
+            }, 100);
+        }
+        reader.onerror = function (evt) {
+            console.log("error reading file");
+        }
+    } else {
+        alert("select file to encrypt");
     }
 }
