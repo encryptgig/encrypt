@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Redirect, Route, Router, Switch } from "react-router-dom";
 import EgDrawer from "./components/EgDrawer";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
 import EncryptData from "./pages/EncryptData";
+import EncryptCSV from "./pages/EncryptCSV";
 import { createBrowserHistory } from "history";
 import { useDispatch, useSelector } from "react-redux";
 import { PrivateRoute } from "./PrivateRoutes";
@@ -35,12 +37,13 @@ function App() {
 
   return (
     <div>
-      <Helmet></Helmet>
       <EgDrawer />
       <Switch>
         <PrivateRoute exact path="/EncryptData" component={EncryptData} />
         <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
+        <PrivateRoute exact path="/EncryptCSV" component={EncryptCSV} />
         <Route path="/Login" component={Login} />
+        <Route path="/Register" component={Register} />
         <Redirect from="*" to="/" />
       </Switch>
     </div>

@@ -130,7 +130,7 @@ const EgDrawer = (props) => {
               button
               //component={}
               selected={selectedIndex === 3}
-              onClick={(event) => handleListItemClick(event, 3)}
+              onClick={(event) => handleListItemClick(event, 3, "EncryptCSV")}
             >
               <ListItemIcon>
                 <ExitToAppIcon />

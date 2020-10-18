@@ -1,75 +1,185 @@
-import { makeStyles, Modal } from "@material-ui/core";
+import {
+  Avatar,
+  Button,
+  Checkbox,
+  Container,
+  CssBaseline,
+  FormControlLabel,
+  Grid,
+  makeStyles,
+  Modal,
+  TextField,
+  Typography,
+} from "@material-ui/core";
 import React from "react";
-import { withRouter } from "react-router-dom";
-import { GoogleLogin } from "react-google-login";
+import { Link, withRouter } from "react-router-dom";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import fire from "./../configs/firebase-configs";
+import firebase from "firebase";
 
 const CLIENT_ID =
   "1069934900773-fn61ukfjudqa9medkn4sms9902ik9mtd.apps.googleusercontent.com";
 
 const useStyles = makeStyles((theme) => ({
+  Container: {},
   paper: {
-    position: "absolute",
-    width: 400,
+    marginTop: theme.spacing(8),
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
     backgroundColor: theme.palette.background.paper,
-    border: "2px solid #000",
-    boxShadow: theme.shadows[5],
-    padding: theme.spacing(2, 4, 3),
+    borderRadius: 10,
+  },
+  avatar: {
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
+  },
+  form: {
+    width: "80%", // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+    marginBottom: theme.spacing(2),
+  },
+  submit: {
+    margin: theme.spacing(3, 0, 2),
   },
 }));
-function getModalStyle() {
-  const top = 50;
-  const left = 50;
-
-  return {
-    top: `${top}%`,
-    left: `${left}%`,
-    transform: `translate(-${top}%, -${left}%)`,
-  };
-}
 
 const Login = (props) => {
   const classes = useStyles();
   const { history } = props;
-  const [modalStyles] = React.useState(getModalStyle);
+  const [loginState, setLoginState] = React.useState({
+    email: "",
+    password: "",
+  });
+  const updateLoginState = (event) => {
+    setLoginState({
+      ...loginState,
+      [event.target.name]: event.target.value,
+    });
+  };
   const wasm = window.WASMGo;
-  const login = (response) => {
-    if (response.accessToken) {
-      localStorage.setItem("accessToken", JSON.stringify(response.accessToken));
-    }
+  const login = () => {
+    //e.preventDefaults();
+    fire
+      .auth()
+      .signInWithEmailAndPassword(loginState.email, loginState.password)
+      .then((u) => {
+        handleLoginSuccess(u);
+      })
+      .catch((err) => {
+        alert("login failed:" + err);
+      });
+  };
+  const loginGoogle = () => {
+    let provider = new firebase.auth.GoogleAuthProvider();
+    fire
+      .auth()
+      .signInWithPopup(provider)
+      .then((u) => {
+        handleLoginSuccess(u);
+      })
+      .catch((err) => {
+        alert("login failed" + err);
+      });
+  };
+  const loginGithub = () => {
+    let provider = new firebase.auth.GithubAuthProvider();
+    fire
+      .auth()
+      .signInWithPopup(provider)
+      .then((u) => {
+        handleLoginSuccess(u);
+      })
+      .catch((err) => {
+        alert("login failed" + err);
+      });
+  };
+  const handleLoginSuccess = (u) => {
+    console.log(u);
+    alert("login successful");
     history.push("/");
-    console.log(response.tokenId);
-    wasm.instantiateWithJWT(response.tokenId);
-    console.log(wasm.getState());
+    wasm.instantiateWithJWT(u.tokenId);
   };
-  const handleLoginFailure = () => {
-    alert("login failed");
-  };
-  const body = (
-    <div style={modalStyles} className={classes.paper}>
-      <h2 id="simple-modal-title">Login</h2>
-      <GoogleLogin
-        clientId={CLIENT_ID}
-        buttonText="Login"
-        onSuccess={login}
-        onFailure={handleLoginFailure}
-        cookiePolicy={"single_host_origin"}
-        responseType="code,token"
-      />
-    </div>
-  );
 
   return (
-    <Modal
-      open={true}
-      onClose={() => {
-        history.push("/Home");
-        return false;
-      }}
-      aria-labelledby="simple-modal-title"
-      aria-describedby="simple-modal-description"
-    >
-      {body}
-    </Modal>
+    <Container className={classes.Container} component="main" maxWidth="xs">
+      <CssBaseline />
+      <div className={classes.paper}>
+        <Avatar className={classes.avatar}>{<LockOutlinedIcon />}</Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} noValidate>
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            id="email"
+            label="Email Address"
+            name="email"
+            autoComplete="email"
+            autoFocus
+            onChange={updateLoginState}
+          />
+          <TextField
+            variant="outlined"
+            margin="normal"
+            required
+            fullWidth
+            name="password"
+            label="Password"
+            type="password"
+            id="password"
+            autoComplete="current-password"
+            onChange={updateLoginState}
+          />
+          <FormControlLabel
+            control={<Checkbox value="remember" color="primary" />}
+            label="Remember me"
+          />
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={login}
+          >
+            Sign In
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={loginGoogle}
+          >
+            Sign In with Google
+          </Button>
+          <Button
+            fullWidth
+            variant="contained"
+            color="primary"
+            className={classes.submit}
+            onClick={loginGithub}
+          >
+            Sign In with Github
+          </Button>
+          <Grid container>
+            <Grid item xs>
+              <Link href="#" variant="body2">
+                Forgot password?
+              </Link>
+            </Grid>
+            <Grid item>
+              <Link href="#" variant="body2">
+                {"Don't have an account? Sign Up"}
+              </Link>
+            </Grid>
+          </Grid>
+        </form>
+      </div>
+    </Container>
   );
 };
 

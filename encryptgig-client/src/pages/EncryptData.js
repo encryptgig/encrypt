@@ -19,7 +19,6 @@ const EncryptData = (props) => {
   };
   const DecrData = () => {
     let ans = wasm.decrypt(encryptionData.encryptedtext);
-    console.log(ans);
     setEncryptionData({
       ...encryptionData,
       plaintext: ans,
@@ -74,15 +73,13 @@ const EncryptData = (props) => {
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About File Encryption"></EgPageTitle>
       <EgTypography>
-        <p>
-          <b>We don't let your data travel over internet.</b>
-          You can encrypt any of your file i.e.{" "}
-          <b>PDF, jpeg, video or any file that is text or binary,</b> using this
-          facility. We somehow use your master password for doing that. You can
-          have your peace of mind because your data is encrypted without us
-          knowing it. If you don't trust us just check you browser's debug logs
-          and believe.
-        </p>
+        <b>We don't let your data travel over internet.</b>
+        You can encrypt any of your file i.e.{" "}
+        <b>PDF, jpeg, video or any file that is text or binary,</b> using this
+        facility. We somehow use your master password for doing that. You can
+        have your peace of mind because your data is encrypted without us
+        knowing it. If you don't trust us just check you browser's debug logs
+        and believe.
       </EgTypography>
     </div>
   );

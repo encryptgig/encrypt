@@ -1,18 +1,22 @@
 import React from "react";
 import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
+import { uploadFile } from "../Actions/fileActions";
 
 const useStyles = makeStyles((theme) => ({}));
 
 const EgInputFile = (props) => {
-  const [file, setFile] = React.useState(null);
+  const uploadedFile = useSelector((state) => state);
+  const dispatch = useDispatch();
   const handleChange = (e) => {
-    setFile(e.target.files[0]);
+    e.preventDefault();
+    dispatch(uploadFile(e.target.files[0]));
   };
   const renderText = (e) => {
-    if (file == null) {
+    if (uploadedFile.files?.file == null) {
       return <div>No file chosen</div>;
     } else {
-      return <div>{file.name}</div>;
+      return <div>{uploadedFile.files.file.name}</div>;
     }
   };
   return (

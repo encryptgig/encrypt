@@ -23,4 +23,4 @@ const EgButton = (props) => {
   );
 };
 
-export default withStyles(useStyles)(EgButton);
+export default EgButton;
