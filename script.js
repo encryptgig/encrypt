@@ -231,6 +231,15 @@ function base64ToBlob(data) {
     return bb;
 }
 
+function getDate() {
+    var today = new Date();
+    var date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+    var dateTime = date+'-'+time;
+    return dateTime.toString();
+}
+
 function fileCrypto( encrypt ) {
     var file = document.getElementById("enc_file_name").files[0];
     if (file) {
@@ -259,7 +268,12 @@ function fileCrypto( encrypt ) {
             const data = window.URL.createObjectURL(jsonBlob);
             const link = document.createElement('a');
             link.href = data;
-            link.download = file.name;
+            if (encrypt) {
+                link.download = "encrypted"+"-"+getDate()+"-"+file.name;
+            } else {
+                link.download = "decrypted"+"-"+getDate()+"-"+file.name;
+            }
+
 
             // this is necessary as link.click() does not work on the latest firefox
             link.dispatchEvent(
@@ -331,7 +345,11 @@ function csvCrypto( encrypt, columns, delimiter ) {
             const data = window.URL.createObjectURL(jsonBlob);
             const link = document.createElement('a');
             link.href = data;
-            link.download = file.name;
+            if (encrypt) {
+                link.download = "encrypted"+"-"+getDate()+"-"+file.name;
+            } else {
+                link.download = "decrypted"+"-"+getDate()+"-"+file.name;
+            }
 
             // this is necessary as link.click() does not work on the latest firefox
             link.dispatchEvent(
@@ -388,7 +406,11 @@ function xlsFileCrypto( encrypt , row ) {
 
             const link = document.createElement('a');
             link.href = data;
-            link.download = file.name;
+            if (encrypt) {
+                link.download = "encrypted"+"-"+getDate()+"-"+file.name;
+            } else {
+                link.download = "decrypted"+"-"+getDate()+"-"+file.name;
+            }
 
             // this is necessary as link.click() does not work on the latest firefox
             link.dispatchEvent(
