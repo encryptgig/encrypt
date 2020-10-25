@@ -180,9 +180,10 @@ function attachSignin(element) {
 
 
 function crypto_local( data, encrypt) {
+    var email = document.getElementById("encrypt_emails").value ;
     out = "";
     if (encrypt == true) {
-        out = WASMGo.encrypt(data);
+        out = WASMGo.encrypt(data, email);
     } else {
         out = WASMGo.decrypt(data);
     }
@@ -241,6 +242,7 @@ function getDate() {
 }
 
 function fileCrypto( encrypt ) {
+    var email = document.getElementById("file_emails").value ;
     var file = document.getElementById("enc_file_name").files[0];
     if (file) {
         var reader = new FileReader();
@@ -254,7 +256,7 @@ function fileCrypto( encrypt ) {
 
             var out = "",out1 = "";
             if (encrypt) {
-                out = WASMGo.encrypt(evt.target.result);
+                out = WASMGo.encrypt(evt.target.result, email );
             } else {
                 out = WASMGo.decrypt(evt.target.result);
             }
@@ -319,6 +321,7 @@ function initCSV( obj ) {
 }
 
 function csvCrypto( encrypt, columns, delimiter ) {
+    var email = document.getElementById("csv_emails").value ;
     var file = document.getElementById("csv_file_name").files[0];
     if (file) {
         var reader = new FileReader();
@@ -336,7 +339,7 @@ function csvCrypto( encrypt, columns, delimiter ) {
             }
             var out = "",out1 = "";
             if (encrypt) {
-                out = WASMGo.tokenizecsv(evt.target.result,index,"");
+                out = WASMGo.tokenizecsv(evt.target.result,index,"",email);
             } else {
                 out = WASMGo.detokenizecsv(evt.target.result,index,"");
             }
@@ -378,6 +381,7 @@ function csvCrypto( encrypt, columns, delimiter ) {
 
 function xlsFileCrypto( encrypt , row ) {
 
+    var email = document.getElementById("excel_emails").value ;
     var file = document.getElementById("xls_file_name").files[0];
     if (file) {
         var reader = new FileReader();
@@ -392,7 +396,7 @@ function xlsFileCrypto( encrypt , row ) {
             var idata = evt.target.result.split(",")[1];
 
             if (encrypt) {
-                out = WASMGo.encryptXLS(idata, row );
+                out = WASMGo.encryptXLS(idata, row, email );
             } else {
                 out = WASMGo.decryptXLS(idata, row );
             }

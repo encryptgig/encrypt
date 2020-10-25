@@ -198,9 +198,12 @@
                     <textarea  class="form-control" id="plain_text" placeholder="Enter Data to encrypt" name="data" ></textarea>
                 </div>
                 <div class="form-group">
+                    <label for="data">Share With:</label>
+                    <textarea  class="form-control" id="encrypt_emails" placeholder="Enter emails to share encrypted data, in case of multiple emails please separate them by comma." name="emails" ></textarea>
+                </div>
+                <div class="form-group">
                     <button  onclick='crypto_local( document.getElementById("plain_text").value , true )' class="btn">Encrypt</button>
                 </div>
-
 
                 <div class="form-group">
                     <label for="data">Encrypted Data:</label>
@@ -225,6 +228,10 @@
                     <p>File to encrypt:</p>
                     <input type="file" id="enc_file_name">
                 </div>
+                <div class="form-group">
+                    <label for="data">Share With:</label>
+                    <textarea  class="form-control" id="file_emails" placeholder="Enter emails to share encrypted data, in case of multiple emails please separate them by comma." name="emails" ></textarea>
+                </div>
                 <div class="form-group" >
                     <button class="btn" id="button_file_encrypt" onclick='fileCrypto(true)'>Encrypt File</button>
                     <button class="btn" id="button_file_decrypt" onclick='fileCrypto(false)'>Decrypt File</button>
@@ -244,6 +251,10 @@
                 <div class="form-group">
                     <p>CSV File to encrypt:</p>
                     <input type="file" id="csv_file_name" onchange='initCSV()'>
+                </div>
+                <div class="form-group">
+                    <label for="data">Share With:</label>
+                    <textarea  class="form-control" id="csv_emails" placeholder="Enter emails to share encrypted data, in case of multiple emails please separate them by comma." name="emails" ></textarea>
                 </div>
                 <div class="form-group">
                     <label for="pwd">Columns To Encrypt:</label>
@@ -269,6 +280,10 @@
                 <div class="form-group">
                     <p>Excel File to encrypt:</p>
                     <input type="file" id="xls_file_name">
+                </div>
+                <div class="form-group">
+                    <label for="data">Share With:</label>
+                    <textarea  class="form-control" id="excel_emails" placeholder="Enter emails to share encrypted data, in case of multiple emails please separate them by comma." name="emails" ></textarea>
                 </div>
                 <div class="form-group">
                     <label for="pwd">Start Row:</label>
