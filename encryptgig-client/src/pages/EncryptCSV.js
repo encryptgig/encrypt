@@ -1,7 +1,6 @@
 import {
   Box,
   Checkbox,
-  Container,
   Divider,
   FormControl,
   FormControlLabel,
@@ -9,7 +8,7 @@ import {
   FormLabel,
 } from "@material-ui/core";
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
 import EgInputFile from "../components/EgInputFile";
@@ -24,7 +23,7 @@ const EncryptCSV = (props) => {
     if (uploadedFile.files?.file == null) {
       return;
     } else {
-      if (columns.length == 0) {
+      if (columns.length === 0) {
         var reader = new FileReader();
         reader.readAsText(uploadedFile.files.file);
         reader.onload = function (evt) {

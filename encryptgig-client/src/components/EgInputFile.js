@@ -1,9 +1,9 @@
 import React from "react";
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import { Box, Button, makeStyles } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { uploadFile } from "../Actions/fileActions";
 
-const useStyles = makeStyles((theme) => ({}));
+// const useStyles = makeStyles((theme) => ({}));
 
 const EgInputFile = (props) => {
   const uploadedFile = useSelector((state) => state);

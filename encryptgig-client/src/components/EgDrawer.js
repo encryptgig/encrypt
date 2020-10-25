@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
+import { userLogout } from "../Actions/userAction";
 
 import {
   Route,
@@ -18,6 +19,7 @@ import {
   BrowserRouter as Router,
   withRouter,
 } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 240;
 
@@ -58,7 +60,9 @@ const useStyles = makeStyles((theme) => ({
 
 const EgDrawer = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const theme = useTheme();
+  const userState = useSelector((state) => state);
   const [open, setOpen] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
@@ -92,18 +96,23 @@ const EgDrawer = (props) => {
           <div className={classes.toolbar}>EncryptGig</div>
           <Divider />
           <List>
-            <ListItem
-              button
-              component={Link}
-              to="/Login"
-              selected={selectedIndex === 0}
-              onClick={(event) => handleListItemClick(event, 0, "/Login")}
-            >
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Login" />
-            </ListItem>
+            {userState.user.email === null ||
+            userState.user.email.length === 0 ? (
+              <ListItem
+                button
+                component={Link}
+                to="/Login"
+                selected={selectedIndex === 0}
+                onClick={(event) => handleListItemClick(event, 0, "/Login")}
+              >
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Login" />
+              </ListItem>
+            ) : (
+              ""
+            )}
             <ListItem
               button
               //component={}
@@ -170,21 +179,27 @@ const EgDrawer = (props) => {
               </ListItemIcon>
               <ListItemText primary="Contact" />
             </ListItem>
-            <ListItem
-              button
-              component={Link}
-              to="/"
-              selected={selectedIndex === 7}
-              onClick={(event) => {
-                localStorage.removeItem("accessToken");
-                handleListItemClick(event, 7, "/");
-              }}
-            >
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Logout" />
-            </ListItem>
+            {userState.user.email !== null &&
+            userState.user.email.length > 0 ? (
+              <ListItem
+                button
+                component={Link}
+                to="/"
+                selected={selectedIndex === 7}
+                onClick={(event) => {
+                  localStorage.removeItem("accessToken");
+                  dispatch(userLogout());
+                  handleListItemClick(event, 7, "/");
+                }}
+              >
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
+            ) : (
+              ""
+            )}
           </List>
         </Drawer>
         {/* <div style={{ paddingLeft:"300px", paddingTop:"50px"}}>

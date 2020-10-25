@@ -7,18 +7,17 @@ import {
   FormControlLabel,
   Grid,
   makeStyles,
-  Modal,
   TextField,
   Typography,
 } from "@material-ui/core";
+import Alert from "@material-ui/lab/Alert";
 import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "./../configs/firebase-configs";
 import firebase from "firebase";
-
-const CLIENT_ID =
-  "1069934900773-fn61ukfjudqa9medkn4sms9902ik9mtd.apps.googleusercontent.com";
+import { useDispatch } from "react-redux";
+import { userLogin } from "../Actions/userAction";
 
 const useStyles = makeStyles((theme) => ({
   Container: {},
@@ -46,11 +45,15 @@ const useStyles = makeStyles((theme) => ({
 
 const Login = (props) => {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const { history } = props;
   const [loginState, setLoginState] = React.useState({
     email: "",
     password: "",
   });
+  const [loginError, setLoginError] = React.useState(false);
+  const [emailText, setEmailText] = React.useState("");
+  const [passwordText, setPasswordText] = React.useState("");
   const updateLoginState = (event) => {
     setLoginState({
       ...loginState,
@@ -60,14 +63,44 @@ const Login = (props) => {
   const wasm = window.WASMGo;
   const login = () => {
     //e.preventDefaults();
+
+    if (loginState.email.length == 0) {
+      setEmailText("Email cannot be blank.");
+    }
+
+    if (loginState.password.length == 0) {
+      setPasswordText("Password cannot be blank.");
+    }
+    if (loginState.email.length == 0 || loginState.password.length == 0) {
+      return;
+    }
+    const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (!re.test(loginState.email)) {
+      setEmailText("Email not valid.");
+      return;
+    }
+
     fire
       .auth()
       .signInWithEmailAndPassword(loginState.email, loginState.password)
       .then((u) => {
-        handleLoginSuccess(u);
+        console.log(u);
+
+        if (u.user.emailVerified) {
+          alert("login successfull");
+          history.push("/EncryptData");
+          localStorage.setItem("accessToken", u.user.ya);
+          wasm.instantiateWithJWT(u.user.ya);
+          handleLoginSuccess(u, "u.user.email");
+          fire.analytics().logEvent("psw_login_success");
+        } else {
+          fire.analytics().logEvent("unverified_login_attempt");
+          alert("Please verify your email first");
+        }
       })
       .catch((err) => {
-        alert("login failed:" + err);
+        setLoginError(true);
+        fire.analytics().logEvent("login_failed", { error: err });
       });
   };
   const loginGoogle = () => {
@@ -76,10 +109,16 @@ const Login = (props) => {
       .auth()
       .signInWithPopup(provider)
       .then((u) => {
-        handleLoginSuccess(u);
+        console.log(u);
+        handleLoginSuccess(u, u.user.email);
+        wasm.instantiateWithJWT(u.credential.idToken);
+        localStorage.setItem("accessToken", u.credential.idToken);
+        fire.analytics().logEvent("google_login_success");
+        history.push("/");
       })
       .catch((err) => {
-        alert("login failed" + err);
+        setLoginError(true);
+        fire.analytics().logEvent("google_login_failed", { error: err });
       });
   };
   const loginGithub = () => {
@@ -88,17 +127,18 @@ const Login = (props) => {
       .auth()
       .signInWithPopup(provider)
       .then((u) => {
-        handleLoginSuccess(u);
+        handleLoginSuccess(u, "");
+        fire.analytics().logEvent("github_login_success");
       })
       .catch((err) => {
-        alert("login failed" + err);
+        setLoginError(true);
+        fire.analytics().logEvent("github_login_failed", { error: err });
       });
   };
-  const handleLoginSuccess = (u) => {
+  const handleLoginSuccess = (u, email) => {
+    dispatch(userLogin(email));
+    fire.analytics().setUserId(u.user.uid);
     console.log(u);
-    alert("login successful");
-    history.push("/");
-    wasm.instantiateWithJWT(u.tokenId);
   };
 
   return (
@@ -109,8 +149,14 @@ const Login = (props) => {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        {loginError ? (
+          <Alert severity="error">Incorrect email address or password.</Alert>
+        ) : (
+          ""
+        )}
+        <form className={classes.form}>
           <TextField
+            error={emailText.length > 0}
             variant="outlined"
             margin="normal"
             required
@@ -120,9 +166,11 @@ const Login = (props) => {
             name="email"
             autoComplete="email"
             autoFocus
+            helperText={emailText}
             onChange={updateLoginState}
           />
           <TextField
+            error={passwordText.length > 0}
             variant="outlined"
             margin="normal"
             required
@@ -132,6 +180,7 @@ const Login = (props) => {
             type="password"
             id="password"
             autoComplete="current-password"
+            helperText={passwordText}
             onChange={updateLoginState}
           />
           <FormControlLabel
@@ -167,12 +216,12 @@ const Login = (props) => {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link href="#" variant="body2">
+              <Link to="/PasswordReset" variant="body2">
                 Forgot password?
               </Link>
             </Grid>
             <Grid item>
-              <Link href="#" variant="body2">
+              <Link variant="body2" to="/Register">
                 {"Don't have an account? Sign Up"}
               </Link>
             </Grid>

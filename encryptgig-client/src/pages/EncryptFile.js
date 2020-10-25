@@ -18,8 +18,7 @@ const EncryptFile = (props) => {
     reader.readAsText(file);
     reader.onload = function (evt) {
       var out = "",
-        out1 = "";
-      out = window.WASMGo.decrypt(evt.target.result);
+        out = window.WASMGo.decrypt(evt.target.result);
 
       var jsonBlob = null;
       jsonBlob = dataURItoBlob(out);
@@ -56,8 +55,7 @@ const EncryptFile = (props) => {
 
       reader.onload = function (evt) {
         var out = "",
-          out1 = "";
-        out = window.WASMGo.encrypt(evt.target.result);
+          out = window.WASMGo.encrypt(evt.target.result);
 
         var jsonBlob = null;
         jsonBlob = new Blob([out]);
@@ -95,7 +93,7 @@ const EncryptFile = (props) => {
     var byteString = atob(dataURI.split(",")[1]);
 
     // separate out the mime component
-    var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
+    // var mimeString = dataURI.split(",")[0].split(":")[1].split(";")[0];
 
     // write the bytes of the string to an ArrayBuffer
     var ab = new ArrayBuffer(byteString.length);

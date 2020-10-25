@@ -11,6 +11,17 @@ const firebaseConfig = {
   measurementId: "G-HS7YSZRMZH",
 };
 
-const fire = firebase.initializeApp(firebaseConfig);
+const firebaseConfigProd = {
+  apiKey: "AIzaSyD6FY9d1lKs7cZ_6Fu2PV7iiNOsZMnJ7ns",
+  authDomain: "encryptgig-9925d.firebaseapp.com",
+  databaseURL: "https://encryptgig-9925d.firebaseio.com",
+  projectId: "encryptgig-9925d",
+  storageBucket: "encryptgig-9925d.appspot.com",
+  messagingSenderId: "159482259367",
+  appId: "1:159482259367:web:5db6dddf086e20b6df7882",
+  measurementId: "G-RXT3YPG4HR",
+};
+
+const fire = firebase.initializeApp(firebaseConfigProd);
 
 export default fire;

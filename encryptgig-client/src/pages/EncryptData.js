@@ -3,6 +3,7 @@ import React from "react";
 import EgButton from "../components/EgButton";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
+import fire from "./../configs/firebase-configs";
 
 const EncryptData = (props) => {
   const [encryptionData, setEncryptionData] = React.useState({
@@ -16,6 +17,7 @@ const EncryptData = (props) => {
       ...encryptionData,
       encryptedtext: ans,
     });
+    fire.analytics().logEvent("data_encryption");
   };
   const DecrData = () => {
     let ans = wasm.decrypt(encryptionData.encryptedtext);
@@ -23,6 +25,7 @@ const EncryptData = (props) => {
       ...encryptionData,
       plaintext: ans,
     });
+    fire.analytics().logEvent("data_decryption");
   };
 
   const updateEncryptData = (event) => {

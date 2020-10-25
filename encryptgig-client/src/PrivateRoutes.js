@@ -8,6 +8,7 @@ function PrivateRoute({ component: Component, roles, ...rest }) {
       {...rest}
       render={(props) => {
         if (!localStorage.getItem("accessToken")) {
+          //getSystemStatus
           // not logged in so redirect to login page with the return url
           return (
             <Redirect
