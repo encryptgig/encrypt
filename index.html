@@ -55,7 +55,7 @@
 </head>
 <body>
 
-
+<div id="cover-spin"></div>
 
 <div class="wrapper">
     <!-- Sidebar Holder -->
@@ -76,10 +76,6 @@
                     <a href="#"  id="customBtn">
                         <i class="fa fa-google"></i>
                         Google
-                    </a>
-                    <a href="#" onclick='display_func("master_key",false)'>
-                        <i class="fa fa-key"></i>
-                        Master Password
                     </a>
                 </ul>
             </li>
@@ -166,15 +162,6 @@
             <div id="loader"></div>
 
             <div id="master_key">
-                <h3>Insert Master Key</h3>
-                <div class="form-group">
-                    <label for="pwd">Master Password:</label>
-                    <input type="password" class="form-control" id="master_password">
-                </div>
-                <div class="form-group">
-                    <button class="btn" onclick='initilizeSystem(document.getElementById("master_password"),false)'>Begin Encryption</button>
-                </div>
-                <h2>OR</h2>
                 <div class="form-group">
                     <button  class="btn" id="customBtnBody">
                         <i class="fa fa-google fa-2x"></i>
@@ -182,13 +169,6 @@
                     </button>
                 </div>
                 <div class="line"></div>
-                <h3>What is master key ?</h3>
-                <p>
-                    <b>We don't save your master password.</b>
-                    The master used as your password to lock and unlock your data, and you must remember it for further encryption and decryption.
-                    If you forget your master key. The data you encrypted wil be lost. For more safety keep your master key in a secure vault where you can save your secret.
-                    You must choose a strong master password for enhanced security.
-                </p>
             </div>
 
             <div id="encrypt_data">
@@ -233,8 +213,8 @@
                     <textarea  class="form-control" id="file_emails" placeholder="Enter emails to share encrypted data, in case of multiple emails please separate them by comma." name="emails" ></textarea>
                 </div>
                 <div class="form-group" >
-                    <button class="btn" id="button_file_encrypt" onclick='fileCrypto(true)'>Encrypt File</button>
-                    <button class="btn" id="button_file_decrypt" onclick='fileCrypto(false)'>Decrypt File</button>
+                    <button class="btn" id="button_file_encrypt" onclick='fileEncrypt()'>Encrypt File</button>
+                    <button class="btn" id="button_file_decrypt" onclick='fileDecrypt()'>Decrypt File</button>
                 </div>
                 <div class="line"></div>
                 <h3>About File Encryption</h3>

@@ -10,6 +10,14 @@ function getSystemStatus() {
     }
 }
 
+function waitFinished() {
+    $('#cover-spin').hide();
+}
+
+function waitForIt() {
+    $('#cover-spin').show(0)
+}
+
 function display_element(id) {
     maind = document.getElementById("main-div");
     ch = maind.firstChild;
@@ -79,73 +87,39 @@ function setHeading() {
 }
 
 
-function initilizeSystemWithProfile( jwt, opentray) {
-    systemStatus = getSystemStatus()
-    err = WASMGo.instantiateWithJWT(jwt);
+function initilizeSystemWithProfile( err ) {
+
     if (err != null) {
+        alert(err)
         display_func("master_key",false);
+        waitFinished();
         return;
     }
-
    setHeading();
-   if (opentray) {
-        const link = document.getElementById("sidebarCollapse");
-        // this is necessary as link.click() does not work on the latest firefox
-        link.dispatchEvent(
-            new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            })
-        );
-    }
+    const link = document.getElementById("sidebarCollapse");
+    // this is necessary as link.click() does not work on the latest firefox
+    link.dispatchEvent(
+        new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        })
+    );
+
     display_func("encrypt_data",true);
     systemStatus = getSystemStatus()
-}
-
-
-
-function initilizeSystem( element, opentray) {
-    systemStatus = getSystemStatus()
-    password = element.value
-    if ( password.length == 0) {
-        alert("Password cannot be zero length");
-        return;
-    }
-    err = WASMGo.instantiate(password);
-    if (err != null) {
-        alert(err);
-        return;
-    }
-    element.value = ""
-    setHeading();
-
-    if (opentray) {
-        const link = document.getElementById("sidebarCollapse");
-        // this is necessary as link.click() does not work on the latest firefox
-        link.dispatchEvent(
-            new MouseEvent('click', {
-                bubbles: true,
-                cancelable: true,
-                view: window
-            })
-        );
-    }
-    systemStatus = getSystemStatus()
-    display_func("encrypt_data",true);
+    waitFinished();
 
 }
 
-
-function onFailure(error) {
-    WASMGo.reset();
-    console.log(error);
-}
 
 function onSignIn(googleUser) {
+    waitForIt();
     WASMGo.reset();
-    initilizeSystemWithProfile(googleUser.getAuthResponse(true).id_token, false);
+    WASMGo.instantiateWithJWT(googleUser.getAuthResponse(true).id_token ,  "initilizeSystemWithProfile" )
 };
+
+
 function signOut() {
     WASMGo.reset();
     var auth2 = gapi.auth2.getAuthInstance();
@@ -160,7 +134,8 @@ function startApp() {
     gapi.load('auth2', function(){
         // Retrieve the singleton for the GoogleAuth library and set up the client.
         auth2 = gapi.auth2.init({
-            client_id: git_client,
+            //client_id: git_client,
+            client_id: local_client,
             cookiepolicy: 'single_host_origin',
             // Request scopes in addition to 'profile' and 'email'
             //scope: 'additional_scope'
@@ -178,19 +153,40 @@ function attachSignin(element) {
         });
 }
 
+function myDisplayer(some) {
+    document.getElementById("demo").innerHTML = some;
+}
+
+
+function onEncryptSuccess(file,one,two) {
+    waitFinished();
+    if (two == null) {
+        document.getElementById("encrypted_text").value = one;
+    } else {
+        alert(two)
+    }
+}
+
+function onDecryptSuccess(file,one,two) {
+    waitFinished();
+    if (two == null) {
+        document.getElementById("plain_text").value = one;
+    } else {
+        alert(two)
+    }
+}
+
 
 function crypto_local( data, encrypt) {
+
+    waitForIt();
+
     var email = document.getElementById("encrypt_emails").value ;
     out = "";
     if (encrypt == true) {
-        out = WASMGo.encrypt(data, email);
+        out = WASMGo.encrypt(data,"plain data",data.length,"", "onEncryptSuccess");
     } else {
-        out = WASMGo.decrypt(data);
-    }
-    if (encrypt) {
-        document.getElementById("encrypted_text").value = out;
-    } else {
-        document.getElementById("plain_text").value = out;
+        out = WASMGo.decrypt(data,"encrypted data", "onDecryptSuccess");
     }
 }
 
@@ -241,57 +237,99 @@ function getDate() {
     return dateTime.toString();
 }
 
-function fileCrypto( encrypt ) {
+
+
+function fileEncryptCallback( file,one, two) {
+    waitFinished();
+    if ( two != null ) {
+        alert(two)
+        return
+    }
+    var jsonBlob = new Blob([one]);
+    const data = window.URL.createObjectURL(jsonBlob);
+    const link = document.createElement('a');
+    link.href = data;
+    link.download = "encrypted"+"-"+getDate()+"-"+file;
+    link.dispatchEvent(
+        new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        })
+    );
+    setTimeout(() => {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+        link.remove();
+    }, 100);
+}
+
+function  fileEncrypt() {
+    waitForIt();
     var email = document.getElementById("file_emails").value ;
     var file = document.getElementById("enc_file_name").files[0];
     if (file) {
         var reader = new FileReader();
-        if (encrypt) {
-            reader.readAsDataURL(file)
-        } else {
-            reader.readAsText(file)
-        }
+
+        reader.readAsDataURL(file)
 
         reader.onload = function (evt) {
-
-            var out = "",out1 = "";
-            if (encrypt) {
-                out = WASMGo.encrypt(evt.target.result, email );
-            } else {
-                out = WASMGo.decrypt(evt.target.result);
-            }
-
-            var jsonBlob = null
-            if (encrypt) {
-                jsonBlob = new Blob([out]);
-            } else {
-                jsonBlob = dataURItoBlob(out);
-            }
-            const data = window.URL.createObjectURL(jsonBlob);
-            const link = document.createElement('a');
-            link.href = data;
-            if (encrypt) {
-                link.download = "encrypted"+"-"+getDate()+"-"+file.name;
-            } else {
-                link.download = "decrypted"+"-"+getDate()+"-"+file.name;
-            }
-
-
-            // this is necessary as link.click() does not work on the latest firefox
-            link.dispatchEvent(
-                new MouseEvent('click', {
-                    bubbles: true,
-                    cancelable: true,
-                    view: window
-                })
-            );
-
-            setTimeout(() => {
-                // For Firefox it is necessary to delay revoking the ObjectURL
-                window.URL.revokeObjectURL(data);
-                link.remove();
-            }, 100);
+            WASMGo.encrypt(evt.target.result, file.name, evt.target.result.length , email, "fileEncryptCallback" );
         }
+        reader.onerror = function (evt) {
+            console.log("error reading file");
+        }
+    }
+    else {
+        alert("select file to encrypt");
+    }
+
+}
+
+
+function fileDecryptCallback( file,one, two) {
+    waitFinished();
+    if ( two != null ) {
+        alert(two)
+        return
+    }
+
+
+    var jsonBlob = dataURItoBlob(one);
+    const data = window.URL.createObjectURL(jsonBlob);
+    const link = document.createElement('a');
+    link.href = data;
+
+    link.download = "decrypted"+"-"+getDate()+"-"+file;
+
+    // this is necessary as link.click() does not work on the latest firefox
+    link.dispatchEvent(
+        new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        })
+    );
+
+    setTimeout(() => {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+        link.remove();
+    }, 100);
+}
+
+function  fileDecrypt() {
+    waitForIt();
+    var file = document.getElementById("enc_file_name").files[0];
+    if (file) {
+        var reader = new FileReader();
+
+        reader.readAsText(file)
+
+        reader.onload = function (evt) {
+            WASMGo.decrypt( evt.target.result, file.name , "fileDecryptCallback" );
+        }
+
         reader.onerror = function (evt) {
             console.log("error reading file");
         }
@@ -299,6 +337,7 @@ function fileCrypto( encrypt ) {
         alert("select file to encrypt");
     }
 }
+
 
 function initCSV( obj ) {
     var file = document.getElementById("csv_file_name").files[0];
