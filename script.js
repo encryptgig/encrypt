@@ -184,7 +184,7 @@ function crypto_local( data, encrypt) {
     var email = document.getElementById("encrypt_emails").value ;
     out = "";
     if (encrypt == true) {
-        out = WASMGo.encrypt(data,"plain data",data.length,"", "onEncryptSuccess");
+        out = WASMGo.encrypt(data,"plain data",data.length,email, "onEncryptSuccess");
     } else {
         out = WASMGo.decrypt(data,"encrypted data", "onDecryptSuccess");
     }
