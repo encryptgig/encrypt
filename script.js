@@ -417,8 +417,111 @@ function csvCrypto( encrypt, columns, delimiter ) {
 }
 
 
+function xlsEncryptCallback ( file,encryptedData, err ) {
+    waitFinished();
+    if (err != null) {
+        alert(err);
+        return;
+    }
 
-function xlsFileCrypto( encrypt , row ) {
+    const data = window.URL.createObjectURL(base64ToBlob(encryptedData));
+    const link = document.createElement('a');
+
+    link.href = data;
+    link.download = "encrypted"+"-"+getDate()+"-"+file;
+
+    // this is necessary as link.click() does not work on the latest firefox
+    link.dispatchEvent(
+        new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        })
+    );
+
+    setTimeout(() => {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+        link.remove();
+    }, 100);
+}
+
+function xlsFileEncrypt ( sheet, row, columns ) {
+    waitForIt()
+    var email = document.getElementById("excel_emails").value ;
+    var file = document.getElementById("xls_file_name").files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onload = function (evt) {
+            var idata = evt.target.result.split(",")[1];
+
+            var rc = '{"Agenda Day 1":{"RowOffset":4,"Columns":[4,5]}}'
+            WASMGo.encryptXLS("xlsEncryptCallback",idata, file.name ,email,rc);
+        }
+        reader.onerror = function (evt) {
+            waitFinished()
+            alert("error reading file");
+        }
+    } else {
+        waitFinished()
+        alert("select file to encrypt");
+    }
+}
+
+function xlsDecryptSuccess( file,encryptedData, err ) {
+    waitFinished();
+    if (err != null) {
+        alert(err);
+        return;
+    }
+
+    const data = window.URL.createObjectURL(base64ToBlob(encryptedData));
+    const link = document.createElement('a');
+
+    link.href = data;
+    link.download = "decrypted"+"-"+getDate()+"-"+file;
+
+    // this is necessary as link.click() does not work on the latest firefox
+    link.dispatchEvent(
+        new MouseEvent('click', {
+            bubbles: true,
+            cancelable: true,
+            view: window
+        })
+    );
+
+    setTimeout(() => {
+        // For Firefox it is necessary to delay revoking the ObjectURL
+        window.URL.revokeObjectURL(data);
+        link.remove();
+    }, 100);
+}
+
+
+function xlsFileDecrypt ( row, columns ) {
+    waitForIt()
+    var file = document.getElementById("xls_file_name").files[0];
+    if (file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file)
+        reader.onload = function (evt) {
+            var idata = evt.target.result.split(",")[1];
+            WASMGo.decryptXLS("xlsDecryptSuccess",idata, file.name );
+        }
+        reader.onerror = function (evt) {
+            waitFinished()
+            alert("error reading file");
+        }
+    } else {
+        waitFinished()
+        alert("select file to encrypt");
+    }
+}
+
+
+
+function xlsFileCrypto( encrypt , row, columns ) {
 
     var email = document.getElementById("excel_emails").value ;
     var file = document.getElementById("xls_file_name").files[0];
@@ -435,19 +538,19 @@ function xlsFileCrypto( encrypt , row ) {
             var idata = evt.target.result.split(",")[1];
 
             if (encrypt) {
-                out = WASMGo.encryptXLS(idata, row, email );
+                out = WASMGo.encryptXLS(idata, row, columns,  email );
             } else {
-                out = WASMGo.decryptXLS(idata, row );
+                out = WASMGo.decryptXLS(idata, row, columns );
             }
             if (out == null) {
                 alert("problem faced during xls crypto. The input data is not correct.")
                 return
             }
 
-
             const data = window.URL.createObjectURL(base64ToBlob(out));
 
             const link = document.createElement('a');
+
             link.href = data;
             if (encrypt) {
                 link.download = "encrypted"+"-"+getDate()+"-"+file.name;

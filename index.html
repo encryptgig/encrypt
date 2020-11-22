@@ -269,9 +269,13 @@
                     <label for="pwd">Start Row:</label>
                     <input type="text"  class="form-control" id="row_offset" placeholder="Enter Start Row" />
                 </div>
+                <div class="form-group">
+                    <label for="pwd">Columns To Encrypt:</label>
+                    <input type="text"  class="form-control" id="cols_xls" placeholder="Enter comma separated columns" />
+                </div>
                 <div class="form-group" >
-                    <button class="btn" id="button_xls_encrypt" onclick='xlsFileCrypto(true,document.getElementById("row_offset").value)'>Encrypt Excel</button>
-                    <button class="btn" id="button_xls_decrypt" onclick='xlsFileCrypto(false,document.getElementById("row_offset").value)'>Decrypt Excel</button>
+                    <button class="btn" id="button_xls_encrypt" onclick='xlsFileEncrypt("1",document.getElementById("row_offset").value,document.getElementById("cols_xls").value)'>Encrypt Excel</button>
+                    <button class="btn" id="button_xls_decrypt" onclick='xlsFileDecrypt(document.getElementById("row_offset").value,document.getElementById("cols_xls").value)'>Decrypt Excel</button>
                 </div>
                 <div class="line"></div>
             </div>
