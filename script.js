@@ -456,8 +456,8 @@ function xlsFileEncrypt ( sheet, row, columns ) {
         reader.onload = function (evt) {
             var idata = evt.target.result.split(",")[1];
 
-            var rc = '{"Agenda Day 1":{"RowOffset":4,"Columns":[4,5]}}'
-            WASMGo.encryptXLS("xlsEncryptCallback",idata, file.name ,email,rc);
+            //var rc = '{"Agenda Day 1":{"RowOffset":4,"Columns":[4,5]}}'
+            WASMGo.encryptXLS("xlsEncryptCallback",idata, file.name ,email,row);
         }
         reader.onerror = function (evt) {
             waitFinished()
