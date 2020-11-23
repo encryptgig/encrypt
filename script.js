@@ -115,7 +115,17 @@ function initilizeSystemWithProfile( err ) {
 
 function onSignIn(googleUser) {
     waitForIt();
+    //rk: call this to reset ap state
     WASMGo.reset();
+
+    /*
+    call this to initialize this app,
+    Parameters:
+    1. jwt
+    2. Callback function := the signature of calllback function is  func(err)
+    - take negative action if err != null
+    - take positive otherwise
+    */
     WASMGo.instantiateWithJWT(googleUser.getAuthResponse(true).id_token ,  "initilizeSystemWithProfile" )
 };
 
@@ -158,21 +168,21 @@ function myDisplayer(some) {
 }
 
 
-function onEncryptSuccess(file,one,two) {
+function onEncryptSuccess(fileName,encryptedData,error) {
     waitFinished();
-    if (two == null) {
-        document.getElementById("encrypted_text").value = one;
+    if (error == null) {
+        document.getElementById("encrypted_text").value = encryptedData;
     } else {
-        alert(two)
+        alert(error)
     }
 }
 
-function onDecryptSuccess(file,one,two) {
+function onDecryptSuccess(fileName,decryptedData,error) {
     waitFinished();
-    if (two == null) {
-        document.getElementById("plain_text").value = one;
+    if (error == null) {
+        document.getElementById("plain_text").value = decryptedData;
     } else {
-        alert(two)
+        alert(error)
     }
 }
 
@@ -184,6 +194,15 @@ function crypto_local( data, encrypt) {
     var email = document.getElementById("encrypt_emails").value ;
     out = "";
     if (encrypt == true) {
+        /*
+        function to encrypt data
+        parameters:
+        1. plain text
+        2. file name
+        3. length of data
+        4. emails in format  ( email1@abc.com,email2@def.com )
+        5. callback function  check "onEncryptSuccess above for details"
+         */
         out = WASMGo.encrypt(data,"plain data",data.length,email, "onEncryptSuccess");
     } else {
         out = WASMGo.decrypt(data,"encrypted data", "onDecryptSuccess");
@@ -239,17 +258,17 @@ function getDate() {
 
 
 
-function fileEncryptCallback( file,one, two) {
+function fileEncryptCallback( fileName,encryptedData, error) {
     waitFinished();
-    if ( two != null ) {
-        alert(two)
+    if ( error != null ) {
+        alert(error)
         return
     }
-    var jsonBlob = new Blob([one]);
+    var jsonBlob = new Blob([encryptedData]);
     const data = window.URL.createObjectURL(jsonBlob);
     const link = document.createElement('a');
     link.href = data;
-    link.download = "encrypted"+"-"+getDate()+"-"+file;
+    link.download = "encrypted"+"-"+getDate()+"-"+fileName;
     link.dispatchEvent(
         new MouseEvent('click', {
             bubbles: true,
@@ -287,20 +306,20 @@ function  fileEncrypt() {
 }
 
 
-function fileDecryptCallback( file,one, two) {
+function fileDecryptCallback( fileName,decryptedData, error) {
     waitFinished();
-    if ( two != null ) {
-        alert(two)
+    if ( error != null ) {
+        alert(error)
         return
     }
 
 
-    var jsonBlob = dataURItoBlob(one);
+    var jsonBlob = dataURItoBlob(decryptedData);
     const data = window.URL.createObjectURL(jsonBlob);
     const link = document.createElement('a');
     link.href = data;
 
-    link.download = "decrypted"+"-"+getDate()+"-"+file;
+    link.download = "decrypted"+"-"+getDate()+"-"+fileName;
 
     // this is necessary as link.click() does not work on the latest firefox
     link.dispatchEvent(
@@ -456,7 +475,17 @@ function xlsFileEncrypt ( sheet, row, columns ) {
         reader.onload = function (evt) {
             var idata = evt.target.result.split(",")[1];
 
-            //var rc = '{"Agenda Day 1":{"RowOffset":4,"Columns":[4,5]}}'
+            //var rc = '{"sheet_name":{"RowOffset":4,"Columns":[4,5]}}'
+
+            /*
+             function for encrypting excel
+             Parameters:
+             1. Success callback
+             2. plain xls file contents
+             3. file name
+             4. json for row and columns
+             */
+
             WASMGo.encryptXLS("xlsEncryptCallback",idata, file.name ,email,row);
         }
         reader.onerror = function (evt) {
