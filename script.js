@@ -87,46 +87,30 @@ function setHeading() {
 }
 
 
-function initilizeSystemWithProfile( err ) {
-
-    if (err != null) {
-        alert(err)
-        display_func("master_key",false);
-        waitFinished();
-        return;
-    }
-   setHeading();
-    const link = document.getElementById("sidebarCollapse");
-    // this is necessary as link.click() does not work on the latest firefox
-    link.dispatchEvent(
-        new MouseEvent('click', {
-            bubbles: true,
-            cancelable: true,
-            view: window
-        })
-    );
-
-    display_func("encrypt_data",true);
-    systemStatus = getSystemStatus()
-    waitFinished();
-
-}
-
-
-function onSignIn(googleUser) {
+async function onSignIn(googleUser) {
     waitForIt();
     //rk: call this to reset ap state
     WASMGo.reset();
+    try {
+        await  WASMGo.instantiateWithJWT(googleUser.getAuthResponse(true).id_token  )
+        setHeading();
+        const link = document.getElementById("sidebarCollapse");
+        // this is necessary as link.click() does not work on the latest firefox
+        link.dispatchEvent(
+            new MouseEvent('click', {
+                bubbles: true,
+                cancelable: true,
+                view: window
+            })
+        );
 
-    /*
-    call this to initialize this app,
-    Parameters:
-    1. jwt
-    2. Callback function := the signature of calllback function is  func(err)
-    - take negative action if err != null
-    - take positive otherwise
-    */
-    WASMGo.instantiateWithJWT(googleUser.getAuthResponse(true).id_token ,  "initilizeSystemWithProfile" )
+        display_func("encrypt_data",true);
+        systemStatus = getSystemStatus()
+        waitFinished();
+    } catch (err) {
+        waitFinished();
+        alert(err)
+    }
 };
 
 
@@ -187,26 +171,26 @@ function onDecryptSuccess(fileName,decryptedData,error) {
 }
 
 
-function crypto_local( data, encrypt) {
+async function crypto_local( data, encrypt) {
 
     waitForIt();
 
     var email = document.getElementById("encrypt_emails").value ;
     out = "";
-    if (encrypt == true) {
-        /*
-        function to encrypt data
-        parameters:
-        1. plain text
-        2. file name
-        3. length of data
-        4. emails in format  ( email1@abc.com,email2@def.com )
-        5. callback function  check "onEncryptSuccess above for details"
-         */
-        out = WASMGo.encrypt(data,"plain data",data.length,email, "onEncryptSuccess");
-    } else {
-        out = WASMGo.decrypt(data,"encrypted data", "onDecryptSuccess");
+    try {
+        if (encrypt == true) {
+            const response = await WASMGo.encrypt(data, "plain data", data.length, email);
+            document.getElementById("encrypted_text").value = response.toString()
+        } else {
+            const response = await WASMGo.decrypt(data);
+            document.getElementById("plain_text").value = response.toString();
+        }
+        waitFinished();
+    } catch (err) {
+        waitFinished()
+        alert(err)
     }
+
 }
 
 function dataURItoBlob(dataURI, callback) {
@@ -259,7 +243,7 @@ function getDate() {
 
 
 function fileEncryptCallback( fileName,encryptedData, error) {
-    waitFinished();
+   // waitFinished();
     if ( error != null ) {
         alert(error)
         return
@@ -283,7 +267,7 @@ function fileEncryptCallback( fileName,encryptedData, error) {
     }, 100);
 }
 
-function  fileEncrypt() {
+ async function  fileEncrypt() {
     waitForIt();
     var email = document.getElementById("file_emails").value ;
     var file = document.getElementById("enc_file_name").files[0];
@@ -292,8 +276,13 @@ function  fileEncrypt() {
 
         reader.readAsDataURL(file)
 
-        reader.onload = function (evt) {
-            WASMGo.encrypt(evt.target.result, file.name, evt.target.result.length , email, "fileEncryptCallback" );
+        reader.onload = async function (evt) {
+            try {
+                let response = await WASMGo.encrypt(evt.target.result, file.name, evt.target.result.length , email );
+                fileEncryptCallback( file.name , response.toString(), null )
+            } catch (err) {
+                alert(err)
+            }
         }
         reader.onerror = function (evt) {
             console.log("error reading file");
@@ -302,12 +291,13 @@ function  fileEncrypt() {
     else {
         alert("select file to encrypt");
     }
+    waitFinished();
 
 }
 
 
 function fileDecryptCallback( fileName,decryptedData, error) {
-    waitFinished();
+    //waitFinished();
     if ( error != null ) {
         alert(error)
         return
@@ -337,24 +327,29 @@ function fileDecryptCallback( fileName,decryptedData, error) {
     }, 100);
 }
 
-function  fileDecrypt() {
-    waitForIt();
+async function  fileDecrypt() {
+    waitForIt()
     var file = document.getElementById("enc_file_name").files[0];
     if (file) {
         var reader = new FileReader();
 
-        reader.readAsText(file)
+        reader.readAsText(file);
 
-        reader.onload = function (evt) {
-            WASMGo.decrypt( evt.target.result, file.name , "fileDecryptCallback" );
+        reader.onload = async function (evt) {
+            try {
+                let response =  await WASMGo.decrypt(evt.target.result, file.name );
+                fileDecryptCallback( file.name , response.toString(), null )
+            } catch (err) {
+                alert(err)
+            }
         }
-
         reader.onerror = function (evt) {
             console.log("error reading file");
         }
     } else {
         alert("select file to encrypt");
     }
+    waitFinished();
 }
 
 
@@ -465,28 +460,24 @@ function xlsEncryptCallback ( file,encryptedData, err ) {
     }, 100);
 }
 
-function xlsFileEncrypt ( sheet, row, columns ) {
+async function xlsFileEncrypt ( sheet, row, columns ) {
     waitForIt()
     var email = document.getElementById("excel_emails").value ;
     var file = document.getElementById("xls_file_name").files[0];
     if (file) {
         var reader = new FileReader();
         reader.readAsDataURL(file)
-        reader.onload = function (evt) {
-            var idata = evt.target.result.split(",")[1];
+        reader.onload = async function (evt) {
+            try {
+                var idata = evt.target.result.split(",")[1];
 
-            //var rc = '{"sheet_name":{"RowOffset":4,"Columns":[4,5]}}'
-
-            /*
-             function for encrypting excel
-             Parameters:
-             1. Success callback
-             2. plain xls file contents
-             3. file name
-             4. json for row and columns
-             */
-
-            WASMGo.encryptXLS("xlsEncryptCallback",idata, file.name ,email,row);
+                //var rc = '{"sheet_name":{"RowOffset":4,"Columns":[4,5]}}'
+                let response = await WASMGo.encryptXLS(idata, file.name ,email,row);
+                xlsEncryptCallback( file.name, response.toString(), null)
+            } catch (err) {
+                waitFinished()
+                alert(err);
+            }
         }
         reader.onerror = function (evt) {
             waitFinished()
@@ -528,15 +519,20 @@ function xlsDecryptSuccess( file,encryptedData, err ) {
 }
 
 
-function xlsFileDecrypt ( row, columns ) {
+async function xlsFileDecrypt ( row, columns ) {
     waitForIt()
     var file = document.getElementById("xls_file_name").files[0];
     if (file) {
         var reader = new FileReader();
         reader.readAsDataURL(file)
-        reader.onload = function (evt) {
-            var idata = evt.target.result.split(",")[1];
-            WASMGo.decryptXLS("xlsDecryptSuccess",idata, file.name );
+        reader.onload = async function (evt) {
+            try {
+                var idata = evt.target.result.split(",")[1];
+                let response = await WASMGo.decryptXLS(idata );
+                xlsDecryptSuccess(file.name , response.toString(),null)
+            } catch (err) {
+                alert(err)
+            }
         }
         reader.onerror = function (evt) {
             waitFinished()
