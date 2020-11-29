@@ -1,6 +1,7 @@
-import { Divider, TextField } from "@material-ui/core";
+import { Box, Divider, TextField } from "@material-ui/core";
 import React from "react";
 import EgButton from "../components/EgButton";
+import CopyToClip from "../components/EgCopyToClip";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import fire from "./../configs/firebase-configs";
@@ -35,17 +36,18 @@ const EncryptData = (props) => {
     });
   };
 
+  const copyToClipPlain = () => {};
+
   return (
     <div style={{ paddingLeft: "270px" }}>
-      <EgPageTitle title="Encrypt File"></EgPageTitle>
+      <EgPageTitle title="Data Encryption"></EgPageTitle>
       <TextField
         label="Plain Data"
-        style={{ margin: 8 }}
-        rows={4}
+        style={{ margin: 8, width: "98%" }}
+        rows={6}
         multiline
         placeholder="Enter data to encrypt"
         name="plaintext"
-        fullWidth
         onChange={(e) => updateEncryptData(e)}
         margin="normal"
         variant="filled"
@@ -54,16 +56,18 @@ const EncryptData = (props) => {
           shrink: true,
         }}
       />
-      <EgButton text="Encrypt" onClick={encrData} />
+      <Box display="flex" flexDirection="row">
+        <EgButton text="Encrypt" onClick={encrData} />
+        <CopyToClip dataToCopy={encryptionData.plaintext} />
+      </Box>
       <TextField
         id="standard-full-width"
         label="Encrypted Data"
-        style={{ margin: 8 }}
+        style={{ margin: 8, width: "98%" }}
         multiline
-        rows={4}
+        rows={6}
         placeholder="Enter data to decrypt"
         name="encryptedtext"
-        fullWidth
         onChange={(e) => updateEncryptData(e)}
         margin="normal"
         variant="filled"
@@ -72,7 +76,10 @@ const EncryptData = (props) => {
           shrink: true,
         }}
       />
-      <EgButton text="Decrypt" onClick={DecrData} />
+      <Box display="flex" flexDirection="row">
+        <EgButton text="Decrypt" onClick={DecrData} />
+        <CopyToClip dataToCopy={encryptionData.encryptedtext} />
+      </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About File Encryption"></EgPageTitle>
       <EgTypography>

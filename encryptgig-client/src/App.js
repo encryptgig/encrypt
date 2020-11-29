@@ -4,12 +4,14 @@ import EgDrawer from "./components/EgDrawer";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import EncryptData from "./pages/EncryptData";
-import EncryptCSV from "./pages/EncryptCSV";
 import { createBrowserHistory } from "history";
 import { PrivateRoute } from "./PrivateRoutes";
 import EncryptFile from "./pages/EncryptFile";
 import ForgotPsw from "./pages/ForgotPsw";
 import fire from "./configs/firebase-configs";
+import EncryptExcel from "./pages/EncryptExcel";
+import EncryptMedia from "./pages/EncryptMedia";
+import EgHeader from "./components/EgHeader";
 
 function App() {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
@@ -22,6 +24,7 @@ function App() {
     loadWasm();
   }, []);
 
+  // TODO: signature matching for web assembly
   const loadWasm = async () => {
     const go = new window.Go();
     let inst;
@@ -36,10 +39,12 @@ function App() {
   return (
     <div>
       <EgDrawer />
+      <EgHeader />
       <Switch>
         <PrivateRoute exact path="/EncryptData" component={EncryptData} />
         <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
-        <PrivateRoute exact path="/EncryptCSV" component={EncryptCSV} />
+        <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
+        <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
         <Route path="/Login" component={Login} />
         <Route path="/Register" component={Register} />
         <Route path="/PasswordReset" component={ForgotPsw} />

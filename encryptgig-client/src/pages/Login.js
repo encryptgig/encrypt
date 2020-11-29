@@ -17,8 +17,9 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "./../configs/firebase-configs";
 import firebase from "firebase";
 import { useDispatch } from "react-redux";
-import { userLogin } from "../Actions/userAction";
+import { userLogin, userLogout } from "../Actions/userAction";
 
+//TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
   Container: {},
   paper: {
@@ -61,17 +62,22 @@ const Login = (props) => {
     });
   };
   const wasm = window.WASMGo;
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    dispatch(userLogout());
+  };
+
   const login = () => {
     //e.preventDefaults();
 
-    if (loginState.email.length == 0) {
+    if (loginState.email.length === 0) {
       setEmailText("Email cannot be blank.");
     }
 
-    if (loginState.password.length == 0) {
+    if (loginState.password.length === 0) {
       setPasswordText("Password cannot be blank.");
     }
-    if (loginState.email.length == 0 || loginState.password.length == 0) {
+    if (loginState.email.length === 0 || loginState.password.length === 0) {
       return;
     }
     const re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -90,8 +96,7 @@ const Login = (props) => {
           alert("login successfull");
           history.push("/EncryptData");
           localStorage.setItem("accessToken", u.user.ya);
-          wasm.instantiateWithJWT(u.user.ya);
-          handleLoginSuccess(u, "u.user.email");
+          handleLoginSuccess(u, loginState.email, u.user.ya);
           fire.analytics().logEvent("psw_login_success");
         } else {
           fire.analytics().logEvent("unverified_login_attempt");
@@ -103,18 +108,17 @@ const Login = (props) => {
         fire.analytics().logEvent("login_failed", { error: err });
       });
   };
-  const loginGoogle = () => {
+  const loginGoogle = async () => {
     let provider = new firebase.auth.GoogleAuthProvider();
     fire
       .auth()
       .signInWithPopup(provider)
       .then((u) => {
         console.log(u);
-        handleLoginSuccess(u, u.user.email);
-        wasm.instantiateWithJWT(u.credential.idToken);
+        handleLoginSuccess(u, u.user.email, u.credential.idToken);
         localStorage.setItem("accessToken", u.credential.idToken);
         fire.analytics().logEvent("google_login_success");
-        history.push("/");
+        history.push("/EncryptFile");
       })
       .catch((err) => {
         setLoginError(true);
@@ -135,10 +139,15 @@ const Login = (props) => {
         fire.analytics().logEvent("github_login_failed", { error: err });
       });
   };
-  const handleLoginSuccess = (u, email) => {
-    dispatch(userLogin(email));
+  const handleLoginSuccess = async (u, email, jwt) => {
+    try {
+      await wasm.instantiateWithJWT(jwt);
+    } catch (err) {
+      fire.analytics().logEvent("wasm_instantiation_failed.", err);
+      alert(err);
+    }
+    dispatch(userLogin(email, u.user.displayName, u.user.photoURL));
     fire.analytics().setUserId(u.user.uid);
-    console.log(u);
   };
 
   return (
@@ -212,7 +221,7 @@ const Login = (props) => {
             className={classes.submit}
             onClick={loginGithub}
           >
-            Sign In with Github
+            Sign In with Microsoft
           </Button>
           <Grid container>
             <Grid item xs>

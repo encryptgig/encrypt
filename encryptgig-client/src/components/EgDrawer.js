@@ -1,24 +1,12 @@
 import React, { Fragment } from "react";
 import clsx from "clsx";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
+import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import {
-  Divider,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-} from "@material-ui/core";
+import { Divider, List, ListItemIcon, ListItemText } from "@material-ui/core";
+import MuiListItem from "@material-ui/core/ListItem";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { userLogout } from "../Actions/userAction";
-
-import {
-  Route,
-  Link,
-  BrowserRouter as Router,
-  withRouter,
-} from "react-router-dom";
+import { BrowserRouter as Router, withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 240;
@@ -42,9 +30,9 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
-    width: theme.spacing(7) + 1,
+    width: theme.spacing(7),
     [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9) + 1,
+      width: theme.spacing(9),
     },
   },
   toolbar: {
@@ -60,14 +48,12 @@ const useStyles = makeStyles((theme) => ({
 
 const EgDrawer = (props) => {
   const classes = useStyles();
-  const dispatch = useDispatch();
   const theme = useTheme();
-  const userState = useSelector((state) => state);
   const [open, setOpen] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const { history } = props;
-
+  if (window.location.pathname === "/Login") return null;
   const handleDrawer = () => {
     setOpen(!open);
   };
@@ -75,6 +61,43 @@ const EgDrawer = (props) => {
     setSelectedIndex(index);
     history.push(path);
   };
+
+  const ListItem = withStyles({
+    root: {
+      borderLeft: "5px solid #e9ebf0",
+      width: drawerWidth,
+      height: "3em",
+      "& span, & svg": {
+        fontSize: "1.2em",
+      },
+      "&$selected": {
+        backgroundColor: "white",
+        marginLeft: "0px",
+        borderLeft: "5px solid ",
+        borderLeftColor: theme.palette.primary.dark,
+        color: theme.palette.primary.dark,
+        "& span, & svg": {
+          fontWeight: "700",
+          fontSize: "1.2em",
+        },
+      },
+      "&$selected:hover": {
+        backgroundColor: "white",
+        borderLeft: "5px solid ",
+        borderLeftColor: theme.palette.primary.dark,
+      },
+      "&:hover": {
+        backgroundColor: "white",
+        borderLeft: "5px solid",
+        borderLeftColor: theme.palette.primary.dark,
+        "& span, & svg": {
+          fontWeight: "700",
+          fontSize: "1.2em",
+        },
+      },
+    },
+    selected: {},
+  })(MuiListItem);
 
   return (
     <Fragment>
@@ -96,11 +119,10 @@ const EgDrawer = (props) => {
           <div className={classes.toolbar}>EncryptGig</div>
           <Divider />
           <List>
-            {userState.user.email === null ||
+            {/* {userState.user.email === null ||
             userState.user.email.length === 0 ? (
               <ListItem
                 button
-                component={Link}
                 to="/Login"
                 selected={selectedIndex === 0}
                 onClick={(event) => handleListItemClick(event, 0, "/Login")}
@@ -112,23 +134,12 @@ const EgDrawer = (props) => {
               </ListItem>
             ) : (
               ""
-            )}
+            )} */}
             <ListItem
               button
               //component={}
               selected={selectedIndex === 1}
-              onClick={(event) => handleListItemClick(event, 1, "EncryptData")}
-            >
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
-              <ListItemText primary="Encrypt Data" />
-            </ListItem>
-            <ListItem
-              button
-              //component={}
-              selected={selectedIndex === 2}
-              onClick={(event) => handleListItemClick(event, 2, "EncryptFile")}
+              onClick={(event) => handleListItemClick(event, 1, "EncryptFile")}
             >
               <ListItemIcon>
                 <ExitToAppIcon />
@@ -138,24 +149,35 @@ const EgDrawer = (props) => {
             <ListItem
               button
               //component={}
-              selected={selectedIndex === 3}
-              onClick={(event) => handleListItemClick(event, 3, "EncryptCSV")}
+              selected={selectedIndex === 2}
+              onClick={(event) => handleListItemClick(event, 2, "EncryptData")}
             >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              <ListItemText primary="Encrypt CSV" />
+              <ListItemText primary="Encrypt Data" />
             </ListItem>
             <ListItem
               button
               //component={}
-              selected={selectedIndex === 4}
-              onClick={(event) => handleListItemClick(event, 4)}
+              selected={selectedIndex === 3}
+              onClick={(event) => handleListItemClick(event, 3, "EncryptExcel")}
             >
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
               <ListItemText primary="Encrypt Excel" />
+            </ListItem>
+            <ListItem
+              button
+              //component={}
+              selected={selectedIndex === 4}
+              onClick={(event) => handleListItemClick(event, 4, "EncryptMedia")}
+            >
+              <ListItemIcon>
+                <ExitToAppIcon />
+              </ListItemIcon>
+              <ListItemText primary="Encrypt Media" />
             </ListItem>
             <ListItem
               button
@@ -166,45 +188,10 @@ const EgDrawer = (props) => {
               <ListItemIcon>
                 <ExitToAppIcon />
               </ListItemIcon>
-              <ListItemText primary="About" />
-            </ListItem>
-            <ListItem
-              button
-              //component={}
-              selected={selectedIndex === 6}
-              onClick={(event) => handleListItemClick(event, 6)}
-            >
-              <ListItemIcon>
-                <ExitToAppIcon />
-              </ListItemIcon>
               <ListItemText primary="Contact" />
             </ListItem>
-            {userState.user.email !== null &&
-            userState.user.email.length > 0 ? (
-              <ListItem
-                button
-                component={Link}
-                to="/"
-                selected={selectedIndex === 7}
-                onClick={(event) => {
-                  localStorage.removeItem("accessToken");
-                  dispatch(userLogout());
-                  handleListItemClick(event, 7, "/");
-                }}
-              >
-                <ListItemIcon>
-                  <ExitToAppIcon />
-                </ListItemIcon>
-                <ListItemText primary="Logout" />
-              </ListItem>
-            ) : (
-              ""
-            )}
           </List>
         </Drawer>
-        {/* <div style={{ paddingLeft:"300px", paddingTop:"50px"}}>
-        <Button variant="contained" color={theme.primary} onClick={handleDrawer}>open/close</Button>
-      </div> */}
       </Router>
     </Fragment>
   );
