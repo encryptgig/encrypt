@@ -11,6 +11,7 @@ const useStyles = makeStyles((theme) => ({
     flexWrap: "wrap",
     "& > *": {
       margin: theme.spacing(0.2),
+      backgroundColor: "white",
     },
   },
 }));
@@ -38,12 +39,13 @@ const EgEmailInput = (props) => {
       let p = emailString.split(",");
       for (let l = 0; l < p.length; l++) {
         if (p[l].length > 0) {
-          setEmailList((prev) => [...prev, p[l]]);
+          setEmailList((prev) => {
+            let n = [...new Set([...prev, p[l]])];
+            dispatch(shareFile(n));
+            return n;
+          });
         }
       }
-
-      dispatch(shareFile(emailList));
-      //console.log(emailList);
       setEmailString("");
     }
   };
@@ -52,7 +54,7 @@ const EgEmailInput = (props) => {
     <div>
       <TextField
         style={{ margin: 8, width: "98%" }}
-        variant="outlined"
+        variant="filled"
         label="Share Securely"
         onChange={inputChange}
         value={emailString}

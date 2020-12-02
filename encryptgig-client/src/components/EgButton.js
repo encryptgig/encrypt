@@ -9,7 +9,7 @@ const useStyles = makeStyles((theme) => ({
 
 const EgButton = (props) => {
   const classes = useStyles();
-  const { text, onClick } = props;
+  const { text, onClick, disabled } = props;
   return (
     <Button
       variant="contained"
@@ -17,6 +17,7 @@ const EgButton = (props) => {
       color="primary"
       className={classes.padding1}
       onClick={onClick}
+      disabled={disabled}
     >
       {text}
     </Button>

@@ -1,27 +1,38 @@
 import { Box, Divider, TextField } from "@material-ui/core";
 import React from "react";
+import { useSelector } from "react-redux";
 import EgButton from "../components/EgButton";
 import CopyToClip from "../components/EgCopyToClip";
+import EgEmailInput from "../components/EgEmailInput";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import fire from "./../configs/firebase-configs";
 
 const EncryptData = (props) => {
+  const uploadedFile = useSelector((state) => state);
   const [encryptionData, setEncryptionData] = React.useState({
     plaintext: "",
     encryptedtext: "",
   });
   const wasm = window.WASMGo;
-  const encrData = () => {
-    let ans = wasm.encrypt(encryptionData.plaintext);
+  const encrData = async () => {
+    let ans = await wasm.encrypt(
+      encryptionData.plaintext,
+      "plain data",
+      encryptionData.plaintext.length,
+      uploadedFile.shareEmail.emailList != null &&
+        uploadedFile.shareEmail.emailList.length > 0
+        ? uploadedFile.shareEmail.emailList.join(",")
+        : ""
+    );
     setEncryptionData({
       ...encryptionData,
       encryptedtext: ans,
     });
     fire.analytics().logEvent("data_encryption");
   };
-  const DecrData = () => {
-    let ans = wasm.decrypt(encryptionData.encryptedtext);
+  const DecrData = async () => {
+    let ans = await wasm.decrypt(encryptionData.encryptedtext);
     setEncryptionData({
       ...encryptionData,
       plaintext: ans,
@@ -56,6 +67,7 @@ const EncryptData = (props) => {
           shrink: true,
         }}
       />
+      <EgEmailInput />
       <Box display="flex" flexDirection="row">
         <EgButton text="Encrypt" onClick={encrData} />
         <CopyToClip dataToCopy={encryptionData.plaintext} />

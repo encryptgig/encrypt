@@ -75,10 +75,7 @@ const StyledMenuItem = withStyles((theme) => ({
 const EgHeader = (props) => {
   const classes = useStyles();
   const { history } = props;
-  const userState = useSelector((state) => {
-    console.log(state);
-    return state;
-  });
+  const userState = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
   const handleProfileClick = (event) => {

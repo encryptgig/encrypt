@@ -13,6 +13,7 @@ import {
   Tooltip,
   Typography,
 } from "@material-ui/core";
+import * as XLSX from "xlsx";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { Autocomplete } from "@material-ui/lab";
 import React, { useState } from "react";
@@ -25,8 +26,11 @@ import EgTypography from "../components/EgTypography";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 
 const EncryptCSV = (props) => {
-  const uploadedFile = useSelector((state) => state);
-  const [columns, setColumns] = useState([]);
+  const uploadedFile = useSelector((state) => {
+    //alert();
+    return state;
+  });
+  const [sheetNames, setSheetNames] = useState([]);
   const [encryptType, setEncryptType] = useState("fullEncrypt");
   const [encrSheetCount, setEncrSheetCount] = useState(0);
   const [openTooltip, setOpenTooltip] = React.useState(false);
@@ -38,54 +42,7 @@ const EncryptCSV = (props) => {
   const handleTooltipOpen = () => {
     setOpenTooltip(true);
   };
-  const sheetNames = [
-    "sales - monthly",
-    "sales - quaterly",
-    "sales - yearly",
-    "expense - monthly",
-    "expense - quaterly",
-    "expense - yearly",
-    "sales - monthly1",
-    "sales - quaterly1",
-    "sales - yearly1",
-    "expense - monthly11",
-    "expense - quaterly1",
-    "expense - yearly1",
-  ];
-  const renderText = () => {
-    let index = 1;
-    if (uploadedFile.files?.file == null) {
-      return;
-    } else {
-      if (columns.length === 0) {
-        var reader = new FileReader();
-        reader.readAsText(uploadedFile.files.file);
-        reader.onload = function (evt) {
-          let str = evt.target.result.split(/\r?\n/)[0];
-          setColumns(str.split(","));
-        };
-      } else {
-        return (
-          <FormControl component="fieldset">
-            <FormLabel component="legend">Select Columns to encrypt</FormLabel>
-            <FormGroup aria-label="position" row>
-              {columns.map((column) => {
-                let name = "column ";
-                return (
-                  <FormControlLabel
-                    value={index}
-                    control={<Checkbox color="primary" />}
-                    label={name + index++}
-                    labelPlacement="start"
-                  />
-                );
-              })}
-            </FormGroup>
-          </FormControl>
-        );
-      }
-    }
-  };
+
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
     if (!file) {
@@ -96,7 +53,7 @@ const EncryptCSV = (props) => {
   };
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
-    setEncrSheetCount(encrSheetCount + 1);
+
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
@@ -115,18 +72,13 @@ const EncryptCSV = (props) => {
           options={sheetNames}
           getOptionLabel={(option) => option}
           style={{ width: 300 }}
+          onClick={alert("hey")}
           renderInput={(params) => (
             <TextField {...params} label="Sheet Name" variant="outlined" />
           )}
         />
-        <Autocomplete
-          options={["rows", "columns"]}
-          value="columns"
-          getOptionLabel={(option) => option}
-          style={{ width: 300 }}
-          renderInput={(params) => <TextField {...params} variant="outlined" />}
-        />
-        <TextField label="Range To Encrypt" variant="outlined"></TextField>
+        <TextField label="Row Offset" variant="outlined"></TextField>
+        <TextField label="Columns To Encrypt" variant="outlined"></TextField>
         <ClickAwayListener onClickAway={handleTooltipClose}>
           <Tooltip
             PopperProps={{
@@ -151,7 +103,13 @@ const EncryptCSV = (props) => {
     for (let index = 0; index < encrSheetCount; index++) {
       x.push(p);
     }
-    x.push(<EgButton text="Add Sheet" onClick={handleAddSheet} />);
+    x.push(
+      <EgButton
+        text="Add Sheet"
+        disabled={encrSheetCount < sheetNames.length}
+        onClick={handleAddSheet}
+      />
+    );
     return x;
   };
 
@@ -163,7 +121,6 @@ const EncryptCSV = (props) => {
     <div style={{ paddingLeft: "270px" }}>
       <EgPageTitle title="Data Encryption"></EgPageTitle>
       <EgInputFile />
-      <Typography>{renderText()}</Typography>
       <FormControl component="fieldset">
         {/* <FormLabel component="legend">Gender</FormLabel> */}
         <RadioGroup value={encryptType} onChange={handleEncryptTypeChange}>

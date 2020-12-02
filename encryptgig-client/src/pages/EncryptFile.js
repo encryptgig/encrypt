@@ -17,7 +17,7 @@ const EncryptFile = (props) => {
   const uploadedFile = useSelector((state) => state);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
-    alert(uploadedFile.emailList);
+
     if (!file) {
       return;
     }
@@ -69,9 +69,11 @@ const EncryptFile = (props) => {
             evt.target.result,
             file.name,
             evt.target.result.length,
-            uploadedFile.shareEmail.emailList.join(",")
+            uploadedFile.shareEmail.emailList != null &&
+              uploadedFile.shareEmail.emailList.length > 0
+              ? uploadedFile.shareEmail.emailList.join(",")
+              : ""
           );
-          console.log(uploadedFile.shareEmail.emailList.join(","));
           var jsonBlob = null;
           jsonBlob = new Blob([out]);
 
