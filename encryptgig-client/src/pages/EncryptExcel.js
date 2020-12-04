@@ -35,8 +35,6 @@ const EncryptCSV = (props) => {
   const [encrSheetCount, setEncrSheetCount] = useState(0);
   const [openTooltip, setOpenTooltip] = React.useState(false);
 
-  const reader = new FileReader();
-  const encrDetails = [];
   const handleTooltipClose = () => {
     setOpenTooltip(false);
   };
@@ -45,100 +43,42 @@ const EncryptCSV = (props) => {
     setOpenTooltip(true);
   };
 
-  const getRowOffset = async (e) => {
-    let index = e.target.name.split("_")[1];
-    let key = Object.keys(encrDetails[index])[0];
-    encrDetails[index][key] = [{ RowOffset: e.target.value }];
-    console.log(JSON.stringify(encrDetails));
-  };
-  const getColList = (e) => {
-    let index = e.target.name.split("_")[1];
-    let key = Object.keys(encrDetails[index])[0];
-    encrDetails[index][key].push({ Columns: e.target.value });
-    console.log(JSON.stringify(encrDetails));
-
-    let row = JSON.stringify(encrDetails);
-    let email = "";
-    var file = uploadedFile.files.file;
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsBinaryString(file);
-      reader.onload = async function (evt) {
-        var idata = evt.target.result.split(",")[1];
-        console.log(idata);
-        console.log(file.name);
-        let response = await window.WASMGo.encryptXLS(
-          idata,
-          file.name,
-          email,
-          '{"Sheet2":{"RowOffset":4,"Columns":[4,5]}}'
-        );
-        console.log("resp" + response);
-      };
-    }
-  };
-
-  const getSheetName = (e, v) => {
-    let sheetData = {};
-    sheetData[v] = "";
-    encrDetails.push(sheetData);
-  };
-
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
     if (!file) {
       return;
     }
+    var reader = new FileReader();
+    reader.readAsText(file);
   };
   const handleEncrypt = () => {
-    var file = uploadedFile.files.file;
-  };
-  const handleEncryptTypeChange = (event) => {
-    setEncryptType(event.target.value);
-    getSheetNames();
-  };
-
-  const getSheetNames = () => {
     var file = uploadedFile.files.file;
 
     if (file) {
       var reader = new FileReader();
-      reader.readAsBinaryString(file);
-      reader.onload = async function (evt) {
-        let bstr = evt.target.result;
-        const wb = XLSX.read(bstr, { type: "binary" });
-        setSheetNames(wb.SheetNames);
-      };
+      reader.readAsDataURL(file);
     }
+  };
+  const handleEncryptTypeChange = (event) => {
+    setEncryptType(event.target.value);
   };
   const RenderSheetDetailcomp = () => {
     if (encryptType === "fullEncrypt") {
       return;
     }
-    let p = (index) => (
+    let p = (
       <Box display="flex" flexDirection="row">
         <Autocomplete
           options={sheetNames}
           getOptionLabel={(option) => option}
           style={{ width: 300 }}
-          onChange={(e, v) => getSheetName(e, v)}
-          name={"sheetName_" + index}
+          onClick={alert("hey")}
           renderInput={(params) => (
             <TextField {...params} label="Sheet Name" variant="outlined" />
           )}
         />
-        <TextField
-          label="Row Offset"
-          name={"rowOffset_" + index}
-          onChange={(e) => getRowOffset(e)}
-          variant="outlined"
-        ></TextField>
-        <TextField
-          label="Columns To Encrypt"
-          name={"colList_" + index}
-          onChange={(e) => getColList(e)}
-          variant="outlined"
-        ></TextField>
+        <TextField label="Row Offset" variant="outlined"></TextField>
+        <TextField label="Columns To Encrypt" variant="outlined"></TextField>
         <ClickAwayListener onClickAway={handleTooltipClose}>
           <Tooltip
             PopperProps={{
@@ -159,14 +99,14 @@ const EncryptCSV = (props) => {
         </ClickAwayListener>
       </Box>
     );
-    let x = [p(0)];
-    for (let index = 1; index <= encrSheetCount; index++) {
-      x.push(p(index));
+    let x = [p];
+    for (let index = 0; index < encrSheetCount; index++) {
+      x.push(p);
     }
     x.push(
       <EgButton
         text="Add Sheet"
-        disabled={sheetNames.length - 1 <= encrSheetCount}
+        disabled={encrSheetCount < sheetNames.length}
         onClick={handleAddSheet}
       />
     );
@@ -174,7 +114,6 @@ const EncryptCSV = (props) => {
   };
 
   const handleAddSheet = () => {
-    console.log(encrSheetCount + "--" + sheetNames.length);
     setEncrSheetCount(encrSheetCount + 1);
   };
 
