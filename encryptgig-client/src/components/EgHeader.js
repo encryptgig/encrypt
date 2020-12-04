@@ -25,7 +25,9 @@ import SendIcon from "@material-ui/icons/Send";
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
-    zIndex: 1,
+  },
+  appbar: {
+    zIndex: theme.zIndex.drawer + 1,
   },
   appbarItem: {
     marginRight: theme.spacing(3),
@@ -91,7 +93,7 @@ const EgHeader = (props) => {
   };
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="static" className={classes.appbar}>
         <Toolbar>
           <Typography variant="h6" className={classes.title}>
             EncryptGig

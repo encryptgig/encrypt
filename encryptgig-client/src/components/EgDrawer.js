@@ -1,8 +1,14 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
-import { Divider, List, ListItemIcon, ListItemText } from "@material-ui/core";
+import {
+  Divider,
+  List,
+  ListItemIcon,
+  ListItemText,
+  Toolbar,
+} from "@material-ui/core";
 import MuiListItem from "@material-ui/core/ListItem";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,6 +18,9 @@ import { useDispatch, useSelector } from "react-redux";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    display: "flex",
+  },
   drawer: {
     width: drawerWidth,
     flexShrink: 0,
@@ -19,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOpen: {
     width: drawerWidth,
+    zIndex: -1,
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -30,6 +40,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
+    zIndex: -1,
     width: theme.spacing(7),
     [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9),
@@ -51,12 +62,18 @@ const EgDrawer = (props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    if (mediaQuery.matches) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  });
 
   const { history } = props;
   if (window.location.pathname === "/Login") return null;
-  const handleDrawer = () => {
-    setOpen(!open);
-  };
+
   const handleListItemClick = (event, index, path) => {
     setSelectedIndex(index);
     history.push(path);
@@ -100,7 +117,7 @@ const EgDrawer = (props) => {
   })(MuiListItem);
 
   return (
-    <Fragment>
+    <div>
       <Router>
         <CssBaseline />
         <Drawer
@@ -116,8 +133,7 @@ const EgDrawer = (props) => {
             }),
           }}
         >
-          <div className={classes.toolbar}>EncryptGig</div>
-          <Divider />
+          <Toolbar />
           <List>
             {/* {userState.user.email === null ||
             userState.user.email.length === 0 ? (
@@ -193,7 +209,7 @@ const EgDrawer = (props) => {
           </List>
         </Drawer>
       </Router>
-    </Fragment>
+    </div>
   );
 };
 
