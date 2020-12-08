@@ -54,8 +54,8 @@ const EncryptData = (props) => {
       <EgPageTitle title="Data Encryption"></EgPageTitle>
       <TextField
         label="Plain Data"
-        style={{ margin: 8, width: "98%" }}
-        rows={6}
+        style={{ width: "98%" }}
+        rows={4}
         multiline
         placeholder="Enter data to encrypt"
         name="plaintext"
@@ -75,9 +75,9 @@ const EncryptData = (props) => {
       <TextField
         id="standard-full-width"
         label="Encrypted Data"
-        style={{ margin: 8, width: "98%" }}
+        style={{ width: "98%" }}
         multiline
-        rows={6}
+        rows={4}
         placeholder="Enter data to decrypt"
         name="encryptedtext"
         onChange={(e) => updateEncryptData(e)}

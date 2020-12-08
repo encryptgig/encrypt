@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment, useEffect } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -14,8 +14,8 @@ const drawerWidth = 240;
 const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
-    flexShrink: 0,
     whiteSpace: "nowrap",
+    zIndex: -1,
   },
   drawerOpen: {
     width: drawerWidth,
@@ -31,9 +31,6 @@ const useStyles = makeStyles((theme) => ({
     }),
     overflowX: "hidden",
     width: theme.spacing(7),
-    [theme.breakpoints.up("sm")]: {
-      width: theme.spacing(9),
-    },
   },
   toolbar: {
     display: "flex",
@@ -42,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
-    fontSize: "1em",
+    backgroundColor: "primary",
   },
 }));
 
@@ -51,12 +48,18 @@ const EgDrawer = (props) => {
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 768px)");
+    if (mediaQuery.matches) {
+      setOpen(true);
+    } else {
+      setOpen(false);
+    }
+  });
 
   const { history } = props;
   if (window.location.pathname === "/Login") return null;
-  const handleDrawer = () => {
-    setOpen(!open);
-  };
+
   const handleListItemClick = (event, index, path) => {
     setSelectedIndex(index);
     history.push(path);

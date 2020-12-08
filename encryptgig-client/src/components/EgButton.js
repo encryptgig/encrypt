@@ -3,7 +3,8 @@ import { Button, makeStyles, withStyles } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   padding1: {
-    margin: theme.spacing(1),
+    marginRight: theme.spacing(1),
+    marginTop: theme.spacing(1),
   },
 }));
 

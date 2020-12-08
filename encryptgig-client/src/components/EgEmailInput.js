@@ -53,7 +53,7 @@ const EgEmailInput = (props) => {
   return (
     <div>
       <TextField
-        style={{ margin: 8, width: "98%" }}
+        style={{ width: "98%" }}
         variant="filled"
         label="Share Securely"
         onChange={inputChange}

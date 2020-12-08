@@ -14,6 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import * as XLSX from "xlsx";
+import EgEmailInput from "../components/EgEmailInput";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { Autocomplete } from "@material-ui/lab";
 import React, { useState } from "react";
@@ -24,6 +25,11 @@ import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import {
+  dataURItoBlob,
+  base64ToBlob,
+  downloadExcelFile,
+} from "../utilities/fileUtilities";
 
 const EncryptCSV = (props) => {
   const uploadedFile = useSelector((state) => {
@@ -34,9 +40,11 @@ const EncryptCSV = (props) => {
   const [encryptType, setEncryptType] = useState("fullEncrypt");
   const [encrSheetCount, setEncrSheetCount] = useState(0);
   const [openTooltip, setOpenTooltip] = React.useState(false);
+  const [encrDetails, setEncrDetails] = React.useState([]);
 
   const reader = new FileReader();
-  const encrDetails = [];
+  let sheetData = {};
+
   const handleTooltipClose = () => {
     setOpenTooltip(false);
   };
@@ -48,38 +56,17 @@ const EncryptCSV = (props) => {
   const getRowOffset = async (e) => {
     let index = e.target.name.split("_")[1];
     let key = Object.keys(encrDetails[index])[0];
-    encrDetails[index][key] = [{ RowOffset: e.target.value }];
-    console.log(JSON.stringify(encrDetails));
+
+    encrDetails[index][key] = [{ RowOffset: Number(e.target.value) }];
   };
   const getColList = (e) => {
     let index = e.target.name.split("_")[1];
     let key = Object.keys(encrDetails[index])[0];
-    encrDetails[index][key].push({ Columns: e.target.value });
-    console.log(JSON.stringify(encrDetails));
-
-    let row = JSON.stringify(encrDetails);
-    let email = "";
-    var file = uploadedFile.files.file;
-    if (file) {
-      var reader = new FileReader();
-      reader.readAsBinaryString(file);
-      reader.onload = async function (evt) {
-        var idata = evt.target.result.split(",")[1];
-        console.log(idata);
-        console.log(file.name);
-        let response = await window.WASMGo.encryptXLS(
-          idata,
-          file.name,
-          email,
-          '{"Sheet2":{"RowOffset":4,"Columns":[4,5]}}'
-        );
-        console.log("resp" + response);
-      };
-    }
+    let arr = e.target.value.split(",").map(lettersToNumber);
+    encrDetails[index][key].push({ Columns: arr });
   };
 
   const getSheetName = (e, v) => {
-    let sheetData = {};
     sheetData[v] = "";
     encrDetails.push(sheetData);
   };
@@ -89,10 +76,48 @@ const EncryptCSV = (props) => {
     if (!file) {
       return;
     }
+    var reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = async function (evt) {
+      var idata = evt.target.result.split(",")[1];
+      console.log(file.name);
+      let response = await window.WASMGo.decryptXLS(idata);
+      downloadExcelFile(response, file.name);
+    };
   };
+
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
+    let objObject = {};
+
+    for (let i = 0; i < encrDetails.length; i++) {
+      let k = Object.keys(encrDetails[i])[0];
+      objObject[k] = Object.assign({}, ...Object.values(encrDetails[i])[0]);
+    }
+    console.log("------------> " + JSON.stringify(objObject));
+    let email =
+      uploadedFile.shareEmail.emailList != null &&
+      uploadedFile.shareEmail.emailList.length > 0
+        ? uploadedFile.shareEmail.emailList.join(",")
+        : "";
+
+    if (file) {
+      var reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async function (evt) {
+        var idata = evt.target.result.split(",")[1];
+        console.log(file.name);
+        let response = await window.WASMGo.encryptXLS(
+          idata,
+          file.name,
+          email,
+          JSON.stringify(objObject)
+        );
+        downloadExcelFile(response, file.name);
+      };
+    }
   };
+
   const handleEncryptTypeChange = (event) => {
     setEncryptType(event.target.value);
     getSheetNames();
@@ -100,7 +125,6 @@ const EncryptCSV = (props) => {
 
   const getSheetNames = () => {
     var file = uploadedFile.files.file;
-
     if (file) {
       var reader = new FileReader();
       reader.readAsBinaryString(file);
@@ -174,14 +198,21 @@ const EncryptCSV = (props) => {
   };
 
   const handleAddSheet = () => {
-    console.log(encrSheetCount + "--" + sheetNames.length);
     setEncrSheetCount(encrSheetCount + 1);
+  };
+
+  const lettersToNumber = (letters) => {
+    for (var p = 0, n = 0; p < letters.length; p++) {
+      n = letters[p].charCodeAt() - 64 + n * 26;
+    }
+    return n;
   };
 
   return (
     <div style={{ paddingLeft: "270px" }}>
-      <EgPageTitle title="Data Encryption"></EgPageTitle>
+      <EgPageTitle title="Excel Encryption"></EgPageTitle>
       <EgInputFile />
+      <EgEmailInput />
       <FormControl component="fieldset">
         {/* <FormLabel component="legend">Gender</FormLabel> */}
         <RadioGroup value={encryptType} onChange={handleEncryptTypeChange}>

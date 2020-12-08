@@ -7,9 +7,7 @@ const EgPageTitle = (props) => {
   const { title } = props;
   return (
     <Box>
-      <Container>
-        <h3>{title}</h3>
-      </Container>
+      <h3>{title}</h3>
     </Box>
   );
 };

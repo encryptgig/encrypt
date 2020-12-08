@@ -7,6 +7,7 @@ import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import { dataURItoBlob } from "../utilities/fileUtilities";
+import EgEmailInput from "../components/EgEmailInput";
 
 const EncryptMedia = (props) => {
   const uploadedFile = useSelector((state) => state);
@@ -92,6 +93,7 @@ const EncryptMedia = (props) => {
     <div style={{ paddingLeft: "270px" }}>
       <EgPageTitle title="Data Encryption"></EgPageTitle>
       <EgInputFile />
+      <EgEmailInput />
       <Box display="flex" flexDirection="row">
         <EgButton text="Encrypt" onClick={handleEncrypt} />
         <EgButton text="decrypt" onClick={handleDecrypt} />

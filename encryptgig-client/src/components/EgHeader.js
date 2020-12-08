@@ -23,10 +23,7 @@ import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    zIndex: 1,
-  },
+  root: {},
   appbarItem: {
     marginRight: theme.spacing(3),
   },
