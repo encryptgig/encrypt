@@ -1,4 +1,5 @@
 import {
+  AppBar,
   Box,
   Button,
   Checkbox,
@@ -7,17 +8,23 @@ import {
   FormControlLabel,
   FormGroup,
   FormLabel,
+  makeStyles,
   Radio,
   RadioGroup,
+  Tab,
+  Tabs,
   TextField,
   Tooltip,
   Typography,
+  useTheme,
 } from "@material-ui/core";
+import SwipeableViews from "react-swipeable-views";
 import * as XLSX from "xlsx";
+import PropTypes from "prop-types";
 import EgEmailInput from "../components/EgEmailInput";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { Autocomplete } from "@material-ui/lab";
-import React, { useState } from "react";
+import React, { useState, make } from "react";
 import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
@@ -31,12 +38,47 @@ import {
   downloadExcelFile,
 } from "../utilities/fileUtilities";
 
+const useStyles = makeStyles((theme) => ({
+  appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
+  sheetDataClass: { marginTop: theme.spacing(1) },
+  rightMargin: { marginRight: theme.spacing(1) },
+}));
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`wrapped-tabpanel-${index}`}
+      aria-labelledby={`wrapped-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box p={2}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.any.isRequired,
+  value: PropTypes.any.isRequired,
+};
+
 const EncryptCSV = (props) => {
   const uploadedFile = useSelector((state) => {
     //alert();
     return state;
   });
+  const theme = useTheme();
+  const classes = useStyles();
+  const [tabValue, setTabValue] = React.useState(0);
   const [sheetNames, setSheetNames] = useState([]);
+  const [sheetCount, setSheetCount] = useState(0);
   const [encryptType, setEncryptType] = useState("fullEncrypt");
   const [encrSheetCount, setEncrSheetCount] = useState(0);
   const [openTooltip, setOpenTooltip] = React.useState(false);
@@ -51,6 +93,13 @@ const EncryptCSV = (props) => {
 
   const handleTooltipOpen = () => {
     setOpenTooltip(true);
+  };
+
+  const hadleTabChange = (e, newValue) => {
+    setTabValue(newValue);
+  };
+  const handleChangeIndex = (index) => {
+    setTabValue(index);
   };
 
   const getRowOffset = async (e) => {
@@ -69,6 +118,14 @@ const EncryptCSV = (props) => {
   const getSheetName = (e, v) => {
     sheetData[v] = "";
     encrDetails.push(sheetData);
+
+    let array = [...sheetNames]; // make a separate copy of the array
+
+    let index = array.indexOf(v);
+    if (index !== -1) {
+      array.splice(index, 1);
+      setSheetNames(array);
+    }
   };
 
   const handleDecrypt = () => {
@@ -132,6 +189,7 @@ const EncryptCSV = (props) => {
         let bstr = evt.target.result;
         const wb = XLSX.read(bstr, { type: "binary" });
         setSheetNames(wb.SheetNames);
+        setSheetCount(wb.SheetNames.length);
       };
     }
   };
@@ -140,11 +198,16 @@ const EncryptCSV = (props) => {
       return;
     }
     let p = (index) => (
-      <Box display="flex" flexDirection="row">
+      <Box
+        display="flex"
+        flexDirection="row"
+        className={classes.sheetDataClass}
+      >
         <Autocomplete
           options={sheetNames}
           getOptionLabel={(option) => option}
           style={{ width: 300 }}
+          className={classes.rightMargin}
           onChange={(e, v) => getSheetName(e, v)}
           name={"sheetName_" + index}
           renderInput={(params) => (
@@ -153,6 +216,7 @@ const EncryptCSV = (props) => {
         />
         <TextField
           label="Row Offset"
+          className={classes.rightMargin}
           name={"rowOffset_" + index}
           onChange={(e) => getRowOffset(e)}
           variant="outlined"
@@ -190,7 +254,7 @@ const EncryptCSV = (props) => {
     x.push(
       <EgButton
         text="Add Sheet"
-        disabled={sheetNames.length - 1 <= encrSheetCount}
+        disabled={sheetCount - 1 <= encrSheetCount}
         onClick={handleAddSheet}
       />
     );
@@ -211,30 +275,50 @@ const EncryptCSV = (props) => {
   return (
     <div style={{ paddingLeft: "270px" }}>
       <EgPageTitle title="Excel Encryption"></EgPageTitle>
-      <EgInputFile />
-      <EgEmailInput />
-      <FormControl component="fieldset">
-        {/* <FormLabel component="legend">Gender</FormLabel> */}
-        <RadioGroup value={encryptType} onChange={handleEncryptTypeChange}>
-          <FormControlLabel
-            value="fullEncrypt"
-            control={<Radio />}
-            label="Encrypt entire file"
-          />
-          <FormControlLabel
-            value="partialEncrypt"
-            control={<Radio />}
-            label="Let me choose what to encrypt"
-          />
-        </RadioGroup>
-      </FormControl>
+      <AppBar position="static" color="default" className={classes.appbar}>
+        <Tabs
+          value={tabValue}
+          onChange={hadleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Encrypt Excel" />
+          <Tab label="Decrypt Excel" />
+        </Tabs>
+      </AppBar>
+      <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
+        <TabPanel value={tabValue} index={0} dir={theme.direction}>
+          <EgInputFile />
+          <EgEmailInput />
+          <FormControl component="fieldset">
+            {/* <FormLabel component="legend">Gender</FormLabel> */}
+            <RadioGroup value={encryptType} onChange={handleEncryptTypeChange}>
+              <FormControlLabel
+                value="fullEncrypt"
+                control={<Radio />}
+                label="Encrypt entire file"
+              />
+              <FormControlLabel
+                value="partialEncrypt"
+                control={<Radio />}
+                label="Let me choose what to encrypt"
+              />
+            </RadioGroup>
+          </FormControl>
 
-      <Typography>{RenderSheetDetailcomp()}</Typography>
+          <Typography>{RenderSheetDetailcomp()}</Typography>
 
-      <Box display="flex" flexDirection="row">
-        <EgButton text="Encrypt" onClick={handleEncrypt} />
-        <EgButton text="decrypt" onClick={handleDecrypt} />
-      </Box>
+          <Box display="flex" flexDirection="row">
+            <EgButton text="Encrypt" onClick={handleEncrypt} />
+          </Box>
+        </TabPanel>
+        <TabPanel value={tabValue} index={1} dir={theme.direction}>
+          <EgInputFile />
+          <EgButton text="decrypt" onClick={handleDecrypt} />
+        </TabPanel>
+      </SwipeableViews>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About CSV Encryption"></EgPageTitle>
       <EgTypography>
