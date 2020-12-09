@@ -12,8 +12,9 @@ import {
 } from "@material-ui/core";
 import Avatar from "@material-ui/core/Avatar";
 import { withRouter } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { deepOrange } from "@material-ui/core/colors";
+import { userLogin, userLogout } from "../Actions/userAction";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
@@ -72,6 +73,7 @@ const StyledMenuItem = withStyles((theme) => ({
 const EgHeader = (props) => {
   const classes = useStyles();
   const { history } = props;
+  const dispatch = useDispatch();
   const userState = useSelector((state) => state);
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -86,6 +88,13 @@ const EgHeader = (props) => {
   const handleLoginClick = () => {
     history.push("/Login");
   };
+
+  const handleLogout = () => {
+    handleClose();
+    localStorage.removeItem("accessToken");
+    dispatch(userLogout());
+  };
+
   return (
     <div className={classes.root}>
       <AppBar position="static">
@@ -128,7 +137,7 @@ const EgHeader = (props) => {
               </ListItemIcon>
               <ListItemText primary="Audit Logs" />
             </StyledMenuItem>
-            <StyledMenuItem>
+            <StyledMenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <InboxIcon fontSize="small" />
               </ListItemIcon>
