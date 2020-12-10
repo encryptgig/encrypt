@@ -20,7 +20,7 @@ import {
 } from "@material-ui/core";
 import SwipeableViews from "react-swipeable-views";
 import * as XLSX from "xlsx";
-import PropTypes from "prop-types";
+
 import EgEmailInput from "../components/EgEmailInput";
 import ClickAwayListener from "@material-ui/core/ClickAwayListener";
 import { Autocomplete } from "@material-ui/lab";
@@ -38,37 +38,14 @@ import {
   downloadFile,
 } from "../utilities/fileUtilities";
 import { globalStyles } from "../styles/global.styles";
+import { TabPanel } from "../components/EgTabPanel";
+import { validateEmail } from "../utilities/emailUtils";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
   sheetDataClass: { marginTop: theme.spacing(1) },
   rightMargin: { marginRight: theme.spacing(1) },
 }));
-function TabPanel(props) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`wrapped-tabpanel-${index}`}
-      aria-labelledby={`wrapped-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <Box p={2}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-TabPanel.propTypes = {
-  children: PropTypes.node,
-  index: PropTypes.any.isRequired,
-  value: PropTypes.any.isRequired,
-};
 
 const EncryptCSV = (props) => {
   const uploadedFile = useSelector((state) => {
@@ -154,12 +131,21 @@ const EncryptCSV = (props) => {
       objObject[k] = Object.assign({}, ...Object.values(encrDetails[i])[0]);
     }
     console.log("------------> " + JSON.stringify(objObject));
-    let email =
+    let email = "";
+    if (
       uploadedFile.shareEmail.emailList != null &&
       uploadedFile.shareEmail.emailList.length > 0
-        ? uploadedFile.shareEmail.emailList.join(",")
-        : "";
-
+    ) {
+      for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
+        if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+          alert(
+            "One of the email provided is not valid. Please correct and retry."
+          );
+          return;
+        }
+      }
+      email = uploadedFile.shareEmail.emailList.join(",");
+    }
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
@@ -277,7 +263,12 @@ const EncryptCSV = (props) => {
   return (
     <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Excel Encryption"></EgPageTitle>
-      <AppBar position="static" color="default" className={classes.appbar}>
+      <AppBar
+        position="static"
+        style={{ width: "97%" }}
+        color="default"
+        className={classes.appbar}
+      >
         <Tabs
           value={tabValue}
           onChange={hadleTabChange}
