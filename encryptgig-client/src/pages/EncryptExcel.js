@@ -35,8 +35,9 @@ import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
 import {
   dataURItoBlob,
   base64ToBlob,
-  downloadExcelFile,
+  downloadFile,
 } from "../utilities/fileUtilities";
+import { globalStyles } from "../styles/global.styles";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -76,6 +77,7 @@ const EncryptCSV = (props) => {
   });
   const theme = useTheme();
   const classes = useStyles();
+  const globalClasses = globalStyles();
   const [tabValue, setTabValue] = React.useState(0);
   const [sheetNames, setSheetNames] = useState([]);
   const [sheetCount, setSheetCount] = useState(0);
@@ -139,7 +141,7 @@ const EncryptCSV = (props) => {
       var idata = evt.target.result.split(",")[1];
       console.log(file.name);
       let response = await window.WASMGo.decryptXLS(idata);
-      downloadExcelFile(response, file.name);
+      downloadFile(base64ToBlob(response), file.name);
     };
   };
 
@@ -170,7 +172,7 @@ const EncryptCSV = (props) => {
           email,
           JSON.stringify(objObject)
         );
-        downloadExcelFile(response, file.name);
+        downloadFile(base64ToBlob(response), file.name);
       };
     }
   };
@@ -273,7 +275,7 @@ const EncryptCSV = (props) => {
   };
 
   return (
-    <div style={{ paddingLeft: "270px" }}>
+    <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Excel Encryption"></EgPageTitle>
       <AppBar position="static" color="default" className={classes.appbar}>
         <Tabs

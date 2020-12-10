@@ -6,9 +6,11 @@ import CopyToClip from "../components/EgCopyToClip";
 import EgEmailInput from "../components/EgEmailInput";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
+import { globalStyles } from "../styles/global.styles";
 import fire from "./../configs/firebase-configs";
 
 const EncryptData = (props) => {
+  const globalClasses = globalStyles();
   const uploadedFile = useSelector((state) => state);
   const [encryptionData, setEncryptionData] = React.useState({
     plaintext: "",
@@ -50,7 +52,7 @@ const EncryptData = (props) => {
   const copyToClipPlain = () => {};
 
   return (
-    <div style={{ paddingLeft: "270px" }}>
+    <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Data Encryption"></EgPageTitle>
       <TextField
         label="Plain Data"

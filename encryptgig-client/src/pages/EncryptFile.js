@@ -7,13 +7,15 @@ import EgEmailInput from "../components/EgEmailInput";
 import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
-import { dataURItoBlob } from "../utilities/fileUtilities";
+import { dataURItoBlob, downloadFile } from "../utilities/fileUtilities";
+import { globalStyles } from "../styles/global.styles";
 
 // TODO: Alignment of titles
 // TODO: Reset page and all states after successful download of encrypted file
 // TODO: Encryption successfull notification
 
 const EncryptFile = (props) => {
+  const globalClasses = globalStyles();
   const uploadedFile = useSelector((state) => state);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
@@ -29,26 +31,7 @@ const EncryptFile = (props) => {
 
         var jsonBlob = null;
         jsonBlob = dataURItoBlob(out);
-
-        const data = window.URL.createObjectURL(jsonBlob);
-        const link = document.createElement("a");
-        link.href = data;
-        link.download = file.name;
-
-        // this is necessary as link.click() does not work on the latest firefox
-        link.dispatchEvent(
-          new MouseEvent("click", {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-          })
-        );
-
-        setTimeout(() => {
-          // For Firefox it is necessary to delay revoking the ObjectURL
-          window.URL.revokeObjectURL(data);
-          link.remove();
-        }, 100);
+        downloadFile(jsonBlob, file.name);
       } catch (e) {
         alert(e);
       }
@@ -62,7 +45,6 @@ const EncryptFile = (props) => {
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
-
       reader.onload = async function (evt) {
         try {
           let out = await window.WASMGo.encrypt(
@@ -76,26 +58,7 @@ const EncryptFile = (props) => {
           );
           var jsonBlob = null;
           jsonBlob = new Blob([out]);
-
-          const data = window.URL.createObjectURL(jsonBlob);
-          const link = document.createElement("a");
-          link.href = data;
-          link.download = file.name;
-
-          // this is necessary as link.click() does not work on the latest firefox
-          link.dispatchEvent(
-            new MouseEvent("click", {
-              bubbles: true,
-              cancelable: true,
-              view: window,
-            })
-          );
-
-          setTimeout(() => {
-            // For Firefox it is necessary to delay revoking the ObjectURL
-            window.URL.revokeObjectURL(data);
-            link.remove();
-          }, 100);
+          downloadFile(jsonBlob, file.name);
         } catch (e) {
           alert(e);
         }
@@ -109,7 +72,7 @@ const EncryptFile = (props) => {
   };
 
   return (
-    <div style={{ paddingLeft: "270px" }}>
+    <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="File Encryption"></EgPageTitle>
 
       <EgInputFile />

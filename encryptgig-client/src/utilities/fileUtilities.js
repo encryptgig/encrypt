@@ -35,8 +35,8 @@ export const base64ToBlob = (data) => {
   return bb;
 };
 
-export const downloadExcelFile = (fileData, fileName) => {
-  const data = window.URL.createObjectURL(base64ToBlob(fileData));
+export const downloadFile = (fileData, fileName) => {
+  const data = window.URL.createObjectURL(fileData);
   const link = document.createElement("a");
 
   link.href = data;

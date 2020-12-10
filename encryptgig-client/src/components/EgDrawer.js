@@ -58,7 +58,12 @@ const EgDrawer = (props) => {
   });
 
   const { history } = props;
-  if (window.location.pathname === "/Login") return null;
+  if (
+    window.location.pathname === "/Login" ||
+    window.location.pathname === "/Register"
+  ) {
+    return null;
+  }
 
   const handleListItemClick = (event, index, path) => {
     setSelectedIndex(index);
