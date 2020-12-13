@@ -8,6 +8,7 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { BrowserRouter as Router, withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile';
 
 const drawerWidth = 240;
 
@@ -41,6 +42,12 @@ const useStyles = makeStyles((theme) => ({
     ...theme.mixins.toolbar,
     backgroundColor: "primary",
   },
+  EncrFileIcon:{
+    color:"#FF0000",
+    "&:hover":{
+      color:"#0000FF"
+    }
+  }
 }));
 
 const EgDrawer = (props) => {
@@ -145,7 +152,7 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 1, "EncryptFile")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                < InsertDriveFileIcon className={classes.EncrFileIcon} />
               </ListItemIcon>
               <ListItemText primary="Encrypt File" />
             </ListItem>

@@ -12,6 +12,8 @@ import fire from "./configs/firebase-configs";
 import EncryptExcel from "./pages/EncryptExcel";
 import EncryptMedia from "./pages/EncryptMedia";
 import EgHeader from "./components/EgHeader";
+import { Contactless } from "@material-ui/icons";
+import Contact from "./pages/Contact";
 
 function App() {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
@@ -45,6 +47,7 @@ function App() {
         <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
         <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
         <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
+        <PrivateRoute exact path="/Contact" component={Contact} />
         <Route path="/Login" component={Login} />
         <Route path="/Register" component={Register} />
         <Route path="/PasswordReset" component={ForgotPsw} />
