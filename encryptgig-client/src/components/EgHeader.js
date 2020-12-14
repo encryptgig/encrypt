@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Box,
@@ -75,7 +75,14 @@ const EgHeader = (props) => {
   const { history } = props;
   const dispatch = useDispatch();
   const userState = useSelector((state) => state);
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [userName, setUserName] = useState("null");
+  const [photo, setPhoto] = useState("null");
+
+  useEffect(() => {
+    setUserName(localStorage.getItem("userName"));
+    setPhoto(localStorage.getItem("photoUrl"));
+  });
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -92,6 +99,8 @@ const EgHeader = (props) => {
   const handleLogout = () => {
     handleClose();
     localStorage.removeItem("accessToken");
+    localStorage.removeItem("userName");
+    localStorage.removeItem("photoUrl");
     dispatch(userLogout());
   };
 
@@ -103,19 +112,15 @@ const EgHeader = (props) => {
             EncryptGig
           </Typography>
           <Typography className={classes.appbarItem}>Tutorials</Typography>
-          {userState.user.email === null ||
-          userState.user.email.length === 0 ? (
+          {userName == null || userName.length === 0 ? (
             <Button color="inherit" onClick={handleLoginClick}>
               Login
             </Button>
-          ) : userState.user.photoURL.length > 0 ? (
-            <Avatar
-              onClick={handleProfileClick}
-              src={userState.user.photoURL}
-            ></Avatar>
+          ) : photo != null && photo.length > 0 ? (
+            <Avatar onClick={handleProfileClick} src={photo}></Avatar>
           ) : (
             <Avatar onClick={handleProfileClick} className={classes.orange}>
-              {userState.user.name.charAt(0)}
+              {userName.charAt(0)}
             </Avatar>
           )}
           <StyledMenu

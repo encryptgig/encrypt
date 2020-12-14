@@ -115,6 +115,8 @@ const Login = (props) => {
         console.log(u);
         handleLoginSuccess(u, u.user.email, u.credential.idToken);
         localStorage.setItem("accessToken", u.credential.idToken);
+        localStorage.setItem("userName", u.user.displayName);
+        localStorage.setItem("photoUrl", u.user.photoURL);
         fire.analytics().logEvent("google_login_success");
       })
       .catch((err) => {

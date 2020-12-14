@@ -60,7 +60,7 @@ const EncryptCSV = (props) => {
   const [sheetCount, setSheetCount] = useState(0);
   const [encryptType, setEncryptType] = useState("fullEncrypt");
   const [encrSheetCount, setEncrSheetCount] = useState(0);
-  const [openTooltip, setOpenTooltip] = React.useState(false);
+  const [openTooltip, setOpenTooltip] = useState(false);
   const [encrDetails, setEncrDetails] = React.useState([]);
 
   const reader = new FileReader();
