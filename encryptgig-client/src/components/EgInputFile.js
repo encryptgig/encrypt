@@ -1,9 +1,36 @@
-import React from "react";
-import { Box, Button, makeStyles } from "@material-ui/core";
+import React, { useMemo } from "react";
+import { Box, Button, makeStyles, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { uploadFile } from "../Actions/fileActions";
+import Dropzone from "react-dropzone";
+import { useDropzone } from "react-dropzone";
 
 // const useStyles = makeStyles((theme) => ({}));
+const baseStyle = {
+  flex: 1,
+  display: "flex",
+  width: "98%",
+  flexDirection: "column",
+  alignItems: "center",
+  padding: "20px",
+  borderBottom: "1px solid rgba(0, 0, 0, 0.42) ",
+  backgroundColor: "rgba(0, 0, 0, 0.09)",
+  color: "#bdbdbd",
+  outline: "none",
+  transition: "border .24s ease-in-out",
+};
+
+const activeStyle = {
+  borderColor: "#2196f3",
+};
+
+const acceptStyle = {
+  borderColor: "#00e676",
+};
+
+const rejectStyle = {
+  borderColor: "#ff1744",
+};
 
 const EgInputFile = (props) => {
   const uploadedFile = useSelector((state) => state);
@@ -16,27 +43,50 @@ const EgInputFile = (props) => {
     if (uploadedFile.files?.file == null) {
       return <div>No file chosen</div>;
     } else {
-      return <div>{uploadedFile.files.file.name}</div>;
+      return (
+        <ul>
+          <li>{uploadedFile.files.file.name}</li>
+        </ul>
+      );
     }
   };
+  const {
+    getRootProps,
+    getInputProps,
+    isDragActive,
+    isDragAccept,
+    isDragReject,
+  } = useDropzone({ maxFiles: 2, accept: ".xlsx" });
+
+  const style = useMemo(
+    () => ({
+      ...baseStyle,
+      ...(isDragActive ? activeStyle : {}),
+      ...(isDragAccept ? acceptStyle : {}),
+      ...(isDragReject ? rejectStyle : {}),
+    }),
+    [isDragActive, isDragReject, isDragAccept]
+  );
   return (
     <div>
-      <Button variant="contained" component="label" color="primary">
-        Upload File
-        <input
-          type="file"
-          style={{ display: "none" }}
-          onChange={handleChange}
-        />
-      </Button>
+      <Dropzone
+        onDrop={(acceptedFiles) => {
+          dispatch(uploadFile(acceptedFiles[0]));
+        }}
+      >
+        {({ getRootProps, getInputProps }) => (
+          <section>
+            <div {...getRootProps({ style })}>
+              <input {...getInputProps()} />
+              <p>
+                <b>Drag 'n' drop some files here, or click to select files</b>
+              </p>
+            </div>
+          </section>
+        )}
+      </Dropzone>
+      <Typography>Selected Files:</Typography>
       {renderText()}
-      <Box
-        display="flex"
-        flexDirection="row"
-        p={1}
-        m={1}
-        bgcolor="background.paper"
-      ></Box>
     </div>
   );
 };

@@ -12,6 +12,7 @@ import fire from "./configs/firebase-configs";
 import EncryptExcel from "./pages/EncryptExcel";
 import EncryptMedia from "./pages/EncryptMedia";
 import EgHeader from "./components/EgHeader";
+import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
 
 function App() {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
@@ -35,21 +36,31 @@ function App() {
       }
     );
   };
+  // Or Create your Own theme:
+  const theme = createMuiTheme({
+    // palette: {
+    //   primary: {
+    //     main: "#FF0000",
+    //   },
+    // },
+  });
 
   return (
     <div>
-      <EgDrawer />
-      <EgHeader />
-      <Switch>
-        <PrivateRoute exact path="/EncryptData" component={EncryptData} />
-        <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
-        <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
-        <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
-        <Route path="/Login" component={Login} />
-        <Route path="/Register" component={Register} />
-        <Route path="/PasswordReset" component={ForgotPsw} />
-        <Redirect from="*" to="/" />
-      </Switch>
+      <MuiThemeProvider theme={theme}>
+        <EgDrawer />
+        <EgHeader />
+        <Switch>
+          <PrivateRoute exact path="/EncryptData" component={EncryptData} />
+          <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
+          <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
+          <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
+          <Route path="/Login" component={Login} />
+          <Route path="/Register" component={Register} />
+          <Route path="/PasswordReset" component={ForgotPsw} />
+          <Redirect from="*" to="/" />
+        </Switch>
+      </MuiThemeProvider>
     </div>
   );
 }

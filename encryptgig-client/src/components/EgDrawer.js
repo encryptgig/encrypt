@@ -32,6 +32,12 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: theme.spacing(7),
   },
+  fileEncr: {
+    height: "20px",
+    width: "20px",
+    color: "#FF0000",
+    fill: "##00FF00",
+  },
   toolbar: {
     display: "flex",
     alignItems: "center",
@@ -150,7 +156,10 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 1, "EncryptFile")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                <img
+                  src={process.env.PUBLIC_URL + "/File_Open_Lock-512.png"}
+                  className={classes.fileEncr}
+                />
               </ListItemIcon>
               <ListItemText primary="Encrypt File" />
             </ListItem>

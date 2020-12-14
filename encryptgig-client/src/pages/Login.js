@@ -23,7 +23,7 @@ import { userLogin, userLogout } from "../Actions/userAction";
 const useStyles = makeStyles((theme) => ({
   Container: {},
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -37,10 +37,10 @@ const useStyles = makeStyles((theme) => ({
   form: {
     width: "80%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
-    marginBottom: theme.spacing(2),
+    marginBottom: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(1, 0, 1),
   },
 }));
 
@@ -91,10 +91,8 @@ const Login = (props) => {
       .signInWithEmailAndPassword(loginState.email, loginState.password)
       .then((u) => {
         console.log(u);
-
         if (u.user.emailVerified) {
           alert("login successfull");
-          history.push("/EncryptData");
           localStorage.setItem("accessToken", u.user.ya);
           handleLoginSuccess(u, loginState.email, u.user.ya);
           fire.analytics().logEvent("psw_login_success");
@@ -118,7 +116,6 @@ const Login = (props) => {
         handleLoginSuccess(u, u.user.email, u.credential.idToken);
         localStorage.setItem("accessToken", u.credential.idToken);
         fire.analytics().logEvent("google_login_success");
-        history.push("/EncryptFile");
       })
       .catch((err) => {
         setLoginError(true);
@@ -146,6 +143,7 @@ const Login = (props) => {
       fire.analytics().logEvent("wasm_instantiation_failed.", err);
       alert(err);
     }
+    history.push("/EncryptFile");
     dispatch(userLogin(email, u.user.displayName, u.user.photoURL));
     fire.analytics().setUserId(u.user.uid);
   };
