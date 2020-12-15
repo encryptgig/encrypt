@@ -39,7 +39,11 @@ import {
 } from "../utilities/fileUtilities";
 import { globalStyles } from "../styles/global.styles";
 import { TabPanel } from "../components/EgTabPanel";
-import { validateEmail } from "../utilities/emailUtils";
+import {
+  validateEmail,
+  validateNumber,
+  validateColRange,
+} from "../utilities/emailUtils";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -84,12 +88,19 @@ const EncryptCSV = (props) => {
   const getRowOffset = async (e) => {
     let index = e.target.name.split("_")[1];
     let key = Object.keys(encrDetails[index])[0];
-
+    if (!validateNumber(e.target.value)) {
+      alert("Please enter valid row offset.");
+      return;
+    }
     encrDetails[index][key] = [{ RowOffset: Number(e.target.value) }];
   };
   const getColList = (e) => {
     let index = e.target.name.split("_")[1];
     let key = Object.keys(encrDetails[index])[0];
+    if (!validateColRange(e.target.value)) {
+      alert("Please enter valid column range.");
+      return;
+    }
     let arr = e.target.value.split(",").map(lettersToNumber);
     encrDetails[index][key].push({ Columns: arr });
   };

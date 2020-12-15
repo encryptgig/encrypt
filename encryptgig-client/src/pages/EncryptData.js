@@ -8,6 +8,7 @@ import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import { globalStyles } from "../styles/global.styles";
 import fire from "./../configs/firebase-configs";
+import { validateEmail } from "../utilities/emailUtils";
 
 const EncryptData = (props) => {
   const globalClasses = globalStyles();
@@ -18,14 +19,26 @@ const EncryptData = (props) => {
   });
   const wasm = window.WASMGo;
   const encrData = async () => {
+    let email = "";
+    if (
+      uploadedFile.shareEmail.emailList != null &&
+      uploadedFile.shareEmail.emailList.length > 0
+    ) {
+      for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
+        if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+          alert(
+            "One of the email provided is not valid. Please correct and retry."
+          );
+          return;
+        }
+      }
+      email = uploadedFile.shareEmail.emailList.join(",");
+    }
     let ans = await wasm.encrypt(
       encryptionData.plaintext,
       "plain data",
       encryptionData.plaintext.length,
-      uploadedFile.shareEmail.emailList != null &&
-        uploadedFile.shareEmail.emailList.length > 0
-        ? uploadedFile.shareEmail.emailList.join(",")
-        : ""
+      email
     );
     setEncryptionData({
       ...encryptionData,

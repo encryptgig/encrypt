@@ -7,7 +7,6 @@ import MuiListItem from "@material-ui/core/ListItem";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { BrowserRouter as Router, withRouter } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 
 const drawerWidth = 240;
 

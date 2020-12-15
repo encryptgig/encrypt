@@ -9,6 +9,7 @@ import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import { dataURItoBlob, downloadFile } from "../utilities/fileUtilities";
 import { globalStyles } from "../styles/global.styles";
+import { validateEmail } from "../utilities/emailUtils";
 
 // TODO: Alignment of titles
 // TODO: Reset page and all states after successful download of encrypted file
@@ -47,14 +48,26 @@ const EncryptFile = (props) => {
       reader.readAsDataURL(file);
       reader.onload = async function (evt) {
         try {
+          let email = "";
+          if (
+            uploadedFile.shareEmail.emailList != null &&
+            uploadedFile.shareEmail.emailList.length > 0
+          ) {
+            for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
+              if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+                alert(
+                  "One of the email provided is not valid. Please correct and retry."
+                );
+                return;
+              }
+            }
+            email = uploadedFile.shareEmail.emailList.join(",");
+          }
           let out = await window.WASMGo.encrypt(
             evt.target.result,
             file.name,
             evt.target.result.length,
-            uploadedFile.shareEmail.emailList != null &&
-              uploadedFile.shareEmail.emailList.length > 0
-              ? uploadedFile.shareEmail.emailList.join(",")
-              : ""
+            email
           );
           var jsonBlob = null;
           jsonBlob = new Blob([out]);
