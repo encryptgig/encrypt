@@ -1,8 +1,11 @@
 import React from "react";
 import { Route, Redirect } from "react-router-dom";
-import fire from "./configs/firebase-configs";
+import { uploadFile } from "./Actions/fileActions";
+import { useDispatch } from "react-redux";
 
 function PrivateRoute({ component: Component, roles, ...rest }) {
+  const dispatch = useDispatch();
+  dispatch(uploadFile(null));
   return (
     <Route
       {...rest}

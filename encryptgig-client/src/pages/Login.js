@@ -17,7 +17,7 @@ import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "./../configs/firebase-configs";
 import firebase from "firebase";
 import { useDispatch } from "react-redux";
-import { userLogin, userLogout } from "../Actions/userAction";
+import { userLogin } from "../Actions/userAction";
 
 //TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
@@ -62,11 +62,6 @@ const Login = (props) => {
     });
   };
   const wasm = window.WASMGo;
-  const logout = () => {
-    localStorage.removeItem("accessToken");
-    dispatch(userLogout());
-  };
-
   const login = () => {
     //e.preventDefaults();
 

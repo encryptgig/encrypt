@@ -101,8 +101,30 @@ const EncryptCSV = (props) => {
       alert("Please enter valid column range.");
       return;
     }
-    let arr = e.target.value.split(",").map(lettersToNumber);
-    encrDetails[index][key].push({ Columns: arr });
+    let arr = e.target.value.split(",");
+    let colListFinal = [];
+    arr.forEach((element) => {
+      if (element.includes("-")) {
+        let cols = element.split("-");
+        if (cols.length > 2) {
+          alert("Please enter valid range");
+          return;
+        }
+        let start = lettersToNumber(cols[0]);
+        if (cols[1] != null) {
+          let end = lettersToNumber(cols[1]);
+          for (var i = start; i <= end; i++) {
+            colListFinal.push(i);
+          }
+        } else {
+          return colListFinal.push(start);
+        }
+      } else {
+        colListFinal.push(lettersToNumber(element));
+      }
+    });
+    console.log(colListFinal);
+    encrDetails[index][key].push({ Columns: colListFinal });
   };
 
   const getSheetName = (e, v) => {

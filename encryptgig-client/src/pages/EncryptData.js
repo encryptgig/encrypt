@@ -62,8 +62,6 @@ const EncryptData = (props) => {
     });
   };
 
-  const copyToClipPlain = () => {};
-
   return (
     <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Data Encryption"></EgPageTitle>
