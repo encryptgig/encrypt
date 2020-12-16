@@ -14,10 +14,10 @@ const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
     whiteSpace: "nowrap",
-    zIndex: -1,
   },
   drawerOpen: {
     width: drawerWidth,
+    marginTop: theme.spacing(8),
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -36,15 +36,6 @@ const useStyles = makeStyles((theme) => ({
     width: "20px",
     color: "#FF0000",
     fill: "##00FF00",
-  },
-  toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    backgroundColor: "primary",
   },
 }));
 
@@ -129,8 +120,6 @@ const EgDrawer = (props) => {
             }),
           }}
         >
-          <div className={classes.toolbar}>EncryptGig</div>
-          <Divider />
           <List>
             {/* {userState.user.email === null ||
             userState.user.email.length === 0 ? (

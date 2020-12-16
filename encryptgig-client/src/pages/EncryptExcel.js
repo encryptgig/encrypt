@@ -123,7 +123,7 @@ const EncryptCSV = (props) => {
         colListFinal.push(lettersToNumber(element));
       }
     });
-    console.log(colListFinal);
+    //console.log(colListFinal);
     encrDetails[index][key].push({ Columns: colListFinal });
   };
 

@@ -48,8 +48,8 @@ function App() {
   return (
     <div>
       <MuiThemeProvider theme={theme}>
-        <EgDrawer />
         <EgHeader />
+        <EgDrawer />
         <Switch>
           <PrivateRoute exact path="/EncryptData" component={EncryptData} />
           <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
