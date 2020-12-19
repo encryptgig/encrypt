@@ -11,7 +11,8 @@ const CopyToClip = (props) => {
     <div>
       <EgButton
         text="Copy To Clipboard"
-        onClick={handleCopyToClipboard}
+        onClick={handleCopyToClipboard} 
+        icon="copy"
       ></EgButton>
     </div>
   );

@@ -95,18 +95,17 @@ const EncryptMedia = (props) => {
       <EgInputFile />
       <EgEmailInput />
       <Box display="flex" flexDirection="row">
-        <EgButton text="Encrypt" onClick={handleEncrypt} />
-        <EgButton text="decrypt" onClick={handleDecrypt} />
+        <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock"/>
+        <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock"/>
       </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Data Encryption"></EgPageTitle>
       <EgTypography>
-        <b>We don't let your data travel over internet.</b>
-        Test our application with your data and we just secure it. Send this
-        secure data anywhere to anu body and they won't be able to see it until
-        you want them to see it. Ans say what key is not constant, you can
-        reinitialize data encryption key by just entering you master key in home
-        menu.
+        <b>We don't let your media files to travel over internet.</b>
+        Test our application to encrypt your audio or video files. Send this
+        secure file to any persons and they won't be able to see it until
+        you want them to see it by adding his/her email ids while performing encryption. Now, protect any media files with just a click and most secured way with EncryptGig!
+        
       </EgTypography>
     </div>
   );

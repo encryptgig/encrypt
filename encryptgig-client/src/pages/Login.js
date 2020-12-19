@@ -18,6 +18,7 @@ import fire from "./../configs/firebase-configs";
 import firebase from "firebase";
 import { useDispatch } from "react-redux";
 import { userLogin, userLogout } from "../Actions/userAction";
+import { showSpinner } from "../Actions/spinnerAction";
 
 //TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    color: "white"
   },
 }));
 
@@ -93,11 +95,12 @@ const Login = (props) => {
         console.log(u);
 
         if (u.user.emailVerified) {
-          alert("login successfull");
-          history.push("/EncryptData");
-          localStorage.setItem("accessToken", u.user.ya);
+          dispatch(showSpinner( true));
           handleLoginSuccess(u, loginState.email, u.user.ya);
+          dispatch(userLogin(loginState.email, null, null));
+          localStorage.setItem("accessToken", u.user.ya);
           fire.analytics().logEvent("psw_login_success");
+          history.push("/EncryptFile");
         } else {
           fire.analytics().logEvent("unverified_login_attempt");
           alert("Please verify your email first");
@@ -115,7 +118,9 @@ const Login = (props) => {
       .signInWithPopup(provider)
       .then((u) => {
         console.log(u);
+        dispatch(showSpinner( true));
         handleLoginSuccess(u, u.user.email, u.credential.idToken);
+        dispatch(userLogin(u.user.email, u.user.displayName, u.user.photoURL));
         localStorage.setItem("accessToken", u.credential.idToken);
         fire.analytics().logEvent("google_login_success");
         history.push("/EncryptFile");
@@ -142,11 +147,11 @@ const Login = (props) => {
   const handleLoginSuccess = async (u, email, jwt) => {
     try {
       await wasm.instantiateWithJWT(jwt);
+      dispatch(showSpinner(false));
     } catch (err) {
       fire.analytics().logEvent("wasm_instantiation_failed.", err);
       alert(err);
     }
-    dispatch(userLogin(email, u.user.displayName, u.user.photoURL));
     fire.analytics().setUserId(u.user.uid);
   };
 

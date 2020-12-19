@@ -14,6 +14,31 @@ import EncryptMedia from "./pages/EncryptMedia";
 import EgHeader from "./components/EgHeader";
 import { Contactless } from "@material-ui/icons";
 import Contact from "./pages/Contact";
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import blue from '@material-ui/core/colors/blue';
+import EgSpinner from "./components/EgSpinner";
+
+
+//Added a new font Family
+const theme = createMuiTheme({
+
+  
+  palette: {
+    primary: {
+      main: '#64b5f6',
+    },
+    secondary: {
+      main: '#fafafa',
+    },
+  },
+
+  typography: {
+   fontSize: 13,
+    fontFamily: [
+      'Roboto',
+     'sans-sarif',
+    ].join(','),
+  } });
 
 function App() {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
@@ -38,10 +63,15 @@ function App() {
     );
   };
 
+
+
   return (
     <div>
+      <ThemeProvider theme={theme}>
+
       <EgDrawer />
       <EgHeader />
+      <EgSpinner/>
       <Switch>
         <PrivateRoute exact path="/EncryptData" component={EncryptData} />
         <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
@@ -53,6 +83,8 @@ function App() {
         <Route path="/PasswordReset" component={ForgotPsw} />
         <Redirect from="*" to="/" />
       </Switch>
+      </ThemeProvider>
+
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
   padding1: {
@@ -11,6 +12,8 @@ const EgTypography = (props) => {
   const { text } = props;
   const classes = useStyles();
   return (
+    
+
     <Typography
       className={classes.padding1}
       color="textSecondary"
@@ -19,7 +22,11 @@ const EgTypography = (props) => {
     >
       {props.children}
     </Typography>
+   
   );
 };
+
+
+
 
 export default EgTypography;

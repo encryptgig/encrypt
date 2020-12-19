@@ -21,6 +21,10 @@ import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
 import DraftsIcon from "@material-ui/icons/Drafts";
 import SendIcon from "@material-ui/icons/Send";
+import StorageIcon from '@material-ui/icons/Storage';
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import PersonIcon from '@material-ui/icons/Person';
+import FindInPageIcon from '@material-ui/icons/FindInPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -30,6 +34,10 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
     marginLeft: theme.spacing(3),
+    color: "white"
+  },
+  headerMenuColor : {
+    color: "white"
   },
   orange: {
     color: theme.palette.getContrastText(deepOrange[500]),
@@ -90,14 +98,20 @@ const EgHeader = (props) => {
     <div className={classes.root}>
       <AppBar position="static">
         <Toolbar>
-          <Typography variant="h6" className={classes.title}>
+          <Typography color= "inherit" variant="h4"  className={classes.title} >
             EncryptGig
           </Typography>
-          <Typography className={classes.appbarItem}>Tutorials</Typography>
+          
+          <Button color="inherit" className= {classes.headerMenuColor}>
+          <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
+         Docs
+          </Button>
+
           {userState.user.email === null ||
           userState.user.email.length === 0 ? (
-            <Button color="inherit" onClick={handleLoginClick}>
-              Login
+            <Button color="inherit" onClick={handleLoginClick} className= {classes.headerMenuColor}>
+              <ExitToAppIcon style={{ fontSize: 19 }}> </ExitToAppIcon>
+              Sign in
             </Button>
           ) : userState.user.photoURL.length > 0 ? (
             <Avatar
@@ -117,14 +131,16 @@ const EgHeader = (props) => {
             onClose={handleClose}
           >
             <StyledMenuItem>
-              <ListItemIcon>
-                <SendIcon fontSize="small" />
-              </ListItemIcon>
+            
+            <ListItemIcon>
+            <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
+                </ListItemIcon>
+                
               <ListItemText primary="Profile" />
             </StyledMenuItem>
             <StyledMenuItem>
               <ListItemIcon>
-                <DraftsIcon fontSize="small" />
+             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
               </ListItemIcon>
               <ListItemText primary="Audit Logs" />
             </StyledMenuItem>
@@ -132,7 +148,7 @@ const EgHeader = (props) => {
               <ListItemIcon>
                 <InboxIcon fontSize="small" />
               </ListItemIcon>
-              <ListItemText primary="Log Out" />
+              <ListItemText primary="Sign Out" style={{ fontSize: 19 }} />
             </StyledMenuItem>
           </StyledMenu>
         </Toolbar>
