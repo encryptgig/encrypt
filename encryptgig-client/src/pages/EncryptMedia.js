@@ -8,9 +8,11 @@ import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import { dataURItoBlob } from "../utilities/fileUtilities";
 import EgEmailInput from "../components/EgEmailInput";
+import { globalStyles } from "../styles/global.styles";
 
 const EncryptMedia = (props) => {
   const uploadedFile = useSelector((state) => state);
+  const globalClasses = globalStyles();
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
     if (!file) {
@@ -90,7 +92,7 @@ const EncryptMedia = (props) => {
     }
   };
   return (
-    <div style={{ paddingLeft: "270px" }}>
+    <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Data Encryption"></EgPageTitle>
       <EgInputFile />
       <EgEmailInput />
