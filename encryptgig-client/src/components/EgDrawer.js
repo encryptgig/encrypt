@@ -25,7 +25,6 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerOpen: {
     width: drawerWidth,
-    marginTop: theme.spacing(8),
     backgroundColor: "white",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
@@ -44,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "flex-end",
-    padding: theme.spacing(0, 0),
+    padding: theme.spacing(0, 0, 0, 0),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
     backgroundColor: "primary",
@@ -92,9 +91,7 @@ const EgDrawer = (props) => {
   const ListItem = withStyles({
     root: {
       backgroundColor: "#eeeeee",
-      borderLeft: "2px solid #e9ebf0",
       paddingTop: "0px",
-
       width: drawerWidth,
       height: "3em",
       "& span, & svg": {
@@ -102,10 +99,6 @@ const EgDrawer = (props) => {
       },
       "&$selected": {
         backgroundColor: theme.palette.primary.light,
-        marginLeft: "0px",
-        borderLeft: "5px solid ",
-        borderLeftColor: theme.palette.primary.light,
-
         "& span, & svg": {
           fontWeight: "700",
           fontSize: "1.2em",
@@ -113,14 +106,15 @@ const EgDrawer = (props) => {
         },
       },
       "&$selected:hover": {
-        backgroundColor: theme.palette.primary,
-        borderLeft: "5px solid ",
-        borderLeftColor: theme.palette.primary.dark,
+        backgroundColor: theme.palette.primary.light,
+        "& span, & svg": {
+          fontWeight: "700",
+          fontSize: "1.2em",
+          color: "white",
+        },
       },
       "&:hover": {
         backgroundColor: theme.palette.primary,
-        borderLeft: "5px solid",
-        borderLeftColor: theme.palette.primary.dark,
         "& span, & svg": {
           fontWeight: "700",
           fontSize: "1.2em",

@@ -28,11 +28,7 @@ const theme = createMuiTheme({
     primary: {
       main: "#64b5f6",
     },
-    secondary: {
-      main: "#fafafa",
-    },
   },
-
   typography: {
     fontSize: 13,
     fontFamily: ["Roboto", "sans-sarif"].join(","),
@@ -61,20 +57,12 @@ function App() {
       }
     );
   };
-  // Or Create your Own theme:
-  const theme = createMuiTheme({
-    // palette: {
-    //   primary: {
-    //     main: "#FF0000",
-    //   },
-    // },
-  });
 
   return (
     <div>
       <ThemeProvider theme={theme}>
-        <EgDrawer />
         <EgHeader />
+        <EgDrawer />
         <EgSpinner />
         <Switch>
           <PrivateRoute exact path="/EncryptData" component={EncryptData} />

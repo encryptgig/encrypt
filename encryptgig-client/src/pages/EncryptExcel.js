@@ -156,7 +156,7 @@ const EncryptCSV = (props) => {
       console.log(file.name);
       let response = await window.WASMGo.decryptXLS(idata);
       dispatch(showSpinner(false));
-      downloadExcelFile(response, file.name);
+      downloadFile(base64ToBlob(response), file.name);
     };
   };
 
@@ -198,7 +198,7 @@ const EncryptCSV = (props) => {
         );
         dispatch(showSpinner(false));
 
-        downloadExcelFile(response, file.name);
+        downloadFile(base64ToBlob(response), file.name);
       };
     }
   };

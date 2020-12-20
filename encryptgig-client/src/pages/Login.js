@@ -114,10 +114,11 @@ const Login = (props) => {
         console.log(u);
         dispatch(showSpinner(true));
         handleLoginSuccess(u, u.user.email, u.credential.idToken);
-        dispatch(userLogin(u.user.email, u.user.displayName, u.user.photoURL));
+
         localStorage.setItem("accessToken", u.credential.idToken);
         localStorage.setItem("userName", u.user.displayName);
         localStorage.setItem("photoUrl", u.user.photoURL);
+        dispatch(userLogin(u.user.email, u.user.displayName, u.user.photoURL));
         fire.analytics().logEvent("google_login_success");
       })
       .catch((err) => {
@@ -143,8 +144,10 @@ const Login = (props) => {
     try {
       await wasm.instantiateWithJWT(jwt);
       dispatch(showSpinner(false));
+      history.push("/EncryptFile");
     } catch (err) {
       fire.analytics().logEvent("wasm_instantiation_failed.", err);
+      dispatch(showSpinner(false));
       alert(err);
     }
     fire.analytics().setUserId(u.user.uid);
