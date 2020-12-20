@@ -55,9 +55,10 @@ const EgEmailInput = (props) => {
       <TextField
         style={{ width: "98%" }}
         variant="filled"
-        label="Share Securely"
+        label="Share with emails"
+        placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         onChange={inputChange}
-        value={emailString}
+        value={emailString} 
         multiline
         InputProps={{
           startAdornment: emailList.map((item) => (

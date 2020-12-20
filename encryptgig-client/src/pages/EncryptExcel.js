@@ -32,6 +32,8 @@ import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
 import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
+import { showSpinner } from "../Actions/spinnerAction";
+import { useDispatch } from "react-redux";
 import {
   dataURItoBlob,
   base64ToBlob,
@@ -66,6 +68,7 @@ const EncryptCSV = (props) => {
   const [encrSheetCount, setEncrSheetCount] = useState(0);
   const [openTooltip, setOpenTooltip] = useState(false);
   const [encrDetails, setEncrDetails] = React.useState([]);
+  const dispatch = useDispatch();
 
   const reader = new FileReader();
   let sheetData = {};
@@ -145,20 +148,22 @@ const EncryptCSV = (props) => {
     if (!file) {
       return;
     }
+    dispatch(showSpinner(true));
     var reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = async function (evt) {
       var idata = evt.target.result.split(",")[1];
       console.log(file.name);
       let response = await window.WASMGo.decryptXLS(idata);
-      downloadFile(base64ToBlob(response), file.name);
+      dispatch(showSpinner(false));
+      downloadExcelFile(response, file.name);
     };
   };
 
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
     let objObject = {};
-
+    dispatch(showSpinner(true));
     for (let i = 0; i < encrDetails.length; i++) {
       let k = Object.keys(encrDetails[i])[0];
       objObject[k] = Object.assign({}, ...Object.values(encrDetails[i])[0]);
@@ -191,7 +196,9 @@ const EncryptCSV = (props) => {
           email,
           JSON.stringify(objObject)
         );
-        downloadFile(base64ToBlob(response), file.name);
+        dispatch(showSpinner(false));
+
+        downloadExcelFile(response, file.name);
       };
     }
   };
@@ -337,21 +344,34 @@ const EncryptCSV = (props) => {
           <Typography>{RenderSheetDetailcomp()}</Typography>
 
           <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} />
+            <EgButton
+              text="Encrypt"
+              onClick={handleEncrypt}
+              diabled={false}
+              icon="lock"
+            />
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1} dir={theme.direction}>
           <EgInputFile />
-          <EgButton text="decrypt" onClick={handleDecrypt} />
+          <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
         </TabPanel>
       </SwipeableViews>
       <Divider style={{ margin: "10px" }} variant="middle" />
-      <EgPageTitle title="About CSV Encryption"></EgPageTitle>
+      <EgPageTitle title="About excel Encryption"></EgPageTitle>
       <EgTypography>
-        <b>We can encrypt any column or row in your csv.</b>
-        We tokenize the data you give us in CSV file. Trust us we don't change
-        the size of data while we tokenize it. The resultant fil is CSV, that
-        contains your tokenized CSV data.
+        <b>
+          You can encrypt any column and/or row in your excel OR even entire
+          excel file!
+        </b>
+        <p>
+          {" "}
+          We tokenize the data at row and column level. Additionally, you can
+          restrict whom you wish to give decryption access by adding email ids
+          during encryption. Trust the size of data doesn't change while
+          decryption. Now, protect your excel files while sharing and be
+          assuared of data safety.{" "}
+        </p>
       </EgTypography>
     </div>
   );

@@ -7,17 +7,26 @@ import MuiListItem from "@material-ui/core/ListItem";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { BrowserRouter as Router, withRouter } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
+import SortByAlphaIcon from "@material-ui/icons/SortByAlpha";
+import DescriptionIcon from "@material-ui/icons/Description";
+import PermMediaIcon from "@material-ui/icons/PermMedia";
+import SendIcon from "@material-ui/icons/Send";
+import TelegramIcon from "@material-ui/icons/Telegram";
 
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
     width: drawerWidth,
+    height: 0,
     whiteSpace: "nowrap",
   },
   drawerOpen: {
     width: drawerWidth,
     marginTop: theme.spacing(8),
+    backgroundColor: "white",
     transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
@@ -31,11 +40,25 @@ const useStyles = makeStyles((theme) => ({
     overflowX: "hidden",
     width: theme.spacing(7),
   },
-  fileEncr: {
+  toolbar: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: theme.spacing(0, 0),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    backgroundColor: "primary",
+  },
+  encryptfile: {
     height: "20px",
     width: "20px",
+    color: "#FFFF00",
+  },
+  EncrFileIcon: {
     color: "#FF0000",
-    fill: "##00FF00",
+    "&:hover": {
+      color: "#0000FF",
+    },
   },
 }));
 
@@ -68,30 +91,34 @@ const EgDrawer = (props) => {
 
   const ListItem = withStyles({
     root: {
-      borderLeft: "5px solid #e9ebf0",
+      backgroundColor: "#eeeeee",
+      borderLeft: "2px solid #e9ebf0",
+      paddingTop: "0px",
+
       width: drawerWidth,
       height: "3em",
       "& span, & svg": {
         fontSize: "1.2em",
       },
       "&$selected": {
-        backgroundColor: "white",
+        backgroundColor: theme.palette.primary.light,
         marginLeft: "0px",
         borderLeft: "5px solid ",
-        borderLeftColor: theme.palette.primary.dark,
-        color: theme.palette.primary.dark,
+        borderLeftColor: theme.palette.primary.light,
+
         "& span, & svg": {
           fontWeight: "700",
           fontSize: "1.2em",
+          color: "white",
         },
       },
       "&$selected:hover": {
-        backgroundColor: "white",
+        backgroundColor: theme.palette.primary,
         borderLeft: "5px solid ",
         borderLeftColor: theme.palette.primary.dark,
       },
       "&:hover": {
-        backgroundColor: "white",
+        backgroundColor: theme.palette.primary,
         borderLeft: "5px solid",
         borderLeftColor: theme.palette.primary.dark,
         "& span, & svg": {
@@ -120,6 +147,16 @@ const EgDrawer = (props) => {
             }),
           }}
         >
+          <div className={classes.toolbar}>
+            {" "}
+            <img
+              src={process.env.PUBLIC_URL + "icons/Encryptgig_logo.png"}
+              alt="EncryptGig Logo"
+              width="240"
+              height="64"
+            />{" "}
+          </div>
+          <Divider />
           <List>
             {/* {userState.user.email === null ||
             userState.user.email.length === 0 ? (
@@ -144,10 +181,9 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 1, "EncryptFile")}
             >
               <ListItemIcon>
-                <img
-                  src={process.env.PUBLIC_URL + "/File_Open_Lock-512.png"}
-                  className={classes.fileEncr}
-                />
+                <InsertDriveFileIcon
+                  style={{ fontSize: 19 }}
+                ></InsertDriveFileIcon>
               </ListItemIcon>
               <ListItemText primary="Encrypt File" />
             </ListItem>
@@ -158,7 +194,7 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 2, "EncryptData")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                <SortByAlphaIcon style={{ fontSize: 19 }}> </SortByAlphaIcon>
               </ListItemIcon>
               <ListItemText primary="Encrypt Data" />
             </ListItem>
@@ -169,7 +205,7 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 3, "EncryptExcel")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                <DescriptionIcon style={{ fontSize: 19 }}> </DescriptionIcon>
               </ListItemIcon>
               <ListItemText primary="Encrypt Excel" />
             </ListItem>
@@ -180,7 +216,7 @@ const EgDrawer = (props) => {
               onClick={(event) => handleListItemClick(event, 4, "EncryptMedia")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                <PermMediaIcon style={{ fontSize: 19 }}> </PermMediaIcon>
               </ListItemIcon>
               <ListItemText primary="Encrypt Media" />
             </ListItem>
@@ -188,10 +224,10 @@ const EgDrawer = (props) => {
               button
               //component={}
               selected={selectedIndex === 5}
-              onClick={(event) => handleListItemClick(event, 5)}
+              onClick={(event) => handleListItemClick(event, 5, "Contact")}
             >
               <ListItemIcon>
-                <ExitToAppIcon />
+                <TelegramIcon style={{ fontSize: 19 }}></TelegramIcon>
               </ListItemIcon>
               <ListItemText primary="Contact" />
             </ListItem>

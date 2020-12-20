@@ -12,7 +12,32 @@ import fire from "./configs/firebase-configs";
 import EncryptExcel from "./pages/EncryptExcel";
 import EncryptMedia from "./pages/EncryptMedia";
 import EgHeader from "./components/EgHeader";
-import { MuiThemeProvider, createMuiTheme } from "@material-ui/core/styles";
+import { Contactless } from "@material-ui/icons";
+import Contact from "./pages/Contact";
+import {
+  MuiThemeProvider,
+  ThemeProvider,
+  createMuiTheme,
+} from "@material-ui/core/styles";
+import blue from "@material-ui/core/colors/blue";
+import EgSpinner from "./components/EgSpinner";
+
+//Added a new font Family
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#64b5f6",
+    },
+    secondary: {
+      main: "#fafafa",
+    },
+  },
+
+  typography: {
+    fontSize: 13,
+    fontFamily: ["Roboto", "sans-sarif"].join(","),
+  },
+});
 
 function App() {
   const existingTokens = JSON.parse(localStorage.getItem("tokens"));
@@ -47,20 +72,22 @@ function App() {
 
   return (
     <div>
-      <MuiThemeProvider theme={theme}>
-        <EgHeader />
+      <ThemeProvider theme={theme}>
         <EgDrawer />
+        <EgHeader />
+        <EgSpinner />
         <Switch>
           <PrivateRoute exact path="/EncryptData" component={EncryptData} />
           <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
           <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
           <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
+          <PrivateRoute exact path="/Contact" component={Contact} />
           <Route path="/Login" component={Login} />
           <Route path="/Register" component={Register} />
           <Route path="/PasswordReset" component={ForgotPsw} />
           <Redirect from="*" to="/" />
         </Switch>
-      </MuiThemeProvider>
+      </ThemeProvider>
     </div>
   );
 }

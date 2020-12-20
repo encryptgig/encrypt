@@ -82,7 +82,7 @@ const EncryptData = (props) => {
       />
       <EgEmailInput />
       <Box display="flex" flexDirection="row">
-        <EgButton text="Encrypt" onClick={encrData} />
+        <EgButton text="Encrypt" onClick={encrData} icon="lock" />
         <CopyToClip dataToCopy={encryptionData.plaintext} />
       </Box>
       <TextField
@@ -102,19 +102,24 @@ const EncryptData = (props) => {
         }}
       />
       <Box display="flex" flexDirection="row">
-        <EgButton text="Decrypt" onClick={DecrData} />
+        <EgButton text="Decrypt" onClick={DecrData} lock="unlock" />
         <CopyToClip dataToCopy={encryptionData.encryptedtext} />
       </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About File Encryption"></EgPageTitle>
       <EgTypography>
-        <b>We don't let your data travel over internet.</b>
-        You can encrypt any of your file i.e.{" "}
-        <b>PDF, jpeg, video or any file that is text or binary,</b> using this
-        facility. We somehow use your master password for doing that. You can
-        have your peace of mind because your data is encrypted without us
-        knowing it. If you don't trust us just check you browser's debug logs
-        and believe.
+        <p>
+          {" "}
+          <b>We don't let your data or file travel over internet.</b>{" "}
+        </p>
+        Test our application to secure your data. Send this encrypted data to
+        anyone and they won't be able to see it until you give them the
+        permission through adding their emails. Interestingly, the key is not
+        constant as everytime you initiate the encyption, a new key will be
+        automatically generated and the beauty is you don't even need to
+        remember any keys, neither we do know your keys since all the operations
+        will be managed automatically in the backend with the most secured
+        algorithm.
       </EgTypography>
     </div>
   );
