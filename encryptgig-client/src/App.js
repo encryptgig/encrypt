@@ -21,6 +21,7 @@ import {
 } from "@material-ui/core/styles";
 import blue from "@material-ui/core/colors/blue";
 import EgSpinner from "./components/EgSpinner";
+import AuditLogs from "./pages/AuditLogs";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -69,6 +70,7 @@ function App() {
           <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
           <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
           <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
+          <PrivateRoute exact path="/AuditLogs" component={AuditLogs} />
           <PrivateRoute exact path="/Contact" component={Contact} />
           <Route path="/Login" component={Login} />
           <Route path="/Register" component={Register} />

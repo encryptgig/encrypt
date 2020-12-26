@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Divider } from "@material-ui/core";
+import { AppBar, Box, Divider, makeStyles, Tab, Tabs } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
@@ -9,10 +9,19 @@ import EgTypography from "../components/EgTypography";
 import { dataURItoBlob } from "../utilities/fileUtilities";
 import EgEmailInput from "../components/EgEmailInput";
 import { globalStyles } from "../styles/global.styles";
+import { EgTabbar } from "../components/EgTabbar";
+import SwipeableViews from "react-swipeable-views";
+import { TabPanel } from "../components/EgTabPanel";
+
+const useStyles = makeStyles((theme) => ({
+  appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
+}));
 
 const EncryptMedia = (props) => {
   const uploadedFile = useSelector((state) => state);
   const globalClasses = globalStyles();
+  const classes = useStyles();
+  const [tabValue, setTabValue] = React.useState(0);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
     if (!file) {
@@ -91,23 +100,74 @@ const EncryptMedia = (props) => {
       alert("select file to encrypt");
     }
   };
+  const hadleTabChange = (e, newValue) => {
+    setTabValue(newValue);
+  };
+  const handleChangeIndex = (index) => {
+    setTabValue(index);
+  };
   return (
     <div className={globalClasses.drawerPadding}>
-      <EgPageTitle title="Data Encryption"></EgPageTitle>
-      <EgInputFile />
-      <EgEmailInput />
-      <Box display="flex" flexDirection="row">
-        <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock"/>
-        <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock"/>
-      </Box>
+      {/* <EgTabbar> */}
+      <AppBar
+        position="static"
+        style={{ width: "97%" }}
+        color="default"
+        className={classes.appbar}
+      >
+        <Tabs
+          value={tabValue}
+          onChange={hadleTabChange}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+          aria-label="full width tabs example"
+        >
+          <Tab label="Image Encryption" />
+          <Tab label="Video Encryption" />
+          <Tab label="Audio Encryption" />
+          {/* </EgTabbar> */}
+        </Tabs>
+      </AppBar>
+      <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
+        <TabPanel value={tabValue} index={0}>
+          <EgPageTitle title="Image Encryption"></EgPageTitle>
+          <EgInputFile />
+          <EgEmailInput />
+          <Box display="flex" flexDirection="row">
+            <EgButton text="Encrypt" onClick={handleEncrypt} />
+            <EgButton text="decrypt" onClick={handleDecrypt} />
+          </Box>
+        </TabPanel>
+        <TabPanel value={tabValue} index={1}>
+          <EgPageTitle title="Video Encryption"></EgPageTitle>
+          <EgInputFile />
+          <EgEmailInput />
+          <Box display="flex" flexDirection="row">
+            <EgButton text="Encrypt" onClick={handleEncrypt} />
+            <EgButton text="decrypt" onClick={handleDecrypt} />
+          </Box>
+        </TabPanel>
+        <TabPanel value={tabValue} index={2}>
+          <EgPageTitle title="Audio Encryption"></EgPageTitle>
+          <EgInputFile />
+          <EgEmailInput />
+          <Box display="flex" flexDirection="row">
+            <EgButton text="Encrypt" onClick={handleEncrypt} />
+            <EgButton text="decrypt" onClick={handleDecrypt} />
+          </Box>
+        </TabPanel>
+      </SwipeableViews>
+
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Data Encryption"></EgPageTitle>
       <EgTypography>
-        <b>We don't let your media files to travel over internet.</b>
-        Test our application to encrypt your audio or video files. Send this
-        secure file to any persons and they won't be able to see it until
-        you want them to see it by adding his/her email ids while performing encryption. Now, protect any media files with just a click and most secured way with EncryptGig!
-        
+        <b>We don't let your data travel over internet.</b>
+        Test our application with your data and we just secure it. Send this
+        secure data anywhere to anu body and they won't be able to see it until
+        you want them to see it. Ans say what key is not constant, you can
+        reinitialize data encryption key by just entering you master key in home
+        menu.
       </EgTypography>
     </div>
   );

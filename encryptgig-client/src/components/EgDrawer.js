@@ -4,15 +4,12 @@ import { makeStyles, useTheme, withStyles } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
 import { Divider, List, ListItemIcon, ListItemText } from "@material-ui/core";
 import MuiListItem from "@material-ui/core/ListItem";
-import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { BrowserRouter as Router, withRouter } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import InsertDriveFileIcon from "@material-ui/icons/InsertDriveFile";
 import SortByAlphaIcon from "@material-ui/icons/SortByAlpha";
 import DescriptionIcon from "@material-ui/icons/Description";
 import PermMediaIcon from "@material-ui/icons/PermMedia";
-import SendIcon from "@material-ui/icons/Send";
 import TelegramIcon from "@material-ui/icons/Telegram";
 
 const drawerWidth = 240;
@@ -73,7 +70,7 @@ const EgDrawer = (props) => {
     } else {
       setOpen(false);
     }
-  });
+  }, []);
 
   const { history } = props;
   if (

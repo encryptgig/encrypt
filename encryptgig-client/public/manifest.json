@@ -17,9 +17,6 @@
       "type": "image/png",
       "sizes": "512x512"
     }
-    {
-      "src":"./icons/encrypt_file.ico"
-    }
   ],
   "start_url": ".",
   "display": "standalone",

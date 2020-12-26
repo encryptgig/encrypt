@@ -90,7 +90,7 @@ const EgHeader = (props) => {
   useEffect(() => {
     setUserName(localStorage.getItem("userName"));
     setPhoto(localStorage.getItem("photoUrl"));
-  });
+  }, []);
 
   const handleProfileClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -139,7 +139,7 @@ const EgHeader = (props) => {
             <Avatar onClick={handleProfileClick} src={photo}></Avatar>
           ) : (
             <Avatar onClick={handleProfileClick} className={classes.orange}>
-              {userName.charAt(0)}
+              {userName != null ? userName.charAt(0) : "U"}
             </Avatar>
           )}
           <StyledMenu
@@ -153,10 +153,14 @@ const EgHeader = (props) => {
               <ListItemIcon>
                 <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
               </ListItemIcon>
-
               <ListItemText primary="Profile" />
             </StyledMenuItem>
-            <StyledMenuItem>
+            <StyledMenuItem
+              onClick={(e) => {
+                history.push("/AuditLogs");
+                handleClose();
+              }}
+            >
               <ListItemIcon>
                 <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
               </ListItemIcon>

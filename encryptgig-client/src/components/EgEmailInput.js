@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Chip, makeStyles, TextField } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
@@ -21,7 +21,7 @@ const EgEmailInput = (props) => {
   const dispatch = useDispatch();
   const [emailList, setEmailList] = useState([]);
   const [emailString, setEmailString] = useState("");
-  const { history } = props;
+  const { history, email } = props;
 
   const handleRemoveEmail = (event) => {
     setEmailList((prev) => {
@@ -58,8 +58,8 @@ const EgEmailInput = (props) => {
         label="Share with emails"
         placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         onChange={inputChange}
-        value={emailString} 
-        multiline
+        value={emailString}
+        multiline={true}
         InputProps={{
           startAdornment: emailList.map((item) => (
             <div className={classes.root} key={item}>
