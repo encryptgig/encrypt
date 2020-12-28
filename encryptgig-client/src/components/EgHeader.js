@@ -121,8 +121,19 @@ const EgHeader = (props) => {
           </Typography>
 
           <Button color="inherit" className={classes.headerMenuColor}>
-            <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
+            <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
             Docs
+          </Button>
+          <Button
+            color="inherit"
+            className={classes.headerMenuColor}
+            onClick={(e) => {
+              history.push("/AuditLogs");
+              handleClose();
+            }}
+          >
+            <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
+            Audit Logs
           </Button>
 
           {userState.user.email === null ||
@@ -154,17 +165,6 @@ const EgHeader = (props) => {
                 <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
               </ListItemIcon>
               <ListItemText primary="Profile" />
-            </StyledMenuItem>
-            <StyledMenuItem
-              onClick={(e) => {
-                history.push("/AuditLogs");
-                handleClose();
-              }}
-            >
-              <ListItemIcon>
-                <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
-              </ListItemIcon>
-              <ListItemText primary="Audit Logs" />
             </StyledMenuItem>
             <StyledMenuItem onClick={handleLogout}>
               <ListItemIcon>
