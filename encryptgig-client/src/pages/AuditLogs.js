@@ -1,8 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useReducer, useState } from "react";
 import EgPageTitle from "../components/EgPageTitle";
 import EditIcon from "@material-ui/icons/Edit";
+import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
+import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import {
   makeStyles,
+  Box,
+  Typography,
   Table,
   TableCell,
   TableContainer,
@@ -16,6 +20,8 @@ import {
   DialogContentText,
   DialogActions,
   Button,
+  IconButton,
+  Collapse,
 } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { globalStyles } from "../styles/global.styles";
@@ -23,6 +29,7 @@ import EgEmailInput from "../components/EgEmailInput";
 import EgConfirmationDialog from "../components/EgConfirmationDialog";
 import { validateEmail } from "../utilities/emailUtils";
 import { useSelector } from "react-redux";
+import { Fragment } from "react";
 
 const useStyles = makeStyles((theme) => ({}));
 
@@ -33,19 +40,19 @@ const GetDate = (epoc) => {
 };
 
 const AuditLogs = () => {
-  let i = 0;
   const classes = useStyles();
   const uploadedFile = useSelector((state) => state);
   const globalClasses = globalStyles();
   const [deleteRecord, setDeleteRecord] = useState(null);
   const [addPartyRecord, setAddPartyRecord] = useState(null);
   const [docData, setDocData] = useState([]);
+  const [dummy, setDummy] = useState(0);
+  const [rowOpen, setRowOpen] = useState([]);
   const [openAddParty, setOpenAddParty] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   useEffect(() => {
     fetchData();
-    i = 0;
   }, []);
   const handleRemoveEmail = (email, docName, creationDate, creatorEmail) => {
     setOpenDeleteDialog(true);
@@ -69,6 +76,7 @@ const AuditLogs = () => {
       return;
     }
     let email = "";
+
     if (
       uploadedFile.shareEmail.emailList != null &&
       uploadedFile.shareEmail.emailList.length > 0
@@ -102,7 +110,6 @@ const AuditLogs = () => {
       requestOptions
     ).then((response) => {
       setDocData([]);
-      i = 0;
       fetchData();
       console.log(response);
     });
@@ -137,7 +144,6 @@ const AuditLogs = () => {
       requestOptions
     ).then((response) => {
       setDocData([]);
-      i = 0;
       fetchData();
     });
     setDeleteRecord(null);
@@ -159,7 +165,7 @@ const AuditLogs = () => {
     });
     x.push(
       <Chip
-        key={-1}
+        key={creationDate}
         // label="Share"
         icon={<EditIcon />}
         onClick={(e) => {
@@ -178,7 +184,6 @@ const AuditLogs = () => {
     });
   };
   const fetchData = () => {
-    //TODO:This is getting called twice fix that by having states
     const token = localStorage.getItem("accessToken");
     if (token == null || token.length == 0) {
       alert("Please login again.");
@@ -188,8 +193,12 @@ const AuditLogs = () => {
     fetch("https://encryptgig-3nere6jg5a-uc.a.run.app/user/docs", { headers })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         setDocData(data);
+        let x = [...rowOpen];
+        x[data.length - 1] = false;
+        x.fill(false);
+        setRowOpen(x);
+        console.log(data);
       });
   };
 
@@ -208,21 +217,83 @@ const AuditLogs = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {docData.map((doc) => (
-              <TableRow key={i++}>
-                <TableCell />
-                <TableCell>{doc.Name}</TableCell>
-                {/* <TableCell>{doc.CreatorEmail}</TableCell> */}
-                <TableCell>{GetDate(doc.CreationDate)}</TableCell>
-                <TableCell>
-                  {GetEmails(
-                    doc.AllowDecryption,
-                    doc.Name,
-                    doc.CreationDate,
-                    doc.CreatorEmail
-                  )}
-                </TableCell>
-              </TableRow>
+            {docData.map((doc, index) => (
+              <Fragment key={index}>
+                <TableRow>
+                  <TableCell>
+                    {doc.DecryptAuditRecord !== null ? (
+                      <IconButton
+                        aria-label="expand row"
+                        size="small"
+                        onClick={() => {
+                          console.log(rowOpen);
+                          let z = [...rowOpen];
+                          z[index] = !rowOpen[index];
+                          setRowOpen(z);
+                          console.log(rowOpen);
+                        }}
+                      >
+                        {rowOpen[index] === true ? (
+                          <KeyboardArrowUpIcon />
+                        ) : (
+                          <KeyboardArrowDownIcon />
+                        )}
+                      </IconButton>
+                    ) : (
+                      <div></div>
+                    )}
+                  </TableCell>
+                  <TableCell>{doc.Name}</TableCell>
+                  {/* <TableCell>{doc.CreatorEmail}</TableCell> */}
+                  <TableCell>{GetDate(doc.CreationDate)}</TableCell>
+                  <TableCell>
+                    {GetEmails(
+                      doc.AllowDecryption,
+                      doc.Name,
+                      doc.CreationDate,
+                      doc.CreatorEmail
+                    )}
+                  </TableCell>
+                </TableRow>
+                <TableRow>
+                  <TableCell
+                    style={{ paddingBottom: 0, paddingTop: 0 }}
+                    colSpan={3}
+                  >
+                    <Collapse
+                      in={rowOpen[index] === true}
+                      timeout="auto"
+                      unmountOnExit
+                    >
+                      <Box margin={1}>
+                        <Typography variant="h6" gutterBottom component="div">
+                          Decryption History
+                        </Typography>
+                        <Table size="small" aria-label="purchases">
+                          <TableHead>
+                            <TableRow>
+                              <TableCell>Decryption Date</TableCell>
+                              <TableCell>Decrypted By</TableCell>
+                            </TableRow>
+                          </TableHead>
+                          {doc.DecryptAuditRecord !== null ? (
+                            <TableBody>
+                              {doc.DecryptAuditRecord.map((doc1) => (
+                                <TableRow>
+                                  <TableCell>{doc1.AccessDate}</TableCell>
+                                  <TableCell>{doc1.AccessBy}</TableCell>
+                                </TableRow>
+                              ))}
+                            </TableBody>
+                          ) : (
+                            <div></div>
+                          )}
+                        </Table>
+                      </Box>
+                    </Collapse>
+                  </TableCell>
+                </TableRow>
+              </Fragment>
             ))}
           </TableBody>
         </Table>

@@ -62,7 +62,7 @@ const EgDrawer = (props) => {
   const classes = useStyles();
   const theme = useTheme();
   const [open, setOpen] = React.useState(true);
-  const [selectedIndex, setSelectedIndex] = React.useState(0);
+  const [selectedIndex, setSelectedIndex] = React.useState(1);
   useEffect(() => {
     const mediaQuery = window.matchMedia("(min-width: 768px)");
     if (mediaQuery.matches) {
