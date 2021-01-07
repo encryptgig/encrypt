@@ -1,17 +1,17 @@
 import React from "react";
 import { AppBar, Box, Divider, makeStyles, Tab, Tabs } from "@material-ui/core";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
 import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
-import { dataURItoBlob } from "../utilities/fileUtilities";
+import { dataURItoBlob, downloadFile } from "../utilities/fileUtilities";
 import EgEmailInput from "../components/EgEmailInput";
 import { globalStyles } from "../styles/global.styles";
-import { EgTabbar } from "../components/EgTabbar";
 import SwipeableViews from "react-swipeable-views";
 import { TabPanel } from "../components/EgTabPanel";
+import { validateEmail } from "../utilities/emailUtils";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -24,37 +24,22 @@ const EncryptMedia = (props) => {
   const [tabValue, setTabValue] = React.useState(0);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
+
     if (!file) {
       return;
     }
     var reader = new FileReader();
     reader.readAsText(file);
-    reader.onload = function (evt) {
-      var out = "",
-        out = window.WASMGo.decrypt(evt.target.result);
+    reader.onload = async function (evt) {
+      try {
+        let out = await window.WASMGo.decrypt(evt.target.result, file.name);
 
-      var jsonBlob = null;
-      jsonBlob = dataURItoBlob(out);
-
-      const data = window.URL.createObjectURL(jsonBlob);
-      const link = document.createElement("a");
-      link.href = data;
-      link.download = file.name;
-
-      // this is necessary as link.click() does not work on the latest firefox
-      link.dispatchEvent(
-        new MouseEvent("click", {
-          bubbles: true,
-          cancelable: true,
-          view: window,
-        })
-      );
-
-      setTimeout(() => {
-        // For Firefox it is necessary to delay revoking the ObjectURL
-        window.URL.revokeObjectURL(data);
-        link.remove();
-      }, 100);
+        var jsonBlob = null;
+        jsonBlob = dataURItoBlob(out);
+        downloadFile(jsonBlob, file.name);
+      } catch (e) {
+        alert(e);
+      }
     };
     reader.onerror = function (evt) {
       console.log("error reading file");
@@ -65,33 +50,35 @@ const EncryptMedia = (props) => {
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
-
-      reader.onload = function (evt) {
-        var out = "",
-          out = window.WASMGo.encrypt(evt.target.result);
-
-        var jsonBlob = null;
-        jsonBlob = new Blob([out]);
-
-        const data = window.URL.createObjectURL(jsonBlob);
-        const link = document.createElement("a");
-        link.href = data;
-        link.download = file.name;
-
-        // this is necessary as link.click() does not work on the latest firefox
-        link.dispatchEvent(
-          new MouseEvent("click", {
-            bubbles: true,
-            cancelable: true,
-            view: window,
-          })
-        );
-
-        setTimeout(() => {
-          // For Firefox it is necessary to delay revoking the ObjectURL
-          window.URL.revokeObjectURL(data);
-          link.remove();
-        }, 100);
+      reader.onload = async function (evt) {
+        try {
+          let email = "";
+          if (
+            uploadedFile.shareEmail.emailList != null &&
+            uploadedFile.shareEmail.emailList.length > 0
+          ) {
+            for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
+              if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+                alert(
+                  "One of the email provided is not valid. Please correct and retry."
+                );
+                return;
+              }
+            }
+            email = uploadedFile.shareEmail.emailList.join(",");
+          }
+          let out = await window.WASMGo.encrypt(
+            evt.target.result,
+            file.name,
+            evt.target.result.length,
+            email
+          );
+          var jsonBlob = null;
+          jsonBlob = new Blob([out]);
+          downloadFile(jsonBlob, file.name);
+        } catch (e) {
+          alert(e);
+        }
       };
       reader.onerror = function (evt) {
         console.log("error reading file");

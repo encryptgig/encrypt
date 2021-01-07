@@ -80,6 +80,8 @@ const EgDrawer = (props) => {
     return null;
   }
 
+  alert();
+
   const handleListItemClick = (event, index, path) => {
     setSelectedIndex(index);
     history.push(path);

@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from "react";
 import {
   AppBar,
-  Box,
   Button,
-  Divider,
-  IconButton,
   makeStyles,
   Toolbar,
   Typography,
@@ -14,14 +11,12 @@ import Avatar from "@material-ui/core/Avatar";
 import { withRouter } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { deepOrange } from "@material-ui/core/colors";
-import { userLogin, userLogout } from "../Actions/userAction";
+import { userLogout } from "../Actions/userAction";
 import Menu from "@material-ui/core/Menu";
 import MenuItem from "@material-ui/core/MenuItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import InboxIcon from "@material-ui/icons/MoveToInbox";
-import DraftsIcon from "@material-ui/icons/Drafts";
-import SendIcon from "@material-ui/icons/Send";
 import StorageIcon from "@material-ui/icons/Storage";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonIcon from "@material-ui/icons/Person";
@@ -110,6 +105,7 @@ const EgHeader = (props) => {
     localStorage.removeItem("userName");
     localStorage.removeItem("photoUrl");
     dispatch(userLogout());
+    history.push("/Login");
   };
 
   return (

@@ -1,20 +1,15 @@
-import { Box, Chip, Container, Divider, TextField } from "@material-ui/core";
+import { Box, Divider } from "@material-ui/core";
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
 import EgEmailInput from "../components/EgEmailInput";
 import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
-import EgSpinner from "../components/EgSpinner";
 import EgTypography from "../components/EgTypography";
 import { dataURItoBlob, downloadFile } from "../utilities/fileUtilities";
 import { globalStyles } from "../styles/global.styles";
 import { validateEmail } from "../utilities/emailUtils";
-
-// TODO: Alignment of titles
-// TODO: Reset page and all states after successful download of encrypted file
-// TODO: Encryption successfull notification
 
 const EncryptFile = (props) => {
   const globalClasses = globalStyles();
@@ -92,18 +87,26 @@ const EncryptFile = (props) => {
       <EgInputFile />
       <EgEmailInput />
       <Box display="flex" flexDirection="row">
-        <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock"/>
-        <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock"/>
+        <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
+        <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
       </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Data Encryption"></EgPageTitle>
       <EgTypography>
-        
-      <p><b>We don’t let your data or file travel over internet. </b> </p>
-        You can encrypt any of your file i.e. {" "}
-        <b>PDF, Doc, Word, PPT, JPEG, Video, Audio, or any file that is text or binary, </b> using our product. For encrypting your file, we use your master password, along with the Google's private key that is also wrapped. Note, even we don't know which files or keys you used since all operations will perform on your local browser with utmost security. Finally, file logs don't travel over internet, not even to us. Don't believe?  You can
-        just check your browser's log!
-
+        <p>
+          <b>We don’t let your data or file travel over internet. </b>{" "}
+        </p>
+        You can encrypt any of your file i.e.{" "}
+        <b>
+          PDF, Doc, Word, PPT, JPEG, Video, Audio, or any file that is text or
+          binary,{" "}
+        </b>{" "}
+        using our product. For encrypting your file, we use your master
+        password, along with the Google's private key that is also wrapped.
+        Note, even we don't know which files or keys you used since all
+        operations will perform on your local browser with utmost security.
+        Finally, file logs don't travel over internet, not even to us. Don't
+        believe? You can just check your browser's log!
       </EgTypography>
     </div>
   );
