@@ -56,7 +56,6 @@ const EgEmailInput = (props) => {
         style={{ width: "98%" }}
         variant="filled"
         label="Share with emails"
-        placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         onChange={inputChange}
         value={emailString}
         multiline={true}

@@ -14,7 +14,7 @@ import { TabPanel } from "../components/EgTabPanel";
 import { validateEmail } from "../utilities/emailUtils";
 
 const useStyles = makeStyles((theme) => ({
-  appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
+  appbar: { marginTop: theme.spacing(2) },
 }));
 
 const EncryptMedia = (props) => {

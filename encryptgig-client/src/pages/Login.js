@@ -22,7 +22,9 @@ import { showSpinner } from "../Actions/spinnerAction";
 
 //TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
-  Container: {},
+  Container: {
+    paddingTop: theme.spacing(8),
+  },
   paper: {
     marginTop: theme.spacing(4),
     display: "flex",
@@ -217,7 +219,7 @@ const Login = (props) => {
           >
             Sign In with Google
           </Button>
-          <Button
+          {/* <Button
             fullWidth
             variant="contained"
             color="primary"
@@ -225,7 +227,7 @@ const Login = (props) => {
             onClick={loginGithub}
           >
             Sign In with Microsoft
-          </Button>
+          </Button> */}
           <Grid container>
             <Grid item xs>
               <Link to="/PasswordReset" variant="body2">

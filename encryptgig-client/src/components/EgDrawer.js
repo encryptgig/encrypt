@@ -37,14 +37,15 @@ const useStyles = makeStyles((theme) => ({
     width: theme.spacing(7),
   },
   toolbar: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "flex-end",
-    padding: theme.spacing(0, 0, 0, 0),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    backgroundColor: "primary",
+    backgroundColor: "white",
+    fontSize: "2.5em",
+    height: theme.spacing(7),
+    ["@media (min-width:768px)"]: {
+      // eslint-disable-line no-useless-computed-key
+      height: theme.spacing(8),
+    },
   },
+
   encryptfile: {
     height: "20px",
     width: "20px",
@@ -79,9 +80,6 @@ const EgDrawer = (props) => {
   ) {
     return null;
   }
-
-  alert();
-
   const handleListItemClick = (event, index, path) => {
     setSelectedIndex(index);
     history.push(path);
@@ -90,7 +88,7 @@ const EgDrawer = (props) => {
   const ListItem = withStyles({
     root: {
       backgroundColor: "#eeeeee",
-      paddingTop: "0px",
+
       width: drawerWidth,
       height: "3em",
       "& span, & svg": {
@@ -140,15 +138,7 @@ const EgDrawer = (props) => {
             }),
           }}
         >
-          <div className={classes.toolbar}>
-            {" "}
-            <img
-              src={process.env.PUBLIC_URL + "icons/Encryptgig_logo.png"}
-              alt="EncryptGig Logo"
-              width="240"
-              height="64"
-            />{" "}
-          </div>
+          <div className={classes.toolbar}></div>
           <Divider />
           <List>
             {/* {userState.user.email === null ||

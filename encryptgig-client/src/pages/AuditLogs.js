@@ -3,6 +3,8 @@ import EgPageTitle from "../components/EgPageTitle";
 import EditIcon from "@material-ui/icons/Edit";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
+import { showSpinner } from "../Actions/spinnerAction";
+import { useDispatch } from "react-redux";
 import {
   makeStyles,
   Box,
@@ -22,16 +24,21 @@ import {
   Button,
   IconButton,
   Collapse,
+  Tooltip,
+  TableFooter,
+  TablePagination,
 } from "@material-ui/core";
 import Paper from "@material-ui/core/Paper";
 import { globalStyles } from "../styles/global.styles";
 import EgEmailInput from "../components/EgEmailInput";
-import EgConfirmationDialog from "../components/EgConfirmationDialog";
 import { validateEmail } from "../utilities/emailUtils";
 import { useSelector } from "react-redux";
 import { Fragment } from "react";
 
-const useStyles = makeStyles((theme) => ({}));
+const useStyles = makeStyles((theme) => ({
+  head: { backgroundColor: theme.palette.primary.light, color: "white" },
+  table: { paddingRight: theme.spacing(2) },
+}));
 
 const GetDate = (epoc) => {
   var d = new Date(0);
@@ -46,14 +53,18 @@ const AuditLogs = () => {
   const [deleteRecord, setDeleteRecord] = useState(null);
   const [addPartyRecord, setAddPartyRecord] = useState(null);
   const [docData, setDocData] = useState([]);
+  const dispatch = useDispatch();
   const [dummy, setDummy] = useState(0);
   const [rowOpen, setRowOpen] = useState([]);
   const [openAddParty, setOpenAddParty] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [pageNo, setPageNo] = useState(0);
+  const limit = 20;
 
   useEffect(() => {
     fetchData();
   }, []);
+
   const handleRemoveEmail = (email, docName, creationDate, creatorEmail) => {
     setOpenDeleteDialog(true);
     setDeleteRecord({
@@ -65,6 +76,11 @@ const AuditLogs = () => {
   };
   const handleAddPartyClose = () => {
     setOpenAddParty(false);
+  };
+
+  const handleChangePage = (event, newPage) => {
+    setPageNo(newPage);
+    fetchData();
   };
 
   const handleAddPartyCloseAgree = () => {
@@ -184,13 +200,20 @@ const AuditLogs = () => {
     });
   };
   const fetchData = () => {
+    dispatch(showSpinner(true));
     const token = localStorage.getItem("accessToken");
     if (token == null || token.length == 0) {
       alert("Please login again.");
       return;
     }
     const headers = { "Content-Type": "application/json", bearer: token };
-    fetch("https://encryptgig-3nere6jg5a-uc.a.run.app/user/docs", { headers })
+    fetch(
+      "https://encryptgig-3nere6jg5a-uc.a.run.app/user/docs?offset=" +
+        pageNo * limit +
+        "&limit=" +
+        limit,
+      { headers }
+    )
       .then((response) => response.json())
       .then((data) => {
         setDocData(data);
@@ -199,21 +222,26 @@ const AuditLogs = () => {
         x.fill(false);
         setRowOpen(x);
         console.log(data);
+        dispatch(showSpinner(false));
+      })
+      .catch((e) => {
+        console.log("Error fetching audit logs");
+        dispatch(showSpinner(false));
       });
   };
 
   return (
     <div className={globalClasses.drawerPadding}>
       <EgPageTitle title="Audit Logs"> </EgPageTitle>
-      <TableContainer component={Paper}>
+      <TableContainer component={Paper} className={classes.table}>
         <Table aria-label="Document Data">
           <TableHead>
             <TableRow>
-              <TableCell />
-              <TableCell>Document Name</TableCell>
+              <TableCell className={classes.head} />
+              <TableCell className={classes.head}>Document Name</TableCell>
               {/* <TableCell>Creator Email</TableCell> */}
-              <TableCell>Creation Time</TableCell>
-              <TableCell>Shared With</TableCell>
+              <TableCell className={classes.head}>Creation Time</TableCell>
+              <TableCell className={classes.head}>Shared With</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -222,30 +250,37 @@ const AuditLogs = () => {
                 <TableRow>
                   <TableCell>
                     {doc.DecryptAuditRecord !== null ? (
-                      <IconButton
-                        aria-label="expand row"
-                        size="small"
-                        onClick={() => {
-                          console.log(rowOpen);
-                          let z = [...rowOpen];
-                          z[index] = !rowOpen[index];
-                          setRowOpen(z);
-                          console.log(rowOpen);
-                        }}
+                      <Tooltip
+                        title="Detailed Records"
+                        aria-label="detailed records"
                       >
-                        {rowOpen[index] === true ? (
-                          <KeyboardArrowUpIcon />
-                        ) : (
-                          <KeyboardArrowDownIcon />
-                        )}
-                      </IconButton>
+                        <IconButton
+                          aria-label="expand row"
+                          size="small"
+                          onClick={() => {
+                            console.log(rowOpen);
+                            let z = [...rowOpen];
+                            z[index] = !rowOpen[index];
+                            setRowOpen(z);
+                            console.log(rowOpen);
+                          }}
+                        >
+                          {rowOpen[index] === true ? (
+                            <KeyboardArrowUpIcon />
+                          ) : (
+                            <KeyboardArrowDownIcon />
+                          )}
+                        </IconButton>
+                      </Tooltip>
                     ) : (
                       <div></div>
                     )}
                   </TableCell>
                   <TableCell>{doc.Name}</TableCell>
                   {/* <TableCell>{doc.CreatorEmail}</TableCell> */}
-                  <TableCell>{GetDate(doc.CreationDate)}</TableCell>
+                  <TableCell>
+                    {GetDate(doc.CreationDate).split("GMT")[0]}
+                  </TableCell>
                   <TableCell>
                     {GetEmails(
                       doc.AllowDecryption,
@@ -280,7 +315,13 @@ const AuditLogs = () => {
                             <TableBody>
                               {doc.DecryptAuditRecord.map((doc1) => (
                                 <TableRow>
-                                  <TableCell>{doc1.AccessDate}</TableCell>
+                                  <TableCell>
+                                    {
+                                      GetDate(doc1.AccessUnixTime).split(
+                                        "GMT"
+                                      )[0]
+                                    }
+                                  </TableCell>
                                   <TableCell>{doc1.AccessBy}</TableCell>
                                 </TableRow>
                               ))}
@@ -296,6 +337,24 @@ const AuditLogs = () => {
               </Fragment>
             ))}
           </TableBody>
+          <TableFooter>
+            <TableRow>
+              <TablePagination
+                rowsPerPageOptions={[20]}
+                colSpan={4}
+                count={100}
+                rowsPerPage={20}
+                page={pageNo}
+                SelectProps={{
+                  inputProps: { "aria-label": "rows per page" },
+                  native: true,
+                }}
+                onChangePage={handleChangePage}
+                // onChangeRowsPerPage={handleChangeRowsPerPage}
+                // ActionsComponent={TablePaginationActions}
+              />
+            </TableRow>
+          </TableFooter>
         </Table>
       </TableContainer>
       <Dialog

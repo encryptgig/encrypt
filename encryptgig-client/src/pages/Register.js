@@ -15,10 +15,12 @@ import React from "react";
 import { Link, withRouter } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "./../configs/firebase-configs";
-import firebase from "firebase";
 import Alert from "@material-ui/lab/Alert";
 
 const useStyles = makeStyles((theme) => ({
+  container: {
+    paddingTop: theme.spacing(6),
+  },
   paper: {
     marginTop: theme.spacing(8),
     display: "flex",
@@ -123,7 +125,7 @@ const Register = (props) => {
   };
 
   return (
-    <Container component="main" maxWidth="xs">
+    <Container className={classes.container} component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   AppBar,
   Button,
+  Hidden,
   makeStyles,
   Toolbar,
   Typography,
@@ -24,13 +25,24 @@ import FindInPageIcon from "@material-ui/icons/FindInPage";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
+  appbar: {
+    zIndex: theme.zIndex.drawer + 1,
+  },
   appbarItem: {
     marginRight: theme.spacing(3),
   },
   title: {
+    display: "flex",
     flexGrow: 1,
-    marginLeft: theme.spacing(3),
     color: "white",
+  },
+
+  titleLogo: {
+    marginTop: theme.spacing(1.6),
+  },
+  titleText: {
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(0.4),
   },
   headerMenuColor: {
     color: "white",
@@ -110,30 +122,42 @@ const EgHeader = (props) => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="static">
+      <AppBar position="fixed" className={classes.appbar}>
         <Toolbar>
           <Typography color="inherit" variant="h4" className={classes.title}>
-            EncryptGig
+            <div className={classes.titleLogo}>
+              <img
+                src={process.env.PUBLIC_URL + "icons/Encryptgig_logo.png"}
+                alt="EncryptGig Logo"
+                width="32"
+                height="32"
+              />
+            </div>
+            <Hidden only={["xs", "sm"]}>
+              <div className={classes.titleText}>EncryptGig</div>
+            </Hidden>
           </Typography>
 
           <Button color="inherit" className={classes.headerMenuColor}>
             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
             Docs
           </Button>
-          <Button
-            color="inherit"
-            className={classes.headerMenuColor}
-            onClick={(e) => {
-              history.push("/AuditLogs");
-              handleClose();
-            }}
-          >
-            <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
-            Audit Logs
-          </Button>
+          <Hidden only={["xs", "sm"]}>
+            <Button
+              color="inherit"
+              className={classes.headerMenuColor}
+              onClick={(e) => {
+                history.push("/AuditLogs");
+                handleClose();
+              }}
+            >
+              <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
+              Audit
+            </Button>
+          </Hidden>
 
-          {userState.user.email === null ||
-          userState.user.email.length === 0 ? (
+          {localStorage.getItem("accessToken") === null ||
+          localStorage.getItem("accessToken").length === 0 ? (
             <Button
               color="inherit"
               onClick={handleLoginClick}
@@ -142,11 +166,17 @@ const EgHeader = (props) => {
               <ExitToAppIcon style={{ fontSize: 19 }}> </ExitToAppIcon>
               Sign in
             </Button>
-          ) : photo != null && photo.length > 0 ? (
-            <Avatar onClick={handleProfileClick} src={photo}></Avatar>
+          ) : localStorage.getItem("photoUrl") != null &&
+            localStorage.getItem("photoUrl").length > 0 ? (
+            <Avatar
+              onClick={handleProfileClick}
+              src={localStorage.getItem("photoUrl")}
+            ></Avatar>
           ) : (
             <Avatar onClick={handleProfileClick} className={classes.orange}>
-              {userName != null ? userName.charAt(0) : "U"}
+              {localStorage.getItem("userName") != null
+                ? localStorage.getItem("userName").charAt(0)
+                : "U"}
             </Avatar>
           )}
           <StyledMenu
@@ -162,6 +192,19 @@ const EgHeader = (props) => {
               </ListItemIcon>
               <ListItemText primary="Profile" />
             </StyledMenuItem>
+            <Hidden only={["md", "lg", "xl"]}>
+              <StyledMenuItem
+                onClick={(e) => {
+                  history.push("/AuditLogs");
+                  handleClose();
+                }}
+              >
+                <ListItemIcon>
+                  <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
+                </ListItemIcon>
+                <ListItemText primary="Audit" />
+              </StyledMenuItem>
+            </Hidden>
             <StyledMenuItem onClick={handleLogout}>
               <ListItemIcon>
                 <InboxIcon fontSize="small" />
