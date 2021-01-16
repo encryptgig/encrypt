@@ -225,7 +225,7 @@ const AuditLogs = () => {
         dispatch(showSpinner(false));
       })
       .catch((e) => {
-        console.log("Error fetching audit logs");
+        console.log("Error fetching audit logs" + e);
         dispatch(showSpinner(false));
       });
   };

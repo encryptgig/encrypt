@@ -36,18 +36,22 @@ const EgEmailInput = (props) => {
     setEmailString(event.target.value);
 
     if (event.target.value.includes(",")) {
-      let p = emailString.split(",");
-      for (let l = 0; l < p.length; l++) {
-        if (p[l].length > 0) {
-          setEmailList((prev) => {
-            let n = [...new Set([...prev, p[l]])];
-            dispatch(shareFile(n));
-            return n;
-          });
-        }
-      }
-      setEmailString("");
+      captureEmails();
     }
+  };
+
+  const captureEmails = () => {
+    let p = emailString.split(",");
+    for (let l = 0; l < p.length; l++) {
+      if (p[l].length > 0) {
+        setEmailList((prev) => {
+          let n = [...new Set([...prev, p[l]])];
+          dispatch(shareFile(n));
+          return n;
+        });
+      }
+    }
+    setEmailString(" ");
   };
 
   return (
@@ -55,8 +59,15 @@ const EgEmailInput = (props) => {
       <TextField
         style={{ width: "98%" }}
         variant="filled"
+        placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         label="Share with emails"
         onChange={inputChange}
+        onKeyPress={(e) => {
+          if (e.key == "Enter") {
+            captureEmails();
+            e.preventDefault();
+          }
+        }}
         value={emailString}
         multiline={true}
         InputProps={{
