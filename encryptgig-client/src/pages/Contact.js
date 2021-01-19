@@ -1,20 +1,17 @@
 import React from "react";
-import { Typography } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import EgPageTitle from "../components/EgPageTitle";
 import { makeStyles } from "@material-ui/core";
 import { globalStyles } from "../styles/global.styles";
-import { borders } from '@material-ui/system';
+import { borders } from "@material-ui/system";
 
 const useStyles = makeStyles((theme) => ({
- 
   boxcontent: {
-    border:  "1px solid lightgrey",
+    border: "1px solid lightgrey",
     padding: "8px",
     width: "98%",
-    textAlign: "justify"
-  }
-   
-
+    textAlign: "justify",
+  },
 }));
 
 const Contact = () => {
@@ -23,37 +20,37 @@ const Contact = () => {
 
   return (
     <div className={globalClasses.drawerPadding}>
-      
       <EgPageTitle title="About EncryptGig"> </EgPageTitle>
-     <Box className= {classes.boxcontent}>
-         <Typography>
-         EncryptGig is the team of security experts, who are on a mission to
-        develop powerful, scalable and yet simple encryption products for every
-        organizations and individuals need. Our algorithm is designed on the
-        stateless architecture, which makes it effortlessly scalable in both
-        on-premises and various clouds. Further, everytime you trigger the
-        encryptions, we rotate the key, hence providing you the most secured way
-        to protect your data. Plus, forget the traditional pain to remember and
-        maintain your private keys and infrastructure. All the operations will be perfomed in
-        backend with three layers of encryption automatically on your local machine. Finally, with EncryptGig, organizations and individuals can scale up
-        their data protection at any extent without worrying about any
-        security bottlenecks as product comes with best in-build security features in the
-        industry. We're truly excited to embark on your critical encryption journey with us!
-
+      <Box className={classes.boxcontent}>
         <Typography>
-          <h4>
-            {" "}
-            <p>
+          EncryptGig is the team of security experts, who are on a mission to
+          develop powerful, scalable and yet simple encryption products for
+          every organizations and individuals need. Our algorithm is designed on
+          the stateless architecture, which makes it effortlessly scalable in
+          both on-premises and various clouds. Further, everytime you trigger
+          the encryptions, we rotate the key, hence providing you the most
+          secured way to protect your data. Plus, forget the traditional pain to
+          remember and maintain your private keys and infrastructure. All the
+          operations will be perfomed in backend with three layers of encryption
+          automatically on your local machine. Finally, with EncryptGig,
+          organizations and individuals can scale up their data protection at
+          any extent without worrying about any security bottlenecks as product
+          comes with best in-build security features in the industry. We're
+          truly excited to embark on your critical encryption journey with us!
+          <Typography>
+            <h4>
               {" "}
-              For demo sales, and inquiry, etc. write us at{" "}
-              <a href="mailto: encryptgig@gmail.com" target="_blank">
+              <p>
                 {" "}
-                encryptgig@gmail.com
-              </a>  
-            </p>{" "}
-          </h4>
+                For demo sales, and inquiry, etc. write us at{" "}
+                <a href="mailto: encryptgig@gmail.com" target="_blank">
+                  {" "}
+                  encryptgig@gmail.com
+                </a>
+              </p>{" "}
+            </h4>
+          </Typography>
         </Typography>
-      </Typography>
       </Box>
     </div>
   );
