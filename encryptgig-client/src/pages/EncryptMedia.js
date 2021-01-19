@@ -1,6 +1,6 @@
 import React from "react";
 import { AppBar, Box, Divider, makeStyles, Tab, Tabs } from "@material-ui/core";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
 import EgInputFile from "../components/EgInputFile";
@@ -12,6 +12,8 @@ import { globalStyles } from "../styles/global.styles";
 import SwipeableViews from "react-swipeable-views";
 import { TabPanel } from "../components/EgTabPanel";
 import { validateEmail } from "../utilities/emailUtils";
+import { validateLogin } from "../utilities/loginUtils";
+import { showLogin } from "../Actions/showLoginAction";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2) },
@@ -20,11 +22,15 @@ const useStyles = makeStyles((theme) => ({
 const EncryptMedia = (props) => {
   const uploadedFile = useSelector((state) => state);
   const globalClasses = globalStyles();
+  const dispatch = useDispatch();
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
-
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
     if (!file) {
       return;
     }
@@ -36,7 +42,7 @@ const EncryptMedia = (props) => {
 
         var jsonBlob = null;
         jsonBlob = dataURItoBlob(out);
-        downloadFile(jsonBlob, file.name);
+        downloadFile(jsonBlob, file.name, false);
       } catch (e) {
         alert(e);
       }
@@ -47,6 +53,10 @@ const EncryptMedia = (props) => {
   };
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
@@ -75,7 +85,7 @@ const EncryptMedia = (props) => {
           );
           var jsonBlob = null;
           jsonBlob = new Blob([out]);
-          downloadFile(jsonBlob, file.name);
+          downloadFile(jsonBlob, file.name, true);
         } catch (e) {
           alert(e);
         }
@@ -147,14 +157,12 @@ const EncryptMedia = (props) => {
       </SwipeableViews>
 
       <Divider style={{ margin: "10px" }} variant="middle" />
-      <EgPageTitle title="About Data Encryption"></EgPageTitle>
+      <EgPageTitle title="About Media Encryption"></EgPageTitle>
       <EgTypography>
         <b>We don't let your data travel over internet.</b>
         Test our application with your data and we just secure it. Send this
-        secure data anywhere to anu body and they won't be able to see it until
-        you want them to see it. Ans say what key is not constant, you can
-        reinitialize data encryption key by just entering you master key in home
-        menu.
+        secure data anywhere to any body and they won't be able to see it until
+        you want them to see it.
       </EgTypography>
     </div>
   );

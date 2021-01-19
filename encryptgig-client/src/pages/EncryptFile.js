@@ -1,6 +1,6 @@
 import { Box, Divider } from "@material-ui/core";
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { withRouter } from "react-router-dom";
 import EgButton from "../components/EgButton";
 import EgEmailInput from "../components/EgEmailInput";
@@ -10,12 +10,19 @@ import EgTypography from "../components/EgTypography";
 import { dataURItoBlob, downloadFile } from "../utilities/fileUtilities";
 import { globalStyles } from "../styles/global.styles";
 import { validateEmail } from "../utilities/emailUtils";
+import { validateLogin } from "../utilities/loginUtils";
+import { showLogin } from "../Actions/showLoginAction";
 
 const EncryptFile = (props) => {
   const globalClasses = globalStyles();
+  const dispatch = useDispatch();
   const uploadedFile = useSelector((state) => state);
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
 
     if (!file) {
       return;
@@ -25,10 +32,9 @@ const EncryptFile = (props) => {
     reader.onload = async function (evt) {
       try {
         let out = await window.WASMGo.decrypt(evt.target.result, file.name);
-
         var jsonBlob = null;
         jsonBlob = dataURItoBlob(out);
-        downloadFile(jsonBlob, file.name);
+        downloadFile(jsonBlob, file.name, false);
       } catch (e) {
         alert(e);
       }
@@ -39,6 +45,11 @@ const EncryptFile = (props) => {
   };
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
+    console.log("Encrypting:" + file.name);
     if (file) {
       var reader = new FileReader();
       reader.readAsDataURL(file);
@@ -67,7 +78,7 @@ const EncryptFile = (props) => {
           );
           var jsonBlob = null;
           jsonBlob = new Blob([out]);
-          downloadFile(jsonBlob, file.name);
+          downloadFile(jsonBlob, file.name, true);
         } catch (e) {
           alert(e);
         }
@@ -88,10 +99,10 @@ const EncryptFile = (props) => {
       <EgEmailInput />
       <Box display="flex" flexDirection="row">
         <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
-        <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
+        <EgButton text="Decrypt" onClick={handleDecrypt} icon="unlock" />
       </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
-      <EgPageTitle title="About Data Encryption"></EgPageTitle>
+      <EgPageTitle title="About File Encryption"></EgPageTitle>
       <EgTypography>
         <p>
           <b>We don’t let your data or file travel over internet. </b>{" "}

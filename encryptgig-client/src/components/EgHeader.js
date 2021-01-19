@@ -22,6 +22,7 @@ import StorageIcon from "@material-ui/icons/Storage";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import PersonIcon from "@material-ui/icons/Person";
 import FindInPageIcon from "@material-ui/icons/FindInPage";
+import { showLogin } from "../Actions/showLoginAction";
 
 const useStyles = makeStyles((theme) => ({
   root: {},
@@ -108,7 +109,7 @@ const EgHeader = (props) => {
   };
 
   const handleLoginClick = () => {
-    history.push("/Login");
+    dispatch(showLogin(true));
   };
 
   const handleLogout = () => {
@@ -142,19 +143,24 @@ const EgHeader = (props) => {
             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
             Docs
           </Button>
-          <Hidden only={["xs", "sm"]}>
-            <Button
-              color="inherit"
-              className={classes.headerMenuColor}
-              onClick={(e) => {
-                history.push("/AuditLogs");
-                handleClose();
-              }}
-            >
-              <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
-              Audit
-            </Button>
-          </Hidden>
+          {localStorage.getItem("accessToken") !== null &&
+          localStorage.getItem("accessToken").length !== 0 ? (
+            <Hidden only={["xs", "sm"]}>
+              <Button
+                color="inherit"
+                className={classes.headerMenuColor}
+                onClick={(e) => {
+                  history.push("/AuditLogs");
+                  handleClose();
+                }}
+              >
+                <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>
+                Audit
+              </Button>
+            </Hidden>
+          ) : (
+            ""
+          )}
 
           {localStorage.getItem("accessToken") === null ||
           localStorage.getItem("accessToken").length === 0 ? (
@@ -191,6 +197,17 @@ const EgHeader = (props) => {
                 <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
               </ListItemIcon>
               <ListItemText primary="Profile" />
+            </StyledMenuItem>
+            <StyledMenuItem
+              onClick={(e) => {
+                history.push("/Dashboard");
+                handleClose();
+              }}
+            >
+              <ListItemIcon>
+                <PersonIcon style={{ fontSize: 19 }}> </PersonIcon>
+              </ListItemIcon>
+              <ListItemText primary="Dashboard" />
             </StyledMenuItem>
             <Hidden only={["md", "lg", "xl"]}>
               <StyledMenuItem

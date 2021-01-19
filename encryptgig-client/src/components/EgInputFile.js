@@ -35,10 +35,7 @@ const rejectStyle = {
 const EgInputFile = (props) => {
   const uploadedFile = useSelector((state) => state);
   const dispatch = useDispatch();
-  const handleChange = (e) => {
-    e.preventDefault();
-    dispatch(uploadFile(e.target.files[0]));
-  };
+
   const renderText = (e) => {
     if (uploadedFile.files?.file == null) {
       return <div>No file chosen</div>;

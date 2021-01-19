@@ -46,6 +46,8 @@ import {
   validateNumber,
   validateColRange,
 } from "../utilities/emailUtils";
+import { validateLogin } from "../utilities/loginUtils";
+import { showLogin } from "../Actions/showLoginAction";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -145,9 +147,14 @@ const EncryptCSV = (props) => {
 
   const handleDecrypt = () => {
     var file = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
     if (!file) {
       return;
     }
+
     dispatch(showSpinner(true));
     var reader = new FileReader();
     reader.readAsDataURL(file);
@@ -156,19 +163,23 @@ const EncryptCSV = (props) => {
       console.log(file.name);
       let response = await window.WASMGo.decryptXLS(idata);
       dispatch(showSpinner(false));
-      downloadFile(base64ToBlob(response), file.name);
+      downloadFile(base64ToBlob(response), file.name, false);
     };
   };
 
   const handleEncrypt = () => {
     var file = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
+    }
     let objObject = {};
     dispatch(showSpinner(true));
     for (let i = 0; i < encrDetails.length; i++) {
       let k = Object.keys(encrDetails[i])[0];
       objObject[k] = Object.assign({}, ...Object.values(encrDetails[i])[0]);
     }
-    console.log("------------> " + JSON.stringify(objObject));
+
     let email = "";
     if (
       uploadedFile.shareEmail.emailList != null &&
@@ -198,7 +209,7 @@ const EncryptCSV = (props) => {
         );
         dispatch(showSpinner(false));
 
-        downloadFile(base64ToBlob(response), file.name);
+        downloadFile(base64ToBlob(response), file.name, true);
       };
     }
   };

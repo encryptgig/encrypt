@@ -4,6 +4,7 @@ import {
   Checkbox,
   Container,
   CssBaseline,
+  Dialog,
   FormControlLabel,
   Grid,
   makeStyles,
@@ -11,22 +12,23 @@ import {
   Typography,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
-import React from "react";
+import React, { useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "./../configs/firebase-configs";
 import firebase from "firebase";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { userLogin, userLogout } from "../Actions/userAction";
 import { showSpinner } from "../Actions/spinnerAction";
+import { showLogin } from "../Actions/showLoginAction";
 
 //TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
   Container: {
-    paddingTop: theme.spacing(8),
+    paddingTop: theme.spacing(2),
+    paddingBottom: theme.spacing(2),
   },
   paper: {
-    marginTop: theme.spacing(4),
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
@@ -52,13 +54,17 @@ const Login = (props) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const { history } = props;
-  const [loginState, setLoginState] = React.useState({
+  const handleClose = () => {
+    dispatch(showLogin(false));
+  };
+  const [loginState, setLoginState] = useState({
     email: "",
     password: "",
   });
-  const [loginError, setLoginError] = React.useState(false);
-  const [emailText, setEmailText] = React.useState("");
-  const [passwordText, setPasswordText] = React.useState("");
+  const [loginError, setLoginError] = useState(false);
+  const [emailText, setEmailText] = useState("");
+  const [passwordText, setPasswordText] = useState("");
+  const shouldShowLogin = useSelector((state) => state.showLogin.showLogin);
   const updateLoginState = (event) => {
     setLoginState({
       ...loginState,
@@ -91,6 +97,7 @@ const Login = (props) => {
       .then((u) => {
         console.log(u);
         if (u.user.emailVerified) {
+          dispatch(showLogin(false));
           dispatch(showSpinner(true));
           handleLoginSuccess(u, loginState.email, u.user.ya);
           dispatch(userLogin(loginState.email, null, null));
@@ -114,6 +121,7 @@ const Login = (props) => {
       .signInWithPopup(provider)
       .then((u) => {
         console.log(u);
+        dispatch(showLogin(false));
         dispatch(showSpinner(true));
         handleLoginSuccess(u, u.user.email, u.credential.idToken);
 
@@ -145,8 +153,8 @@ const Login = (props) => {
   const handleLoginSuccess = async (u, email, jwt) => {
     try {
       await wasm.instantiateWithJWT(jwt);
+
       dispatch(showSpinner(false));
-      history.push("/EncryptFile");
     } catch (err) {
       fire.analytics().logEvent("wasm_instantiation_failed.", err);
       dispatch(showSpinner(false));
@@ -154,72 +162,77 @@ const Login = (props) => {
     }
     fire.analytics().setUserId(u.user.uid);
   };
-
+  console.log(shouldShowLogin);
   return (
-    <Container className={classes.Container} component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>{<LockOutlinedIcon />}</Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
-        </Typography>
-        {loginError ? (
-          <Alert severity="error">Incorrect email address or password.</Alert>
-        ) : (
-          ""
-        )}
-        <form className={classes.form}>
-          <TextField
-            error={emailText.length > 0}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            helperText={emailText}
-            onChange={updateLoginState}
-          />
-          <TextField
-            error={passwordText.length > 0}
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            helperText={passwordText}
-            onChange={updateLoginState}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={login}
-          >
-            Sign In
-          </Button>
-          <Button
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-            onClick={loginGoogle}
-          >
-            Sign In with Google
-          </Button>
-          {/* <Button
+    <Dialog
+      aria-labelledby="Login"
+      open={shouldShowLogin}
+      onClose={handleClose}
+    >
+      <Container className={classes.Container} component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>{<LockOutlinedIcon />}</Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
+          </Typography>
+          {loginError ? (
+            <Alert severity="error">Incorrect email address or password.</Alert>
+          ) : (
+            ""
+          )}
+          <form className={classes.form}>
+            <TextField
+              error={emailText.length > 0}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              helperText={emailText}
+              onChange={updateLoginState}
+            />
+            <TextField
+              error={passwordText.length > 0}
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              helperText={passwordText}
+              onChange={updateLoginState}
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={login}
+            >
+              Sign In
+            </Button>
+            <Button
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+              onClick={loginGoogle}
+            >
+              Sign In with Google
+            </Button>
+            {/* <Button
             fullWidth
             variant="contained"
             color="primary"
@@ -228,21 +241,22 @@ const Login = (props) => {
           >
             Sign In with Microsoft
           </Button> */}
-          <Grid container>
-            <Grid item xs>
-              <Link to="/PasswordReset" variant="body2">
-                Forgot password?
-              </Link>
+            <Grid container>
+              <Grid item xs>
+                <Link to="/PasswordReset" variant="body2">
+                  Forgot password?
+                </Link>
+              </Grid>
+              <Grid item>
+                <Link variant="body2" to="/Register">
+                  {"Don't have an account? Sign Up"}
+                </Link>
+              </Grid>
             </Grid>
-            <Grid item>
-              <Link variant="body2" to="/Register">
-                {"Don't have an account? Sign Up"}
-              </Link>
-            </Grid>
-          </Grid>
-        </form>
-      </div>
-    </Container>
+          </form>
+        </div>
+      </Container>
+    </Dialog>
   );
 };
 

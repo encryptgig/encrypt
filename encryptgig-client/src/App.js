@@ -22,6 +22,8 @@ import {
 import blue from "@material-ui/core/colors/blue";
 import EgSpinner from "./components/EgSpinner";
 import AuditLogs from "./pages/AuditLogs";
+import Dashboard from "./pages/Dashboard";
+import { SecretRoute } from "./SecretRoutes";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -65,17 +67,19 @@ function App() {
         <EgHeader />
         <EgDrawer />
         <EgSpinner />
+        <Login />
         <Switch>
-          <PrivateRoute exact path="/EncryptData" component={EncryptData} />
-          <PrivateRoute exact path="/EncryptFile" component={EncryptFile} />
-          <PrivateRoute exact path="/EncryptExcel" component={EncryptExcel} />
-          <PrivateRoute exact path="/EncryptMedia" component={EncryptMedia} />
+          <SecretRoute exact path="/EncryptData" component={EncryptData} />
+          <SecretRoute exact path="/EncryptFile" component={EncryptFile} />
+          <SecretRoute exact path="/EncryptExcel" component={EncryptExcel} />
+          <SecretRoute exact path="/EncryptMedia" component={EncryptMedia} />
           <PrivateRoute exact path="/AuditLogs" component={AuditLogs} />
-          <PrivateRoute exact path="/Contact" component={Contact} />
-          <Route path="/Login" component={Login} />
+          <PrivateRoute exact path="/Dashboard" component={Dashboard} />
+          <Route exact path="/Contact" component={Contact} />
+          {/* <Route path="/Login" component={Login} /> */}
           <Route path="/Register" component={Register} />
           <Route path="/PasswordReset" component={ForgotPsw} />
-          <Redirect from="*" to="/" />
+          <Redirect from="*" to="/EncryptFile" />
         </Switch>
       </ThemeProvider>
     </div>

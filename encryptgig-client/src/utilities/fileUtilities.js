@@ -35,12 +35,15 @@ export const base64ToBlob = (data) => {
   return bb;
 };
 
-export const downloadFile = (fileData, fileName) => {
+export const downloadFile = (fileData, fileName, isEncrypt) => {
   const data = window.URL.createObjectURL(fileData);
   const link = document.createElement("a");
 
   link.href = data;
-  link.download = "encrypted" + "-" + fileName;
+  link.download =
+    isEncrypt == true
+      ? "encrypted-" + fileName
+      : "decrypted-" + fileName.split("-")[1];
 
   // this is necessary as link.click() does not work on the latest firefox
   link.dispatchEvent(

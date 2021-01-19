@@ -1,12 +1,6 @@
 import React from "react";
-import { Box, Divider, TextField, Typography } from "@material-ui/core";
-import { useSelector } from "react-redux";
-import EgButton from "../components/EgButton";
-import CopyToClip from "../components/EgCopyToClip";
-import EgEmailInput from "../components/EgEmailInput";
+import { Typography } from "@material-ui/core";
 import EgPageTitle from "../components/EgPageTitle";
-import EgTypography from "../components/EgTypography";
-import fire from "./../configs/firebase-configs";
 import { makeStyles } from "@material-ui/core";
 import { globalStyles } from "../styles/global.styles";
 
