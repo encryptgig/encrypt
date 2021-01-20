@@ -6,7 +6,7 @@ export const globalStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(8),
     ["@media (min-width:768px)"]: {
       // eslint-disable-line no-useless-computed-key
-      paddingLeft: "270px",
+      paddingLeft: 230,
     },
   },
 }));

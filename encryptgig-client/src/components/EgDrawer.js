@@ -12,7 +12,7 @@ import DescriptionIcon from "@material-ui/icons/Description";
 import PermMediaIcon from "@material-ui/icons/PermMedia";
 import TelegramIcon from "@material-ui/icons/Telegram";
 
-const drawerWidth = 240;
+const drawerWidth = 200;
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -45,7 +45,7 @@ const useStyles = makeStyles((theme) => ({
       height: theme.spacing(8),
     },
   },
-
+  iconItem: { fontSize: 30, marginRight: 18 },
   encryptfile: {
     height: "20px",
     width: "20px",
@@ -88,33 +88,47 @@ const EgDrawer = (props) => {
   const ListItem = withStyles({
     root: {
       backgroundColor: "#eeeeee",
-
-      width: drawerWidth,
+      width: drawerWidth - 1,
       height: "3em",
-      "& span, & svg": {
-        fontSize: "1.2em",
+      "& span": { fontSize: "1.2em" },
+      "& svg": {
+        fontSize: "1.4em",
       },
       "&$selected": {
         backgroundColor: theme.palette.primary.light,
-        "& span, & svg": {
+        "& span": {
           fontWeight: "700",
           fontSize: "1.2em",
+          color: "white",
+        },
+        "& svg": {
+          fontWeight: "700",
+          fontSize: "1.6em",
           color: "white",
         },
       },
       "&$selected:hover": {
         backgroundColor: theme.palette.primary.light,
-        "& span, & svg": {
+        "& span": {
           fontWeight: "700",
           fontSize: "1.2em",
+          color: "white",
+        },
+        " & svg": {
+          fontWeight: "700",
+          fontSize: "1.6em",
           color: "white",
         },
       },
       "&:hover": {
         backgroundColor: theme.palette.primary,
-        "& span, & svg": {
+        "& span": {
           fontWeight: "700",
           fontSize: "1.2em",
+        },
+        " & svg": {
+          fontWeight: "700",
+          fontSize: "1.6em",
         },
       },
     },
@@ -163,11 +177,9 @@ const EgDrawer = (props) => {
               selected={selectedIndex === 1}
               onClick={(event) => handleListItemClick(event, 1, "EncryptFile")}
             >
-              <ListItemIcon>
-                <InsertDriveFileIcon
-                  style={{ fontSize: 19 }}
-                ></InsertDriveFileIcon>
-              </ListItemIcon>
+              <InsertDriveFileIcon
+                className={classes.iconItem}
+              ></InsertDriveFileIcon>
               <ListItemText primary="Encrypt File" />
             </ListItem>
             <ListItem
@@ -176,9 +188,7 @@ const EgDrawer = (props) => {
               selected={selectedIndex === 2}
               onClick={(event) => handleListItemClick(event, 2, "EncryptData")}
             >
-              <ListItemIcon>
-                <SortByAlphaIcon style={{ fontSize: 19 }}> </SortByAlphaIcon>
-              </ListItemIcon>
+              <SortByAlphaIcon className={classes.iconItem} />
               <ListItemText primary="Encrypt Data" />
             </ListItem>
             <ListItem
@@ -187,9 +197,7 @@ const EgDrawer = (props) => {
               selected={selectedIndex === 3}
               onClick={(event) => handleListItemClick(event, 3, "EncryptExcel")}
             >
-              <ListItemIcon>
-                <DescriptionIcon style={{ fontSize: 19 }}> </DescriptionIcon>
-              </ListItemIcon>
+              <DescriptionIcon className={classes.iconItem} />
               <ListItemText primary="Encrypt Excel" />
             </ListItem>
             <ListItem
@@ -198,9 +206,7 @@ const EgDrawer = (props) => {
               selected={selectedIndex === 4}
               onClick={(event) => handleListItemClick(event, 4, "EncryptMedia")}
             >
-              <ListItemIcon>
-                <PermMediaIcon style={{ fontSize: 19 }}> </PermMediaIcon>
-              </ListItemIcon>
+              <PermMediaIcon className={classes.iconItem} />
               <ListItemText primary="Encrypt Media" />
             </ListItem>
             <ListItem
@@ -209,9 +215,7 @@ const EgDrawer = (props) => {
               selected={selectedIndex === 5}
               onClick={(event) => handleListItemClick(event, 5, "Contact")}
             >
-              <ListItemIcon>
-                <TelegramIcon style={{ fontSize: 19 }}></TelegramIcon>
-              </ListItemIcon>
+              <TelegramIcon className={classes.iconItem} />
               <ListItemText primary="Contact" />
             </ListItem>
           </List>

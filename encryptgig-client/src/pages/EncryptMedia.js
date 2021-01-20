@@ -150,8 +150,8 @@ const EncryptMedia = (props) => {
           <EgInputFile />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} />
-            <EgButton text="decrypt" onClick={handleDecrypt} />
+            <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
+            <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
           </Box>
         </TabPanel>
       </SwipeableViews>
