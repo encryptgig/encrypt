@@ -143,6 +143,16 @@ const EgHeader = (props) => {
             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
             Docs
           </Button>
+          <Button
+            color="inherit"
+            className={classes.headerMenuColor}
+            onClick={(e) => {
+              history.push("/Pricing");
+            }}
+          >
+            <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
+            Pricing
+          </Button>
           {localStorage.getItem("accessToken") !== null &&
           localStorage.getItem("accessToken").length !== 0 ? (
             <Hidden only={["xs", "sm"]}>
@@ -151,7 +161,6 @@ const EgHeader = (props) => {
                 className={classes.headerMenuColor}
                 onClick={(e) => {
                   history.push("/AuditLogs");
-                  handleClose();
                 }}
               >
                 <StorageIcon style={{ fontSize: 19 }}> </StorageIcon>

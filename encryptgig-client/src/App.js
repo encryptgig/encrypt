@@ -24,6 +24,7 @@ import EgSpinner from "./components/EgSpinner";
 import AuditLogs from "./pages/AuditLogs";
 import Dashboard from "./pages/Dashboard";
 import { SecretRoute } from "./SecretRoutes";
+import Pricing from "./pages/Pricing";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -75,6 +76,7 @@ function App() {
           <SecretRoute exact path="/EncryptMedia" component={EncryptMedia} />
           <PrivateRoute exact path="/AuditLogs" component={AuditLogs} />
           <PrivateRoute exact path="/Dashboard" component={Dashboard} />
+          <Route exact path="/Pricing" component={Pricing} />
           <Route exact path="/Contact" component={Contact} />
           {/* <Route path="/Login" component={Login} /> */}
           <Route path="/Register" component={Register} />
