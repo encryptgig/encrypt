@@ -151,7 +151,7 @@ const EgHeader = (props) => {
             }}
           >
             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
-            Pricing
+            Price
           </Button>
           {localStorage.getItem("accessToken") !== null &&
           localStorage.getItem("accessToken").length !== 0 ? (

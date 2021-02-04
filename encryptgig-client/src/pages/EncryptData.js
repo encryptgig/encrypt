@@ -184,15 +184,15 @@ const EncryptData = (props) => {
       <EgTypography>
         <p>
           {" "}
-          <b>We don't let your data or file travel over internet.</b>{" "}
+          <b> We don't let your data or file travel over internet.</b>{" "}
         </p>
         Test our application to secure your data. Send this encrypted data to
-        anyone and they won't be able to see it until you give them the
-        permission through adding their emails. Interestingly, the key is not
+        anyone and they won't be able to see the data until you give them the
+        exclusive permission through adding their emails. Interestingly, the key is not
         constant as everytime you initiate the encyption, a new key will be
         automatically generated and the beauty is you don't even need to
-        remember any keys, neither we do know your keys since all the operations
-        will be managed automatically in the backend with the most secured
+        remember any keys. Also, we'll never know your keys since all the operations
+        will be managed automatically in your local browser along with our most secured
         algorithm.
       </EgTypography>
     </div>

@@ -48,9 +48,8 @@ const tiers = [
     title: "Free",
     price: "0",
     description: [
-      "10 users included",
-      "2 GB of storage",
-      "Help center access",
+      "100 encrypt/decrypt requests",
+      "1 GB data limit",
       "Email support",
     ],
     buttonText: "Sign up for free",
@@ -59,10 +58,10 @@ const tiers = [
   {
     title: "Pro",
     subheader: "Most popular",
-    price: "15",
+    price: "3000",
     description: [
-      "20 users included",
-      "10 GB of storage",
+      "3000 encrypt/decrypt requests",
+      "5 GB data limit",
       "Help center access",
       "Priority email support",
     ],
@@ -71,11 +70,12 @@ const tiers = [
   },
   {
     title: "Enterprise",
-    price: "30",
+    price: " usage/year",
     description: [
-      "50 users included",
-      "30 GB of storage",
-      "Help center access",
+      "Unlimited data and requests",
+      "Flexible pricing options",
+      "Customized deployment on-premise/ cloud",
+      "Dedicated help center access",
       "Phone & email support",
     ],
     buttonText: "Contact us",
@@ -98,7 +98,7 @@ function Pricing() {
           color="textPrimary"
           gutterBottom
         >
-          Pricing
+          ₹Pricing
         </Typography>
         <Typography
           variant="h5"
@@ -106,9 +106,7 @@ function Pricing() {
           color="textSecondary"
           component="p"
         >
-          Quickly build an effective pricing table for your potential customers
-          with this layout. It&apos;s built with default Material-UI components
-          with little customization.
+          EncryptGig purchase options.
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -134,8 +132,8 @@ function Pricing() {
                 />
                 <CardContent>
                   <div className={classes.cardPricing}>
-                    <Typography component="h2" variant="h3" color="textPrimary">
-                      ${tier.price}
+                    <Typography component="h4" variant="h4" color="textPrimary">
+                    ₹{tier.price}
                     </Typography>
                     <Typography variant="h6" color="textSecondary">
                       /mo

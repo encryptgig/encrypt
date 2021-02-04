@@ -20,32 +20,27 @@ const Contact = () => {
 
   return (
     <div className={globalClasses.drawerPadding}>
-      <EgPageTitle title="About EncryptGig"> </EgPageTitle>
+      <EgPageTitle title="*About EncryptGig"> </EgPageTitle>
       <Box className={classes.boxcontent}>
         <Typography>
-          EncryptGig is the team of security experts, who are on a mission to
-          develop powerful, scalable and yet simple encryption products for
-          every organizations and individuals need. Our algorithm is designed on
-          the stateless architecture, which makes it effortlessly scalable in
-          both on-premises and various clouds. Further, everytime you trigger
-          the encryptions, we rotate the key, hence providing you the most
-          secured way to protect your data. Plus, forget the traditional pain to
-          remember and maintain your private keys and infrastructure. All the
-          operations will be perfomed in backend with three layers of encryption
-          automatically on your local machine. Finally, with EncryptGig,
-          organizations and individuals can scale up their data protection at
-          any extent without worrying about any security bottlenecks as product
-          comes with best in-build security features in the industry. We're
-          truly excited to embark on your critical encryption journey with us!
+        EncryptGig is a team of security experts, who are on a mission to develop powerful, scalable, cost-effective, 
+        and yet simple encryption product for every organization and individual's need. Our algorithm is designed on 
+        the stateless architecture, which makes it effortlessly scalable in both on-premises and various clouds. 
+        Further, every time you trigger the encryptions, we rotate the key, hence providing you the most secured way 
+        to protect your data. Plus, forget the traditional pain to remember and maintain your private keys and infrastructure. 
+        Since all the crypto operations will be performed in the backend with three layers of encryption automatically on your 
+        local machine without you to remember keys. Finally, with EncryptGig, all organizations and individuals can scale up their 
+        data protection ability to any extent without worrying about any security bottlenecks as our product comes with the best in-build 
+        security features in the industry. We're truly excited to embark on your critical encryption journey with us!
           <Typography>
             <h4>
               {" "}
               <p>
                 {" "}
-                For demo sales, and inquiry, etc. write us at{" "}
-                <a href="mailto: encryptgig@gmail.com" target="_blank">
+                For demo sales, inquiry, etc. write us at{" "}
+                <a href="mailto: contact@encryptgig.com" target="_blank">
                   {" "}
-                  encryptgig@gmail.com
+                  contact@encryptgig.com
                 </a>
               </p>{" "}
             </h4>
