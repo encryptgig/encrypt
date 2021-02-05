@@ -53,19 +53,30 @@ const Dashboard = () => {
         >
           <GaugeChart
             id="encr_data"
-            percent={data / 1000000000}
-            textColor="#00"
+            arcsLength={[0.2, 0.6, 0.2]}
+            percent={data < 10000000 ? 0.1 : 0.5}
+            colors={["#EA4228", "#F5CD19", "#5BE12C"]}
+            hideText={true}
           ></GaugeChart>
-          <Typography style={{ paddingLeft: "42%" }}>Data usage</Typography>
+          <Typography style={{ paddingLeft: "38%" }}>Data Remaining</Typography>
+          <Typography align="center" style={{ fontSize: 48 }}>
+            {data}
+          </Typography>
         </Box>
         <Box display="flex" flexDirection="column" style={{ width: "48%" }}>
           <GaugeChart
-            id="request_count"
-            nrOfLevels={20}
-            textColor="#00"
-            percent={requests / 500}
-          />
-          <Typography style={{ paddingLeft: "42%" }}>Requests usage</Typography>
+            id="encr_data"
+            arcsLength={[0.2, 0.6, 0.2]}
+            percent={requests < 50 ? 0.1 : 0.5}
+            colors={["#EA4228", "#F5CD19", "#5BE12C"]}
+            hideText={true}
+          ></GaugeChart>
+          <Typography style={{ paddingLeft: "38%" }}>
+            Requests Remaining
+          </Typography>
+          <Typography align="center" style={{ fontSize: 48 }}>
+            {requests}
+          </Typography>
         </Box>
       </Box>
     </div>

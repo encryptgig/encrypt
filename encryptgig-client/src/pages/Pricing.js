@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
     alignItems: "baseline",
     marginBottom: theme.spacing(2),
   },
+  cardContent: {
+    height: "20vw",
+  },
 }));
 
 const tiers = [
@@ -130,10 +133,10 @@ function Pricing() {
                   action={tier.title === "Pro" ? <StarIcon /> : null}
                   className={classes.cardHeader}
                 />
-                <CardContent>
+                <CardContent className={classes.cardContent}>
                   <div className={classes.cardPricing}>
                     <Typography component="h4" variant="h4" color="textPrimary">
-                    ₹{tier.price}
+                      ₹{tier.price}
                     </Typography>
                     <Typography variant="h6" color="textSecondary">
                       /mo
