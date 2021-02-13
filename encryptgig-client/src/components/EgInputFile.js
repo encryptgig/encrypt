@@ -1,9 +1,8 @@
 import React, { useMemo } from "react";
-import { Box, Button, makeStyles, Typography } from "@material-ui/core";
+import { Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { uploadFile } from "../Actions/fileActions";
-import Dropzone from "react-dropzone";
-import { useDropzone } from "react-dropzone";
+import Dropzone, { useDropzone } from "react-dropzone";
 
 // const useStyles = makeStyles((theme) => ({}));
 const baseStyle = {
@@ -53,7 +52,7 @@ const EgInputFile = (props) => {
     isDragActive,
     isDragAccept,
     isDragReject,
-  } = useDropzone({ maxFiles: 2, accept: ".xlsx" });
+  } = useDropzone({ maxFiles: 2 });
 
   const style = useMemo(
     () => ({

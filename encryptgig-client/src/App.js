@@ -40,7 +40,7 @@ const theme = createMuiTheme({
 });
 
 function App() {
-  const existingTokens = JSON.parse(localStorage.getItem("tokens"));
+  const existingTokens = localStorage.getItem("accessToken");
   const history = createBrowserHistory();
   const [inst, setInst] = useState(null);
 
@@ -58,6 +58,9 @@ function App() {
       (result) => {
         go.run(result.instance);
         setInst(result.instance);
+        if (existingTokens != null) {
+          window.WASMGo.instantiateWithJWT(existingTokens);
+        }
       }
     );
   };
