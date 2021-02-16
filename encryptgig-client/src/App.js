@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Redirect, Route, Switch } from "react-router-dom";
 import EgDrawer from "./components/EgDrawer";
 import Login from "./pages/Login";
+import { userLogout } from "./Actions/userAction";
 import Register from "./pages/Register";
 import EncryptData from "./pages/EncryptData";
 import { createBrowserHistory } from "history";
@@ -25,6 +26,7 @@ import AuditLogs from "./pages/AuditLogs";
 import Dashboard from "./pages/Dashboard";
 import { SecretRoute } from "./SecretRoutes";
 import Pricing from "./pages/Pricing";
+import { useDispatch } from "react-redux";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -42,6 +44,7 @@ const theme = createMuiTheme({
 function App() {
   const existingTokens = localStorage.getItem("accessToken");
   const history = createBrowserHistory();
+  const dispatch = useDispatch();
   const [inst, setInst] = useState(null);
 
   useEffect(() => {
@@ -58,11 +61,24 @@ function App() {
       (result) => {
         go.run(result.instance);
         setInst(result.instance);
-        if (existingTokens != null) {
-          window.WASMGo.instantiateWithJWT(existingTokens);
-        }
+        checkForLogin(existingTokens);
       }
     );
+  };
+
+  const checkForLogin = async (existingTokens) => {
+    if (existingTokens != null) {
+      let payload = atob(existingTokens.split(".")[1]);
+
+      if (JSON.parse(payload).exp < Date.now() / 1000) {
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("userName");
+        localStorage.removeItem("photoUrl");
+        dispatch(userLogout());
+        return;
+      }
+      window.WASMGo.instantiateWithJWT(existingTokens);
+    }
   };
 
   return (
