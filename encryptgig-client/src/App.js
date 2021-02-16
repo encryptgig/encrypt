@@ -20,13 +20,13 @@ import {
   ThemeProvider,
   createMuiTheme,
 } from "@material-ui/core/styles";
-import blue from "@material-ui/core/colors/blue";
 import EgSpinner from "./components/EgSpinner";
 import AuditLogs from "./pages/AuditLogs";
 import Dashboard from "./pages/Dashboard";
 import { SecretRoute } from "./SecretRoutes";
 import Pricing from "./pages/Pricing";
 import { useDispatch } from "react-redux";
+import SecurityIcon from "@material-ui/icons/Security";
 
 //Added a new font Family
 const theme = createMuiTheme({

@@ -2,7 +2,9 @@ import React, { useMemo } from "react";
 import { Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
 import { uploadFile } from "../Actions/fileActions";
-import Dropzone, { useDropzone } from "react-dropzone";
+import Dropzone from "react-dropzone";
+import { useDropzone } from "react-dropzone";
+import ArchiveIcon from "@material-ui/icons/Archive";
 
 // const useStyles = makeStyles((theme) => ({}));
 const baseStyle = {
@@ -75,7 +77,13 @@ const EgInputFile = (props) => {
             <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
               <p>
-                <b>Drag 'n' drop some files here, or click to select files</b>
+                <Typography>
+                  {" "}
+                  <ArchiveIcon color="darkgrey" />
+                  <b>
+                    Drag 'n' drop some files here, or click to select files
+                  </b>{" "}
+                </Typography>
               </p>
             </div>
           </section>

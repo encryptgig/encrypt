@@ -14,6 +14,11 @@ import { TabPanel } from "../components/EgTabPanel";
 import { validateEmail } from "../utilities/emailUtils";
 import { validateLogin } from "../utilities/loginUtils";
 import { showLogin } from "../Actions/showLoginAction";
+import ImageIcon from '@material-ui/icons/Image';
+import PersonalVideoIcon from '@material-ui/icons/PersonalVideo';
+import AudiotrackIcon from '@material-ui/icons/Audiotrack';
+
+
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2) },
@@ -120,38 +125,37 @@ const EncryptMedia = (props) => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Image Encryption" />
-          <Tab label="Video Encryption" />
-          <Tab label="Audio Encryption" />
+          <Tab  label= "Image Encryption" icon= {<ImageIcon/>}/>
+          <Tab label="Video Encryption" icon= {<PersonalVideoIcon/>}/>
+          <Tab label="Audio Encryption" icon= {<AudiotrackIcon/>}/>
           {/* </EgTabbar> */}
         </Tabs>
       </AppBar>
       <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
         <TabPanel value={tabValue} index={0}>
-          <EgPageTitle title="Image Encryption"></EgPageTitle>
           <EgInputFile />
           <EgEmailInput />
-          <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} />
-            <EgButton text="decrypt" onClick={handleDecrypt} />
+          <Box display="flex" flexDirection=  "row">
+            <EgButton text="Encrypt" onClick={handleEncrypt} icon= "lock"/>
+            <EgButton text="decrypt" onClick={handleDecrypt} icon= "unlock"/>
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <EgPageTitle title="Video Encryption"></EgPageTitle>
+          
           <EgInputFile />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} />
-            <EgButton text="decrypt" onClick={handleDecrypt} />
+            <EgButton text="Encrypt" onClick={handleEncrypt} icon= "lock"/>
+            <EgButton text="decrypt" onClick={handleDecrypt} icon= "unlock"/>
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <EgPageTitle title="Audio Encryption"></EgPageTitle>
+          
           <EgInputFile />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
-            <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
+            <EgButton text="Encrypt" onClick={handleEncrypt} icon= "lock" />
+            <EgButton text="decrypt" onClick={handleDecrypt} icon= "unlock" />
           </Box>
         </TabPanel>
       </SwipeableViews>
@@ -159,10 +163,11 @@ const EncryptMedia = (props) => {
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Media Encryption"></EgPageTitle>
       <EgTypography>
-        <b>We don't let your data travel over internet.</b>
-        Test our application with your data and we just secure it. Send this
-        secure data anywhere to any body and they won't be able to see it until
-        you want them to see it.
+     <p align= "justify">
+        <b>Simply encrypt large video and audio files and share with anyone securely.</b>
+        <p></p>
+        You can secure big personal and business Videos and Audios files. Give others permission to access it and always rollback the permission via our Audit feature.
+        </p>
       </EgTypography>
     </div>
   );
