@@ -25,6 +25,7 @@ import AuditLogs from "./pages/AuditLogs";
 import Dashboard from "./pages/Dashboard";
 import { SecretRoute } from "./SecretRoutes";
 import Pricing from "./pages/Pricing";
+import SecurityIcon from '@material-ui/icons/Security';
 
 //Added a new font Family
 const theme = createMuiTheme({

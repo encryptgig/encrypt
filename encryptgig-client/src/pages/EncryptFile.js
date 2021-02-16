@@ -12,6 +12,7 @@ import { globalStyles } from "../styles/global.styles";
 import { validateEmail } from "../utilities/emailUtils";
 import { validateLogin } from "../utilities/loginUtils";
 import { showLogin } from "../Actions/showLoginAction";
+import SecurityIcon from '@material-ui/icons/Security';
 
 const EncryptFile = (props) => {
   const globalClasses = globalStyles();
@@ -93,8 +94,10 @@ const EncryptFile = (props) => {
 
   return (
     <div className={globalClasses.drawerPadding}>
-      <EgPageTitle title="File Encryption"></EgPageTitle>
-
+      <Box display="flex" flexDirection="row">
+      <SecurityIcon/>
+      <EgPageTitle title="File Encryption" />
+      </Box>
       <EgInputFile />
       <EgEmailInput />
       <Box display="flex" flexDirection="row">
@@ -103,21 +106,22 @@ const EncryptFile = (props) => {
       </Box>
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About File Encryption"></EgPageTitle>
-      <EgTypography>
-        <p>
-          <b>We don’t let your data or file travel over internet. </b>{" "}
-        </p>
-        You can encrypt any of your file i.e.{" "}
+      <EgTypography >
+        <p align= "justify">
+          <b>We don’t let your original files or logs travel over internet or network while sharing. </b>{" "}
+          <p></p>
+        
+        You can encrypt files i.e.{" "}
         <b>
-          PDF, Doc, Word, PPT, JPEG, Video, Audio, or any file that is text or
+          PDF, Doc, Word, PPT, JPEG, or any file that is text or
           binary,{" "}
         </b>{" "}
-        using our product. For encrypting your file, we use your master
-        password, along with the Google's private key that is also wrapped.
-        Note, even we don't know which files or keys you used since all
-        operations will perform on your local browser with utmost security.
-        Finally, file logs don't travel over internet, not even to us. Don't
-        believe? You can just check your browser's log!
+        using our product. For encrypting your file, we use three-layers encryption.
+        Note here we don't know which files or keys are used in encryption, since all
+        operations will be performed on your local browser with web assembly algorithm we've built.
+        Finally, your logs don't travel over internet, nor reaches to us. Don't
+        believe? check out your browser's log!
+        </p>
       </EgTypography>
     </div>
   );

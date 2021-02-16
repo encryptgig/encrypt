@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { uploadFile } from "../Actions/fileActions";
 import Dropzone from "react-dropzone";
 import { useDropzone } from "react-dropzone";
+import ArchiveIcon from '@material-ui/icons/Archive';
 
 // const useStyles = makeStyles((theme) => ({}));
 const baseStyle = {
@@ -76,7 +77,8 @@ const EgInputFile = (props) => {
             <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
               <p>
-                <b>Drag 'n' drop some files here, or click to select files</b>
+              <Typography> <ArchiveIcon color="darkgrey"/>
+                 <b>Drag 'n' drop some files here, or click to select files</b> </Typography>
               </p>
             </div>
           </section>

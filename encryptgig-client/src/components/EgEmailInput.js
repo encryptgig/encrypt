@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Chip, makeStyles, TextField } from "@material-ui/core";
+import { Chip, InputAdornment, makeStyles, TextField } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { shareFile } from "../Actions/fileActions";
+import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -61,7 +63,8 @@ const EgEmailInput = (props) => {
         variant="filled"
         placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         label="Share with emails"
-        onChange={inputChange}
+      
+        onChange={inputChange}  
         onKeyPress={(e) => {
           if (e.key == "Enter") {
             captureEmails();
@@ -73,6 +76,7 @@ const EgEmailInput = (props) => {
         InputProps={{
           startAdornment: emailList.map((item) => (
             <div className={classes.root} key={item}>
+               <SupervisorAccountIcon /> 
               <Chip
                 key={item}
                 label={item}

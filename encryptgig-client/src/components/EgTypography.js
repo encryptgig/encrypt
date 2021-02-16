@@ -1,6 +1,7 @@
 import React from "react";
 import { makeStyles, Typography } from "@material-ui/core";
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles';
+import { FormatAlignJustify } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   padding1: {
@@ -19,6 +20,8 @@ const EgTypography = (props) => {
       color="textSecondary"
       variant="body2"
       gutterBottom
+     
+      
     >
       {props.children}
     </Typography>
