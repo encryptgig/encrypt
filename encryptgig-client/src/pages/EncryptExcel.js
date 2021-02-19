@@ -48,10 +48,9 @@ import {
 } from "../utilities/emailUtils";
 import { validateLogin } from "../utilities/loginUtils";
 import { showLogin } from "../Actions/showLoginAction";
-import SecurityIcon from '@material-ui/icons/Security';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
-
+import SecurityIcon from "@material-ui/icons/Security";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -318,8 +317,8 @@ const EncryptCSV = (props) => {
   return (
     <div className={globalClasses.drawerPadding}>
       <Box display="flex" flexDirection="row">
-      <SecurityIcon/>
-      <EgPageTitle title="Excel Encryption"></EgPageTitle>
+        <SecurityIcon style={{ marginTop: 15, marginRight: 2 }} />
+        <EgPageTitle title="Excel Encryption"></EgPageTitle>
       </Box>
       <AppBar
         position="static"
@@ -335,13 +334,13 @@ const EncryptCSV = (props) => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Encrypt Excel" icon= {<EnhancedEncryptionIcon/>}/>
-          <Tab label="Decrypt Excel" icon= {<VpnKeyIcon/>}/>
+          <Tab label="Encrypt Excel" icon={<EnhancedEncryptionIcon />} />
+          <Tab label="Decrypt Excel" icon={<VpnKeyIcon />} />
         </Tabs>
       </AppBar>
       <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
         <TabPanel value={tabValue} index={0} dir={theme.direction}>
-          <EgInputFile />
+          <EgInputFile maxAllowedCount={1} />
           <EgEmailInput />
           <FormControl component="fieldset">
             {/* <FormLabel component="legend">Gender</FormLabel> */}
@@ -382,13 +381,14 @@ const EncryptCSV = (props) => {
           You can encrypt any columns and/or rows in your excel OR even entire
           excel file with one click!
         </b>
-         <p align= "justify">
+        <p align="justify">
           {" "}
           We tokenize the data at row and column level. Additionally, you can
-          always restrict whom you wish to give decryption access by adding their email ids
-          inside "share with emails" during encryption. Trust that the size of data doesn't change while
-          performing decryption. Finally, protect your excel files while sharing and be
-          assuared of data safety always.{" "}
+          always restrict whom you wish to give decryption access by adding
+          their email ids inside "share with emails" during encryption. Trust
+          that the size of data doesn't change while performing decryption.
+          Finally, protect your excel files while sharing and be assuared of
+          data safety always.{" "}
         </p>
       </EgTypography>
     </div>

@@ -1,3 +1,5 @@
+import JsZip from "jszip";
+
 export const dataURItoBlob = (dataURI, callback) => {
   // convert base64 to raw binary data held in a string
   // doesn't handle URLEncoded DataURIs - see SO answer #6850276 for code that does this
@@ -33,6 +35,21 @@ export const base64ToBlob = (data) => {
   // write the ArrayBuffer to a blob, and you're done
   var bb = new Blob([ab]);
   return bb;
+};
+
+export const downloadZipFile = async (files, isEncrypt) => {
+  console.log(files);
+  var zip = new JsZip();
+  zip.file("hello.pdf", new Blob(["Hello World"]));
+  zip.file("hello1.pdf", new Blob(["Hello World"]));
+  // const blob = await downloadZip(files).blob();
+  zip
+    .generateAsync({
+      type: "blob",
+    })
+    .then(function (content) {
+      window.location.href = "data:application/zip;blob," + content;
+    });
 };
 
 export const downloadFile = (fileData, fileName, isEncrypt) => {

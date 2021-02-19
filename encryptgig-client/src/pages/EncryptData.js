@@ -13,9 +13,9 @@ import { validateLogin } from "../utilities/loginUtils";
 import { showLogin } from "../Actions/showLoginAction";
 import SwipeableViews from "react-swipeable-views";
 import { TabPanel } from "../components/EgTabPanel";
-import SecurityIcon from '@material-ui/icons/Security';
-import VpnKeyIcon from '@material-ui/icons/VpnKey';
-import EnhancedEncryptionIcon from '@material-ui/icons/EnhancedEncryption';
+import SecurityIcon from "@material-ui/icons/Security";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
 
 const EncryptData = (props) => {
   const globalClasses = globalStyles();
@@ -90,10 +90,9 @@ const EncryptData = (props) => {
 
   return (
     <div className={globalClasses.drawerPadding}>
-
       <Box display="flex" flexDirection="row">
-      <SecurityIcon/>
-      <EgPageTitle title="Data Encryption"></EgPageTitle>
+        <SecurityIcon style={{ marginTop: 15 }} />
+        <EgPageTitle title="Data Encryption"></EgPageTitle>
       </Box>
       <AppBar
         position="static"
@@ -109,8 +108,8 @@ const EncryptData = (props) => {
           variant="fullWidth"
           aria-label="full width tabs example"
         >
-          <Tab label="Encrypt Data" icon= {<EnhancedEncryptionIcon/>}/>
-          <Tab label="Decrypt Data" icon= {<VpnKeyIcon/>}/>
+          <Tab label="Encrypt Data" icon={<EnhancedEncryptionIcon />} />
+          <Tab label="Decrypt Data" icon={<VpnKeyIcon />} />
         </Tabs>
       </AppBar>
       <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
@@ -189,19 +188,22 @@ const EncryptData = (props) => {
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Data Encryption"></EgPageTitle>
       <EgTypography>
-        <p align= "justify">
+        <p align="justify">
           {" "}
-          <b> We don't let your data or logs travel over internet or network anytime.</b>{" "}
+          <b>
+            {" "}
+            We don't let your data or logs travel over internet or network
+            anytime.
+          </b>{" "}
           <p></p>
-        
-        Test our application to secure your data. Send this encrypted data to
-        anyone and they won't be able to see the data until you give them the
-        exclusive permission through adding their emails while encrypting. Interestingly, the key is not
-        constant as everytime you initiate the encyption, a new key will be
-        automatically generated and the beauty is you don't even need to
-        remember any keys. Also, we'll never know your keys since all the operations
-        will be managed in your local browser along with our most secured
-        algorithm.
+          Test our application to secure your data. Send this encrypted data to
+          anyone and they won't be able to see the data until you give them the
+          exclusive permission through adding their emails while encrypting.
+          Interestingly, the key is not constant as everytime you initiate the
+          encyption, a new key will be automatically generated and the beauty is
+          you don't even need to remember any keys. Also, we'll never know your
+          keys since all the operations will be managed in your local browser
+          along with our most secured algorithm.
         </p>
       </EgTypography>
     </div>

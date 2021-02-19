@@ -1,10 +1,9 @@
 import React, { useMemo } from "react";
-import { Typography } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { uploadFile } from "../Actions/fileActions";
-import Dropzone from "react-dropzone";
-import { useDropzone } from "react-dropzone";
 import ArchiveIcon from "@material-ui/icons/Archive";
+import { uploadFiles } from "../Actions/fileActions";
+import Dropzone, { useDropzone } from "react-dropzone";
 
 // const useStyles = makeStyles((theme) => ({}));
 const baseStyle = {
@@ -36,6 +35,7 @@ const rejectStyle = {
 const EgInputFile = (props) => {
   const uploadedFile = useSelector((state) => state);
   const dispatch = useDispatch();
+  const { maxAllowedCount } = props;
 
   const renderText = (e) => {
     if (uploadedFile.files?.file == null) {
@@ -43,7 +43,9 @@ const EgInputFile = (props) => {
     } else {
       return (
         <ul>
-          <li>{uploadedFile.files.file.name}</li>
+          {uploadedFile.files.file.map((fileEntry) => (
+            <li>{fileEntry.name}</li>
+          ))}
         </ul>
       );
     }
@@ -69,22 +71,25 @@ const EgInputFile = (props) => {
     <div>
       <Dropzone
         onDrop={(acceptedFiles) => {
-          dispatch(uploadFile(acceptedFiles[0]));
+          if (acceptedFiles.length > maxAllowedCount) {
+            alert("You can select maximum of " + maxAllowedCount + " files.");
+            return;
+          }
+          dispatch(uploadFiles(acceptedFiles));
         }}
       >
         {({ getRootProps, getInputProps }) => (
           <section>
             <div {...getRootProps({ style })}>
               <input {...getInputProps()} />
-              <p>
-                <Typography>
-                  {" "}
-                  <ArchiveIcon color="darkgrey" />
-                  <b>
-                    Drag 'n' drop some files here, or click to select files
-                  </b>{" "}
+              <Box display="flex" flexDirection="row">
+                <Typography color="textSecondary">
+                  <ArchiveIcon style={{ marginRight: 5 }} />
                 </Typography>
-              </p>
+                <Typography color="textSecondary">
+                  <b>Drag 'n' drop some files here, or click to select files</b>
+                </Typography>
+              </Box>
             </div>
           </section>
         )}

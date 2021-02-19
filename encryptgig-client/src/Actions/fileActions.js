@@ -1,4 +1,4 @@
-export function uploadFile(file) {
+export function uploadFiles(file) {
   return { type: "UPLOAD_FILE", filetype: "", file };
 }
 export function shareFile(emailList) {

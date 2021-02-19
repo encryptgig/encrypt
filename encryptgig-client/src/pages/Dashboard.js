@@ -25,16 +25,26 @@ const Dashboard = () => {
     fetch("https://encryptgig-3nere6jg5a-uc.a.run.app/user/quota", { headers })
       .then((response) => response.json())
       .then((data1) => {
-        console.log(data1);
-
         setData(data1.DataRemaining);
         setRequests(data1.RequestRemaining);
         dispatch(showSpinner(false));
       })
       .catch((e) => {
-        console.log("Error fetching audit logs" + e);
         dispatch(showSpinner(false));
       });
+  };
+
+  const GetDisplayData = (data) => {
+    if (data > 1000000000) {
+      return parseFloat(data / 1000000000).toFixed(2) + " GB";
+    }
+    if (data > 1000000) {
+      return parseFloat(data / 1000000).toFixed(2) + " MB";
+    }
+    if (data > 1000) {
+      return parseFloat(data / 1000).toFixed(2) + " MB";
+    }
+    return parseFloat(data).toFixed(2) + " Bytes";
   };
 
   return (
@@ -43,7 +53,7 @@ const Dashboard = () => {
       <Box
         display="flex"
         flexDirection="row"
-        style={{ backgroundColor: "#c7c7c7", width: "98%" }}
+        style={{ border: "1px solid black", borderRadius: 15, width: "98%" }}
       >
         <Box
           display="flex"
@@ -60,7 +70,7 @@ const Dashboard = () => {
           ></GaugeChart>
           <Typography style={{ paddingLeft: "38%" }}>Data Remaining</Typography>
           <Typography align="center" style={{ fontSize: 48 }}>
-            {data}
+            {GetDisplayData(data)}
           </Typography>
         </Box>
         <Box display="flex" flexDirection="column" style={{ width: "48%" }}>
