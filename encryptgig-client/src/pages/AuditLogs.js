@@ -5,6 +5,9 @@ import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import KeyboardArrowUpIcon from "@material-ui/icons/KeyboardArrowUp";
 import { showSpinner } from "../Actions/spinnerAction";
 import { useDispatch } from "react-redux";
+import jsPDF from "jspdf";
+import autotable from "jspdf-autotable";
+import html2canvas from "html2canvas";
 import {
   makeStyles,
   Box,
@@ -34,6 +37,7 @@ import EgEmailInput from "../components/EgEmailInput";
 import { validateEmail } from "../utilities/emailUtils";
 import { useSelector } from "react-redux";
 import { Fragment } from "react";
+import EgButton from "../components/EgButton";
 
 const useStyles = makeStyles((theme) => ({
   head: { backgroundColor: theme.palette.primary.light, color: "white" },
@@ -62,7 +66,7 @@ const AuditLogs = () => {
   const limit = 20;
 
   useEffect(() => {
-    fetchData();
+    fetchData(false);
   }, []);
 
   const handleRemoveEmail = (email, docName, creationDate, creatorEmail) => {
@@ -206,14 +210,13 @@ const AuditLogs = () => {
       alert("Please login again.");
       return;
     }
-    const headers = { "Content-Type": "application/json", bearer: token };
-    fetch(
+    let url =
       "https://encryptgig-3nere6jg5a-uc.a.run.app/user/docs?offset=" +
-        pageNo * limit +
-        "&limit=" +
-        limit,
-      { headers }
-    )
+      pageNo * limit +
+      "&limit=" +
+      limit;
+    const headers = { "Content-Type": "application/json", bearer: token };
+    fetch(url, { headers })
       .then((response) => response.json())
       .then((data) => {
         setDocData(data);
@@ -221,7 +224,35 @@ const AuditLogs = () => {
         x[data.length - 1] = false;
         x.fill(false);
         setRowOpen(x);
-        console.log(data);
+        dispatch(showSpinner(false));
+      })
+      .catch((e) => {
+        console.log("Error fetching audit logs" + e);
+        dispatch(showSpinner(false));
+      });
+  };
+
+  const DownloadPdf = () => {
+    dispatch(showSpinner(true));
+    const token = localStorage.getItem("accessToken");
+    const pdf = new jsPDF();
+    const url = "https://encryptgig-3nere6jg5a-uc.a.run.app/user/docs";
+
+    const headers = { "Content-Type": "application/json", bearer: token };
+    fetch(url, { headers })
+      .then((response) => response.json())
+      .then((data) => {
+        autotable(pdf, {
+          head: [["Document Name", "Creation Time", "Shared With"]],
+          body: data.map((record) => {
+            return [
+              record.Name,
+              GetDate(record.CreationDate).split("GMT")[0],
+              Object.keys(JSON.parse(record.AllowDecryption)),
+            ];
+          }),
+        });
+        pdf.save("AuditData.pdf");
         dispatch(showSpinner(false));
       })
       .catch((e) => {
@@ -231,8 +262,15 @@ const AuditLogs = () => {
   };
 
   return (
-    <div className={globalClasses.drawerPadding}>
-      <EgPageTitle title="Audit Logs"> </EgPageTitle>
+    <div className={globalClasses.drawerPadding} id="audit-data">
+      <Box display="flex" flexDirection="row">
+        <Box flexGrow={1}>
+          <EgPageTitle title="Audit Logs"> </EgPageTitle>
+        </Box>
+        <Box style={{ padding: 10 }}>
+          <EgButton text="Download" onClick={DownloadPdf} icon="" />
+        </Box>
+      </Box>
       <TableContainer component={Paper} className={classes.table}>
         <Table aria-label="Document Data">
           <TableHead>
