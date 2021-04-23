@@ -102,7 +102,7 @@ const AuditLogs = () => {
       uploadedFile.shareEmail.emailList.length > 0
     ) {
       for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
-        if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+        if (!validateEmail(uploadedFile.shareEmail.emailList[x].trim())) {
           alert(
             "One of the email provided is not valid. Please correct and retry."
           );

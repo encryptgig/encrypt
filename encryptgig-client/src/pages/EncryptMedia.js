@@ -30,66 +30,24 @@ const EncryptMedia = (props) => {
   const classes = useStyles();
   const [tabValue, setTabValue] = React.useState(0);
   const handleDecrypt = () => {
-    var file = uploadedFile.files.file;
+    var files = uploadedFile.files.file;
     if (!validateLogin()) {
       dispatch(showLogin(true));
       return;
     }
-    if (!file) {
-      return;
-    }
-    var reader = new FileReader();
-    reader.readAsText(file);
-    reader.onload = async function (evt) {
-      try {
-        let out = await window.WASMGo.decrypt(evt.target.result, file.name);
-
-        var jsonBlob = null;
-        jsonBlob = dataURItoBlob(out);
-        downloadFile(jsonBlob, file.name, false);
-      } catch (e) {
-        alert(e);
+    files.forEach((file) => {
+      if (!file) {
+        return;
       }
-    };
-    reader.onerror = function (evt) {
-      console.log("error reading file");
-    };
-  };
-  const handleEncrypt = () => {
-    var file = uploadedFile.files.file;
-    if (!validateLogin()) {
-      dispatch(showLogin(true));
-      return;
-    }
-    if (file) {
       var reader = new FileReader();
-      reader.readAsDataURL(file);
+      reader.readAsText(file);
       reader.onload = async function (evt) {
         try {
-          let email = "";
-          if (
-            uploadedFile.shareEmail.emailList != null &&
-            uploadedFile.shareEmail.emailList.length > 0
-          ) {
-            for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
-              if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
-                alert(
-                  "One of the email provided is not valid. Please correct and retry."
-                );
-                return;
-              }
-            }
-            email = uploadedFile.shareEmail.emailList.join(",");
-          }
-          let out = await window.WASMGo.encrypt(
-            evt.target.result,
-            file.name,
-            evt.target.result.length,
-            email
-          );
+          let out = await window.WASMGo.decrypt(evt.target.result, file.name);
+
           var jsonBlob = null;
-          jsonBlob = new Blob([out]);
-          downloadFile(jsonBlob, file.name, true);
+          jsonBlob = dataURItoBlob(out);
+          downloadFile(jsonBlob, file.name, false);
         } catch (e) {
           alert(e);
         }
@@ -97,9 +55,55 @@ const EncryptMedia = (props) => {
       reader.onerror = function (evt) {
         console.log("error reading file");
       };
-    } else {
-      alert("select file to encrypt");
+    });
+  };
+  const handleEncrypt = () => {
+    var files = uploadedFile.files.file;
+    if (!validateLogin()) {
+      dispatch(showLogin(true));
+      return;
     }
+    let email = "";
+    if (
+      uploadedFile.shareEmail.emailList != null &&
+      uploadedFile.shareEmail.emailList.length > 0
+    ) {
+      for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
+        if (!validateEmail(uploadedFile.shareEmail.emailList[x].trim())) {
+          alert(
+            "One of the email provided is not valid. Please correct and retry. "
+          );
+          return;
+        }
+      }
+      email = uploadedFile.shareEmail.emailList.join(",");
+    }
+    files.forEach((file) => {
+      if (file) {
+        var reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = async function (evt) {
+          try {
+            let out = await window.WASMGo.encrypt(
+              evt.target.result,
+              file.name,
+              evt.target.result.length,
+              email
+            );
+            var jsonBlob = null;
+            jsonBlob = new Blob([out]);
+            downloadFile(jsonBlob, file.name, true);
+          } catch (e) {
+            alert(e);
+          }
+        };
+        reader.onerror = function (evt) {
+          console.log("error reading file");
+        };
+      } else {
+        alert("select file to encrypt");
+      }
+    });
   };
   const hadleTabChange = (e, newValue) => {
     setTabValue(newValue);

@@ -149,7 +149,7 @@ const EncryptCSV = (props) => {
   };
 
   const handleDecrypt = () => {
-    var file = uploadedFile.files.file;
+    var file = uploadedFile.files.file[0];
     if (!validateLogin()) {
       dispatch(showLogin(true));
       return;
@@ -171,7 +171,7 @@ const EncryptCSV = (props) => {
   };
 
   const handleEncrypt = () => {
-    var file = uploadedFile.files.file;
+    var file = uploadedFile.files.file[0];
     if (!validateLogin()) {
       dispatch(showLogin(true));
       return;
@@ -189,7 +189,7 @@ const EncryptCSV = (props) => {
       uploadedFile.shareEmail.emailList.length > 0
     ) {
       for (var x = 0; x < uploadedFile.shareEmail.emailList.length; x++) {
-        if (!validateEmail(uploadedFile.shareEmail.emailList[x])) {
+        if (!validateEmail(uploadedFile.shareEmail.emailList[x].trim())) {
           alert(
             "One of the email provided is not valid. Please correct and retry."
           );
@@ -223,7 +223,7 @@ const EncryptCSV = (props) => {
   };
 
   const getSheetNames = () => {
-    var file = uploadedFile.files.file;
+    var file = uploadedFile.files.file[0];
     if (file) {
       var reader = new FileReader();
       reader.readAsBinaryString(file);

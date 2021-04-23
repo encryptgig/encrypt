@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { BrowserRouter as Router, withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -42,7 +42,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   cardContent: {
-    height: "20vw",
+    height: "230px",
   },
 }));
 
@@ -73,11 +73,11 @@ const tiers = [
   },
   {
     title: "Enterprise",
-    price: " usage/year",
+    price: "As Per Usage",
     description: [
       "Unlimited data and requests",
       "Flexible pricing options",
-      "Customized deployment on-premise/ cloud",
+      "Customized deployment on-premise/cloud",
       "Dedicated help center access",
       "Phone & email support",
     ],
@@ -86,9 +86,28 @@ const tiers = [
   },
 ];
 
-function Pricing() {
+const Pricing = (props) => {
   const globalClasses = globalStyles();
   const classes = useStyles();
+  const { history } = props;
+  const NavigateToRegister = () => {
+    if (
+      localStorage.getItem("accessToken") !== null &&
+      localStorage.getItem("accessToken").length !== 0
+    ) {
+      let token = localStorage.getItem("accessToken");
+      var href =
+        "https://encryptgig-3nere6jg5a-uc.a.run.app/buy?planid=plan_test&jwt=" +
+        token;
+      window.location.replace(href);
+    } else {
+      alert("Token is null please login");
+    }
+  };
+
+  const getToken = () => {
+    return localStorage.getItem("accessToken");
+  };
   return (
     <div className={globalClasses.drawerPadding}>
       <CssBaseline />
@@ -109,7 +128,7 @@ function Pricing() {
           color="textSecondary"
           component="p"
         >
-          EncryptGig purchase options.
+          EncryptGig purchase options
         </Typography>
       </Container>
       {/* End hero unit */}
@@ -136,11 +155,15 @@ function Pricing() {
                 <CardContent className={classes.cardContent}>
                   <div className={classes.cardPricing}>
                     <Typography component="h4" variant="h4" color="textPrimary">
-                      ₹{tier.price}
+                      {tier.title !== "Enterprise" ? "₹" : ""} {tier.price}
                     </Typography>
-                    <Typography variant="h6" color="textSecondary">
-                      /mo
-                    </Typography>
+                    {tier.title === "Pro" ? (
+                      <Typography variant="h6" color="textSecondary">
+                        /mo
+                      </Typography>
+                    ) : (
+                      ""
+                    )}
                   </div>
                   <ul>
                     {tier.description.map((line) => (
@@ -160,6 +183,11 @@ function Pricing() {
                     fullWidth
                     variant={tier.buttonVariant}
                     color="primary"
+                    onClick={
+                      tier.title === "Free"
+                        ? NavigateToRegister
+                        : NavigateToRegister
+                    }
                   >
                     {tier.buttonText}
                   </Button>
@@ -171,6 +199,6 @@ function Pricing() {
       </Container>
     </div>
   );
-}
+};
 
-export default Pricing;
+export default withRouter(Pricing);

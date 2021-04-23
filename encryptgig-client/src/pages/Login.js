@@ -5,6 +5,7 @@ import {
   Container,
   CssBaseline,
   Dialog,
+  Divider,
   FormControlLabel,
   Grid,
   makeStyles,
@@ -12,6 +13,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import Alert from "@material-ui/lab/Alert";
+import SvgIcon from "@material-ui/core/SvgIcon";
 import React, { useState } from "react";
 import { Link, withRouter } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
@@ -37,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main,
+    backgroundColor: theme.palette.primary.main,
   },
   form: {
     width: "80%", // Fix IE 11 issue.
@@ -47,6 +49,11 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(3, 0, 2),
     color: "white",
+  },
+  googleSubmit: {
+    margin: theme.spacing(3, 0, 2),
+    color: "#FFFFFF",
+    backgroundColor: "#DB4437",
   },
 }));
 
@@ -185,6 +192,31 @@ const Login = (props) => {
             ""
           )}
           <form className={classes.form}>
+            <Button
+              fullWidth
+              variant="contained"
+              className={classes.googleSubmit}
+              startIcon={
+                <SvgIcon>
+                  <svg
+                    aria-hidden="true"
+                    data-prefix="fab"
+                    data-icon="google-login"
+                    role="img"
+                    viewBox="0 0 480 512"
+                  >
+                    <path
+                      fill="#FFFFFF"
+                      d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"
+                    />
+                  </svg>
+                </SvgIcon>
+              }
+              onClick={loginGoogle}
+            >
+              Sign In with Google
+            </Button>
+            <Divider style={{ margin: "10px" }} variant="middle" />
             <TextField
               error={emailText.length > 0}
               variant="outlined"
@@ -226,15 +258,7 @@ const Login = (props) => {
             >
               Sign In
             </Button>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              className={classes.submit}
-              onClick={loginGoogle}
-            >
-              Sign In with Google
-            </Button>
+
             {/* <Button
             fullWidth
             variant="contained"
