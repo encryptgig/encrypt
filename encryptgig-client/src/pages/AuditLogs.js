@@ -242,15 +242,12 @@ const AuditLogs = () => {
     fetch(url, { headers })
       .then((response) => response.json())
       .then((data) => {
+        console.log(data);
         autotable(pdf, {
-          head: [["Document Name", "Creation Time", "Shared With"]],
-          body: data.map((record) => {
-            return [
-              record.Name,
-              GetDate(record.CreationDate).split("GMT")[0],
-              Object.keys(JSON.parse(record.AllowDecryption)),
-            ];
-          }),
+          head: [
+            ["Document Name", "Operation Type", "Operation Time", "Email"],
+          ],
+          body: GetAuditTable(data),
         });
         pdf.save("AuditData.pdf");
         dispatch(showSpinner(false));
@@ -259,6 +256,38 @@ const AuditLogs = () => {
         console.log("Error fetching audit logs" + e);
         dispatch(showSpinner(false));
       });
+  };
+
+  const GetAuditTable = (data) => {
+    let arr = [];
+    for (let i = 0; i < data.length; i++) {
+      let record = data[i];
+      console.log(record);
+      let encrRecord = [
+        record.Name,
+        "Encryption & Share",
+        GetDate(record.CreationDate).split("GMT")[0],
+        Object.keys(JSON.parse(record.AllowDecryption)),
+      ];
+      arr.push(encrRecord);
+      if (
+        record.DecryptAuditRecord !== null &&
+        record.DecryptAuditRecord.length > 0
+      ) {
+        for (let j = 0; j < record.DecryptAuditRecord.length; j++) {
+          let decrRecord = [
+            "",
+            "Decryption",
+            GetDate(record.DecryptAuditRecord[j].AccessUnixTime).split(
+              "GMT"
+            )[0],
+            record.DecryptAuditRecord[j].AccessBy,
+          ];
+          arr.push(decrRecord);
+        }
+      }
+    }
+    return arr;
   };
 
   return (
@@ -296,11 +325,9 @@ const AuditLogs = () => {
                           aria-label="expand row"
                           size="small"
                           onClick={() => {
-                            console.log(rowOpen);
                             let z = [...rowOpen];
                             z[index] = !rowOpen[index];
                             setRowOpen(z);
-                            console.log(rowOpen);
                           }}
                         >
                           {rowOpen[index] === true ? (

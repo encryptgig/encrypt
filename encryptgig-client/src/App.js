@@ -26,6 +26,7 @@ import Dashboard from "./pages/Dashboard";
 import { SecretRoute } from "./SecretRoutes";
 import Pricing from "./pages/Pricing";
 import { useDispatch } from "react-redux";
+import Return from "./pages/Return";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -93,6 +94,7 @@ function App() {
           <SecretRoute exact path="/EncryptExcel" component={EncryptExcel} />
           <SecretRoute exact path="/EncryptMedia" component={EncryptMedia} />
           <PrivateRoute exact path="/AuditLogs" component={AuditLogs} />
+          <PrivateRoute exact path="/return" component={Return} />
           <PrivateRoute exact path="/Dashboard" component={Dashboard} />
           <Route exact path="/Pricing" component={Pricing} />
           <Route exact path="/Contact" component={Contact} />
