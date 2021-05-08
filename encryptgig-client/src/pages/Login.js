@@ -1,5 +1,6 @@
 import {
   Avatar,
+  Box,
   Button,
   Checkbox,
   Container,
@@ -27,8 +28,8 @@ import { showLogin } from "../Actions/showLoginAction";
 //TODO: Bug - after refresh user should remain logged-in
 const useStyles = makeStyles((theme) => ({
   Container: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
+    paddingTop: theme.spacing(1),
+    paddingBottom: theme.spacing(1),
   },
   paper: {
     display: "flex",
@@ -47,7 +48,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(1),
   },
   submit: {
-    margin: theme.spacing(3, 0, 2),
+    margin: theme.spacing(2, 0, 2),
     color: "white",
   },
   googleSubmit: {
@@ -135,6 +136,7 @@ const Login = (props) => {
         localStorage.setItem("accessToken", u.credential.idToken);
         localStorage.setItem("userName", u.user.displayName);
         localStorage.setItem("photoUrl", u.user.photoURL);
+        localStorage.setItem("userEmail", u.user.email);
         dispatch(userLogin(u.user.email, u.user.displayName, u.user.photoURL));
         fire.analytics().logEvent("google_login_success");
       })
@@ -216,7 +218,15 @@ const Login = (props) => {
             >
               Sign In with Google
             </Button>
-            <Divider style={{ margin: "10px" }} variant="middle" />
+            <Box display="flex" flexDirection="row">
+              <Divider
+                style={{ marginTop: "10px", marginRight: "10px", width: "43%" }}
+              />
+              <Typography>OR</Typography>
+              <Divider
+                style={{ marginTop: "10px", marginLeft: "10px", width: "43%" }}
+              />
+            </Box>
             <TextField
               error={emailText.length > 0}
               variant="outlined"
@@ -258,7 +268,6 @@ const Login = (props) => {
             >
               Sign In
             </Button>
-
             {/* <Button
             fullWidth
             variant="contained"

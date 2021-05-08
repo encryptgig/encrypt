@@ -7,6 +7,7 @@ import EgEmailInput from "../components/EgEmailInput";
 import EgInputFile from "../components/EgInputFile";
 import EgPageTitle from "../components/EgPageTitle";
 import EgTypography from "../components/EgTypography";
+
 import {
   dataURItoBlob,
   downloadFile,
@@ -17,8 +18,10 @@ import { validateEmail } from "../utilities/emailUtils";
 import { validateLogin } from "../utilities/loginUtils";
 import { showLogin } from "../Actions/showLoginAction";
 import SecurityIcon from "@material-ui/icons/Security";
+
 // import JsZip from "jszip";
 // import FileSaver from "file-saver";
+//
 
 const EncryptFile = (props) => {
   const globalClasses = globalStyles();
@@ -101,10 +104,6 @@ const EncryptFile = (props) => {
         alert("select file to encrypt");
       }
     });
-
-    // zip.generateAsync({ type: "blob" }).then(function (content) {
-    //   FileSaver.saveAs(content, "download.zip");
-    // });
   };
 
   return (

@@ -34,7 +34,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
     overflowX: "hidden",
-    width: theme.spacing(7),
+    width: theme.spacing(6),
   },
   toolbar: {
     backgroundColor: "white",

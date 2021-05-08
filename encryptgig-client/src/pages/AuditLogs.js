@@ -7,7 +7,6 @@ import { showSpinner } from "../Actions/spinnerAction";
 import { useDispatch } from "react-redux";
 import jsPDF from "jspdf";
 import autotable from "jspdf-autotable";
-import html2canvas from "html2canvas";
 import {
   makeStyles,
   Box,
@@ -242,7 +241,6 @@ const AuditLogs = () => {
     fetch(url, { headers })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data);
         autotable(pdf, {
           head: [
             ["Document Name", "Operation Type", "Operation Time", "Email"],
@@ -262,7 +260,6 @@ const AuditLogs = () => {
     let arr = [];
     for (let i = 0; i < data.length; i++) {
       let record = data[i];
-      console.log(record);
       let encrRecord = [
         record.Name,
         "Encryption & Share",

@@ -1,18 +1,14 @@
 import {
   Avatar,
   Button,
-  Checkbox,
   Container,
   CssBaseline,
-  FormControlLabel,
-  Grid,
   makeStyles,
-  Modal,
   TextField,
   Typography,
 } from "@material-ui/core";
 import React from "react";
-import { Link, withRouter } from "react-router-dom";
+import { withRouter } from "react-router-dom";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import fire from "../configs/firebase-configs";
 import firebase from "firebase";

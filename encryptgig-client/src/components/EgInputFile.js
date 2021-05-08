@@ -1,9 +1,19 @@
 import React, { useMemo } from "react";
-import { Box, Typography } from "@material-ui/core";
+import {
+  Box,
+  Grid,
+  ListItem,
+  ListItemText,
+  Paper,
+  Typography,
+  ListItemIcon,
+} from "@material-ui/core";
+import { makeStyles } from "@material-ui/core/styles";
 import { useSelector, useDispatch } from "react-redux";
 import ArchiveIcon from "@material-ui/icons/Archive";
 import { uploadFiles } from "../Actions/fileActions";
 import Dropzone, { useDropzone } from "react-dropzone";
+import FolderIcon from "@material-ui/icons/Folder";
 
 // const useStyles = makeStyles((theme) => ({}));
 const baseStyle = {
@@ -32,21 +42,56 @@ const rejectStyle = {
   borderColor: "#ff1744",
 };
 
+const useStyles = makeStyles((theme) => ({
+  root: {
+    flexGrow: 1,
+    width: "98%",
+    padding: theme.spacing(2, 0, 2, 0),
+  },
+  demo: {
+    backgroundColor: theme.palette.background.paper,
+  },
+  title: {
+    margin: theme.spacing(4, 0, 2),
+  },
+  paper: {
+    textAlign: "center",
+    color: theme.palette.text.secondary,
+  },
+}));
+
 const EgInputFile = (props) => {
   const uploadedFile = useSelector((state) => state);
   const dispatch = useDispatch();
   const { maxAllowedCount } = props;
+  const classes = useStyles();
 
   const renderText = (e) => {
     if (uploadedFile.files?.file == null) {
       return <div>No file chosen</div>;
     } else {
       return (
-        <ul>
-          {uploadedFile.files.file.map((fileEntry) => (
-            <li>{fileEntry.name}</li>
-          ))}
-        </ul>
+        <div className={classes.root}>
+          <Grid container spacing={3}>
+            {uploadedFile.files.file.map((fileEntry) => (
+              <Grid item xs>
+                <Paper className={classes.paper} elevation={5}>
+                  <ListItem>
+                    <ListItemIcon>
+                      <FolderIcon />
+                    </ListItemIcon>
+                    <ListItemText primary={fileEntry.name} />
+                  </ListItem>
+                </Paper>
+              </Grid>
+            ))}
+          </Grid>
+        </div>
+        // <ul>
+        //   {uploadedFile.files.file.map((fileEntry) => (
+        //     <li>{fileEntry.name}</li>
+        //   ))}
+        // </ul>
       );
     }
   };
