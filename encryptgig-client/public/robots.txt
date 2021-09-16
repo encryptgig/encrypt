@@ -1,4 +1,4 @@
-# https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
-Sitemap: http://app.encryptgig.com/sitemap.xml
+Disallow: 
+Disallow: /cgi-bin/
+Sitemap: https://encryptgig.com/sitemap.xml
