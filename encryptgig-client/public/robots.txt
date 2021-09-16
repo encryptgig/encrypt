@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 Disallow: /cgi-bin/
-Sitemap: https://encryptgig.com/sitemap.xml
+Sitemap: https://app.encryptgig.com/sitemap.xml
