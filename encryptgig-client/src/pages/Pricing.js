@@ -61,7 +61,7 @@ const tiers = [
   {
     title: "Pro",
     subheader: "Most popular",
-    price: "500",
+    price: "499",
     description: [
       "1000 encrypt/decrypt requests",
       "50 GB data limit",
