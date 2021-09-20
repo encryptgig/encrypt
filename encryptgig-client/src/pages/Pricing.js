@@ -61,10 +61,10 @@ const tiers = [
   {
     title: "Pro",
     subheader: "Most popular",
-    price: "3000",
+    price: "500",
     description: [
-      "3000 encrypt/decrypt requests",
-      "5 GB data limit",
+      "1000 encrypt/decrypt requests",
+      "50 GB data limit",
       "Help center access",
       "Priority email support",
     ],
