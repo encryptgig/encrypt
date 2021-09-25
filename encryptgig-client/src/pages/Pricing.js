@@ -97,7 +97,7 @@ const Pricing = (props) => {
     ) {
       let token = localStorage.getItem("accessToken");
       var href =
-        "https://encryptgig-3nere6jg5a-uc.a.run.app/buy?planid=plan_test&jwt=" +
+        "https://encryptgig-3nere6jg5a-uc.a.run.app/buy?planid=plan3000&jwt=" +
         token;
       window.location.replace(href);
     } else {
