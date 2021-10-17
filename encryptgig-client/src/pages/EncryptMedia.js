@@ -18,6 +18,7 @@ import ImageIcon from "@material-ui/icons/Image";
 import PersonalVideoIcon from "@material-ui/icons/PersonalVideo";
 import AudiotrackIcon from "@material-ui/icons/Audiotrack";
 import FileCopyIcon from "@material-ui/icons/FileCopy";
+import EgVideo from "../components/EgVideo";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2) },
@@ -160,7 +161,7 @@ const EncryptMedia = (props) => {
           </Box>
         </TabPanel>
       </SwipeableViews>
-
+      <EgVideo />
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About Media Encryption"></EgPageTitle>
       <EgTypography>

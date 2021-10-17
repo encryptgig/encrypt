@@ -2,12 +2,9 @@ import {
   AppBar,
   Box,
   Button,
-  Checkbox,
   Divider,
   FormControl,
   FormControlLabel,
-  FormGroup,
-  FormLabel,
   makeStyles,
   Radio,
   RadioGroup,
@@ -51,6 +48,7 @@ import { showLogin } from "../Actions/showLoginAction";
 import SecurityIcon from "@material-ui/icons/Security";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
+import EgVideo from "../components/EgVideo";
 
 const useStyles = makeStyles((theme) => ({
   appbar: { marginTop: theme.spacing(2), marginBottom: theme.spacing(2) },
@@ -374,6 +372,7 @@ const EncryptCSV = (props) => {
           <EgButton text="decrypt" onClick={handleDecrypt} icon="unlock" />
         </TabPanel>
       </SwipeableViews>
+      <EgVideo />
       <Divider style={{ margin: "10px" }} variant="middle" />
       <EgPageTitle title="About excel Encryption"></EgPageTitle>
       <EgTypography>

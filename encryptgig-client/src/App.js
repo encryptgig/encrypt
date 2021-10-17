@@ -27,6 +27,8 @@ import { SecretRoute } from "./SecretRoutes";
 import Pricing from "./pages/Pricing";
 import { useDispatch } from "react-redux";
 import Return from "./pages/Return";
+import Checkout from "./pages/Checkout";
+import EgFooter from "./components/EgFooter";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -57,6 +59,14 @@ function App() {
   const loadWasm = async () => {
     const go = new window.Go();
     let inst;
+
+    if (!WebAssembly.instantiateStreaming) {
+      // polyfill
+      WebAssembly.instantiateStreaming = async (resp, importObject) => {
+        const source = await (await resp).arrayBuffer();
+        return await WebAssembly.instantiate(source, importObject);
+      };
+    }
     WebAssembly.instantiateStreaming(fetch("main.wasm"), go.importObject).then(
       (result) => {
         go.run(result.instance);
@@ -94,6 +104,7 @@ function App() {
           <SecretRoute exact path="/EncryptExcel" component={EncryptExcel} />
           <SecretRoute exact path="/EncryptMedia" component={EncryptMedia} />
           <PrivateRoute exact path="/AuditLogs" component={AuditLogs} />
+          <PrivateRoute exact path="/Checkout" component={Checkout} />
           <PrivateRoute exact path="/return" component={Return} />
           <PrivateRoute exact path="/Dashboard" component={Dashboard} />
           <Route exact path="/Pricing" component={Pricing} />
@@ -103,6 +114,7 @@ function App() {
           <Route path="/PasswordReset" component={ForgotPsw} />
           <Redirect from="*" to="/EncryptFile" />
         </Switch>
+        <EgFooter />
       </ThemeProvider>
     </div>
   );

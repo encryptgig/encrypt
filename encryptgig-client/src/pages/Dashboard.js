@@ -5,8 +5,10 @@ import GaugeChart from "react-gauge-chart";
 import { globalStyles } from "../styles/global.styles";
 import EgPageTitle from "../components/EgPageTitle";
 import { Box, Typography } from "@material-ui/core";
+import EgButton from "../components/EgButton";
+import Pricing from "./Pricing";
 
-const Dashboard = () => {
+const Dashboard = ({ history }) => {
   const dispatch = useDispatch();
   const [data, setData] = useState(0);
   const [requests, setRequests] = useState(0);
@@ -45,6 +47,10 @@ const Dashboard = () => {
       return parseFloat(data / 1000).toFixed(2) + " MB";
     }
     return parseFloat(data).toFixed(2) + " Bytes";
+  };
+
+  const handleClick = () => {
+    history.push("/Pricing");
   };
 
   return (
@@ -88,6 +94,9 @@ const Dashboard = () => {
             {requests}
           </Typography>
         </Box>
+      </Box>
+      <Box align="center">
+        <EgButton text="Recharge" onClick={handleClick} icon=""></EgButton>
       </Box>
     </div>
   );

@@ -22,7 +22,7 @@ const EgEmailInput = (props) => {
   const dispatch = useDispatch();
   const [emailList, setEmailList] = useState([]);
   const [emailString, setEmailString] = useState("");
-  const { history, email } = props;
+  const { history, disabled } = props;
 
   const handleRemoveEmail = (event) => {
     setEmailList((prev) => {
@@ -60,6 +60,7 @@ const EgEmailInput = (props) => {
       <TextField
         style={{ width: "98%" }}
         variant="filled"
+        disabled={disabled}
         placeholder=" Enter emails to give decryption access. In case of multiple emails, separate them by comma."
         label="Share with emails"
         onChange={inputChange}
@@ -74,7 +75,6 @@ const EgEmailInput = (props) => {
         InputProps={{
           startAdornment: emailList.map((item) => (
             <div className={classes.root} key={item}>
-              <SupervisorAccountIcon />
               <Chip
                 key={item}
                 label={item}

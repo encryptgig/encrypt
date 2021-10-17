@@ -95,13 +95,9 @@ const EgInputFile = (props) => {
       );
     }
   };
-  const {
-    getRootProps,
-    getInputProps,
-    isDragActive,
-    isDragAccept,
-    isDragReject,
-  } = useDropzone({ maxFiles: 2 });
+  const { isDragActive, isDragAccept, isDragReject } = useDropzone({
+    maxFiles: 2,
+  });
 
   const style = useMemo(
     () => ({

@@ -16,6 +16,7 @@ import { TabPanel } from "../components/EgTabPanel";
 import SecurityIcon from "@material-ui/icons/Security";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
+import EgVideo from "../components/EgVideo";
 
 const EncryptData = (props) => {
   const globalClasses = globalStyles();
@@ -206,6 +207,7 @@ const EncryptData = (props) => {
           along with our most secured algorithm.
         </p>
       </EgTypography>
+      <EgVideo />
     </div>
   );
 };

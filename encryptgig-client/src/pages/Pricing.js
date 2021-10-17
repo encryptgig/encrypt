@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { BrowserRouter as Router, withRouter } from "react-router-dom";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -11,7 +11,6 @@ import StarIcon from "@material-ui/icons/StarBorder";
 import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
-import Box from "@material-ui/core/Box";
 import { globalStyles } from "../styles/global.styles";
 
 const useStyles = makeStyles((theme) => ({
@@ -51,8 +50,8 @@ const tiers = [
     title: "Free",
     price: "0",
     description: [
-      "100 encrypt/decrypt requests",
-      "1 GB data limit",
+      "1000 encrypt/decrypt requests",
+      "5 GB data limit",
       "Email support",
     ],
     buttonText: "Sign up for free",
@@ -63,8 +62,8 @@ const tiers = [
     subheader: "Most popular",
     price: "499",
     description: [
-      "1000 encrypt/decrypt requests",
-      "50 GB data limit",
+      "3000 encrypt/decrypt requests",
+      "100 GB data limit",
       "Help center access",
       "Priority email support",
     ],
@@ -100,8 +99,9 @@ const Pricing = (props) => {
         "https://encryptgig-3nere6jg5a-uc.a.run.app/buy?planid=plan3000&jwt=" +
         token;
       window.location.replace(href);
+      history.push("/Checkout");
     } else {
-      alert("Token is null please login");
+      alert("Please login to continue");
     }
   };
 
@@ -157,13 +157,6 @@ const Pricing = (props) => {
                     <Typography component="h4" variant="h4" color="textPrimary">
                       {tier.title !== "Enterprise" ? "₹" : ""} {tier.price}
                     </Typography>
-                    {tier.title === "Pro" ? (
-                      <Typography variant="h6" color="textSecondary">
-                        /mo
-                      </Typography>
-                    ) : (
-                      ""
-                    )}
                   </div>
                   <ul>
                     {tier.description.map((line) => (
