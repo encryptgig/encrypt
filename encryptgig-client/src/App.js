@@ -29,6 +29,7 @@ import { useDispatch } from "react-redux";
 import Return from "./pages/Return";
 import Checkout from "./pages/Checkout";
 import EgFooter from "./components/EgFooter";
+import UserGuide from "./pages/UserGuide";
 
 //Added a new font Family
 const theme = createMuiTheme({
@@ -108,6 +109,7 @@ function App() {
           <PrivateRoute exact path="/return" component={Return} />
           <PrivateRoute exact path="/Dashboard" component={Dashboard} />
           <Route exact path="/Pricing" component={Pricing} />
+          <Route exact path="/UserGuide" component={UserGuide} />
           <Route exact path="/Contact" component={Contact} />
           {/* <Route path="/Login" component={Login} /> */}
           <Route path="/Register" component={Register} />

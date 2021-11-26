@@ -137,7 +137,7 @@ const EncryptMedia = (props) => {
       </AppBar>
       <SwipeableViews index={tabValue} onChangeIndex={handleChangeIndex}>
         <TabPanel value={tabValue} index={0}>
-          <EgInputFile maxAllowedCount={10} />
+          <EgInputFile maxAllowedCount={3} />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
             <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
@@ -145,7 +145,7 @@ const EncryptMedia = (props) => {
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
-          <EgInputFile maxAllowedCount={10} />
+          <EgInputFile maxAllowedCount={3} />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
             <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
@@ -153,7 +153,7 @@ const EncryptMedia = (props) => {
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={2}>
-          <EgInputFile maxAllowedCount={10} />
+          <EgInputFile maxAllowedCount={3} />
           <EgEmailInput />
           <Box display="flex" flexDirection="row">
             <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />

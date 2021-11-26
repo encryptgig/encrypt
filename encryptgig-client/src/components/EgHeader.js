@@ -139,7 +139,13 @@ const EgHeader = (props) => {
             </Hidden>
           </Typography>
 
-          <Button color="inherit" className={classes.headerMenuColor}>
+          <Button
+            color="inherit"
+            className={classes.headerMenuColor}
+            onClick={(e) => {
+              history.push("/UserGuide");
+            }}
+          >
             <FindInPageIcon style={{ fontSize: 19 }}> </FindInPageIcon>
             Docs
           </Button>

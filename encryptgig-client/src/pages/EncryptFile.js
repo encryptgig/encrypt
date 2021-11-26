@@ -20,6 +20,7 @@ import { TabPanel } from "../components/EgTabPanel";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import EnhancedEncryptionIcon from "@material-ui/icons/EnhancedEncryption";
 import SwipeableViews from "react-swipeable-views";
+import fire from "./../configs/firebase-configs";
 import {
   dataURItoBlob,
   downloadFile,
@@ -50,6 +51,8 @@ const EncryptFile = (props) => {
   const [downloadFileName, setDownloadFileName] = useState([]);
   const [tabValue, setTabValue] = React.useState(0);
   const [showEmail, setShowEmail] = React.useState(false);
+  const [downloadButtonName, setDownloadButtonName] =
+    React.useState("Download File");
 
   const hadleTabChange = (e, newValue) => {
     setTabValue(newValue);
@@ -57,6 +60,11 @@ const EncryptFile = (props) => {
 
   const handleCheckboxClick = (e) => {
     setShowEmail(e.target.checked);
+    if (e.target.checked) {
+      setDownloadButtonName("Share & Download File");
+    } else {
+      setDownloadButtonName("Download File");
+    }
   };
 
   const handleChangeIndex = (index) => {
@@ -73,6 +81,7 @@ const EncryptFile = (props) => {
       dispatch(showLogin(true));
       return;
     }
+    fire.analytics().logEvent("file_decryption");
     files.forEach((file) => {
       if (!file) {
         return;
@@ -100,35 +109,64 @@ const EncryptFile = (props) => {
   };
 
   const handleLocalDownload = () => {
+    handleEncrypt();
+
     for (let i = 0; i < fileBlobArray.length; i++) {
       downloadFile(fileBlobArray[i], downloadFileName[i], true);
     }
 
     setCompletionDialogOpen(false);
   };
-  const uploadFileToCloud = (jsonBlob) => {
+  const uploadFileToCloud = () => {
     const token = localStorage.getItem("accessToken");
     if (token == null || token.length == 0) {
       alert("Please login again.");
       return;
     }
+    const formData = new FormData();
+
+    for (let ii = 0; ii < downloadFileName.length; ii++) {
+      console.log("uploadFile" + (ii + 1));
+      formData.append(
+        "uploadFile" + (ii + 1),
+        new File([fileBlobArray[ii]], downloadFileName[ii])
+      );
+    }
+    // formData.append(
+    //   "uploadFile1",
+    //   new File([fileBlobArray[0]], downloadFileName[0])
+    // );
+    // formData.append(
+    //   "uploadFile2",
+    //   new File([fileBlobArray[1]], downloadFileName[1])
+    // );
+    // formData.append(
+    //   "uploadFile3",
+    //   new File([fileBlobArray[2]], downloadFileName[2])
+    // );
+    formData.set("emailList", uploadedFile.shareEmail.emailList.join(","));
+
     const requestOptions = {
       method: "POST",
-      headers: { "Content-Type": "multipart-formdata", bearer: token },
-      body: {
-        uploadFile: new File([jsonBlob], "name"),
-      },
+      headers: { bearer: token },
+      body: formData,
     };
 
-    let url = "http://localhost:8080/files/upload";
+    let url = "https://encryptgig-3nere6jg5a-uc.a.run.app/user/SendMail";
     fetch(url, requestOptions)
       .then((response) => response.json())
       .then((data) => {
         console.log("Success " + data);
+        fire.analytics().logEvent("file_encr_mail_sent");
       })
       .catch((e) => {
         console.log("Error " + e);
+        fire.analytics().logEvent("file_encr_mail_failed");
       });
+  };
+
+  const openDialog = () => {
+    setCompletionDialogOpen(true);
   };
 
   const handleEncrypt = () => {
@@ -137,6 +175,8 @@ const EncryptFile = (props) => {
       dispatch(showLogin(true));
       return;
     }
+
+    fire.analytics().logEvent("file_encryption");
     // let encryptedFiles = [];
     // var zip = new JsZip();
     let email = "";
@@ -154,6 +194,9 @@ const EncryptFile = (props) => {
       }
       email = uploadedFile.shareEmail.emailList.join(",");
     }
+
+    let fileEncrCount = 0;
+
     files.forEach((file) => {
       if (file) {
         var reader = new FileReader();
@@ -168,16 +211,22 @@ const EncryptFile = (props) => {
             );
             var jsonBlob = null;
             jsonBlob = new Blob([out]);
-            fileBlobArray.push(jsonBlob);
-            downloadFileName.push(file.name);
-
-            setCompletionDialogOpen(true);
-
-            //uploadFileToCloud(jsonBlob);
+            fileBlobArray.push(out);
+            downloadFileName.push("encrypted-" + file.name);
+            downloadFile(jsonBlob, file.name, true);
+            fileEncrCount++;
+            if (
+              files.length === fileEncrCount &&
+              uploadedFile.shareEmail.emailList != null &&
+              uploadedFile.shareEmail.emailList.length > 0
+            ) {
+              uploadFileToCloud();
+            }
           } catch (e) {
             alert(e);
           }
         };
+
         reader.onerror = function (evt) {
           console.log("error reading file");
         };
@@ -215,7 +264,7 @@ const EncryptFile = (props) => {
         <TabPanel value={tabValue} index={0}>
           <EgInputFile maxAllowedCount={10} />
           <Box display="flex" flexDirection="row">
-            <EgButton text="Encrypt" onClick={handleEncrypt} icon="lock" />
+            <EgButton text="Encrypt" onClick={openDialog} icon="lock" />
           </Box>
         </TabPanel>
         <TabPanel value={tabValue} index={1}>
@@ -273,7 +322,7 @@ const EncryptFile = (props) => {
         <DialogActions>
           <EgButton
             onClick={handleLocalDownload}
-            text="Download File"
+            text={downloadButtonName}
             icon="none"
           ></EgButton>
         </DialogActions>
